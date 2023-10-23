@@ -1,0 +1,55 @@
+span.poisonWarning {
+  background-color: crimson;
+  color: white;
+  font-weight: bold;
+}
+span.dangerWarning {
+  background-color: coral;
+  color: white;
+  font-weight: bold;
+}
+div.productBadge {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 1em;
+  padding-top: 1em;
+  .productBadge {
+    font-size: 3em;
+    z-index: 100;
+  }
+}
+div.productImage {
+  margin-top: -5em;
+  img {
+    width: auto;
+    margin: auto;
+    display: block;
+    z-index: 99;
+  }
+}
+span.categoryLink {
+  color: royalblue;
+}
+div.confirm-product-mode {
+  ion-buttons {
+    text-align: center;
+    button {
+      width: 40%;
+      p {
+        color: var(--ion-color-light) !important;
+        margin-right: 5px;
+      }
+    }
+    .side-by-side {
+      width: 20%;
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+    .warning-button {
+      background-color: var(--ion-color-warning);
+    }
+    .primary-button {
+      background-color: var(--ion-color-primary);
+    }
+  }
+}

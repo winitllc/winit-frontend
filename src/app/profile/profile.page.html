@@ -1,0 +1,101 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <button (click)="confirmLogout()" class="logout" color="danger">Logout</button>
+    </ion-buttons>
+    <ion-title>
+      Profile
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Profile</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <!-- <ion-list *ngIf="!editMode"> -->
+  <ion-list>
+    <ion-list-header class="list-header">
+      <ion-label>{{state.profile.users[0].name}}</ion-label>
+    </ion-list-header>
+    <ion-item class="list-content">
+      <ion-label position="stacked">Username:</ion-label>
+      <span class="ion-padding-start">{{state.profile.users[0].username}}</span>
+    </ion-item>
+    <ion-item class="list-content">
+      <ion-label position="stacked">Email:</ion-label>
+      <span class="ion-padding-start">{{state.profile.users[0].email}}</span>
+    </ion-item>
+    <ion-item class="list-content">
+      <ion-label position="stacked">Allergies:</ion-label>
+      <ul *ngIf="state.profile.users[0].allergies.length > 0">
+        <li *ngFor="let allergy of state.profile.users[0].allergies">{{allergy.commonName}}</li>
+      </ul>
+      <ul *ngIf="state.profile.users[0].allergies.length === 0">
+        <li>N/A</li>
+      </ul>
+    </ion-item>
+    <ion-item class="list-content">
+      <ion-label position="stacked">Medical Conditions:</ion-label>
+      <ul *ngIf="state.profile.users[0].medicalConditions.length > 0">
+        <li *ngFor="let condition of state.profile.users[0].medicalConditions">{{condition.commonName}}</li>
+      </ul>
+      <ul *ngIf="state.profile.users[0].medicalConditions.length === 0">
+        <li>N/A</li>
+      </ul>
+    </ion-item>
+    <ion-item class="list-content">
+      <ion-label position="stacked">Symptoms:</ion-label>
+      <ul *ngIf="state.profile.users[0].symptoms.length > 0">
+        <li *ngFor="let symptom of state.profile.users[0].symptoms">{{symptom.name}}</li>
+      </ul>
+      <ul *ngIf="state.profile.users[0].symptoms.length === 0">
+        <li>N/A</li>
+      </ul>
+    </ion-item>
+    <ion-item class="list-content points-section">
+      <ion-label position="stacked">Points:</ion-label>
+      <ul>
+        <li>
+          Points Balance:
+          <ion-badge color="primary" class="ion-float-right">
+            <span>{{state.profile.points.pointsBalance}} </span>
+            <ion-icon name="star"></ion-icon>
+          </ion-badge>
+        </li>
+        <li>
+          Points Acquired (All Time):
+          <ion-badge color="star" class="ion-float-right">
+            <span>{{state.profile.points.pointsAllTime}} </span>
+            <ion-icon name="star"></ion-icon>
+          </ion-badge>
+        </li>
+        <li>
+          Points Spent (All Time):
+          <ion-badge color="danger" class="ion-float-right">
+            <span>{{state.profile.points.pointsUsedAllTime}} </span>
+            <ion-icon name="star"></ion-icon>
+          </ion-badge>
+        </li>
+      </ul>
+    </ion-item>
+    <!-- <ion-item class="list-content">
+      <ion-label>Unlock Premium Features:</ion-label>
+      <ul>
+        <li *ngFor="let feature of premiumFeatureViews"><ion-button *ngIf="!feature.isActive" (click)="unlockFeature(feature)">Unlock</ion-button><span *ngIf="!feature.isActive"> {{feature.title}} for {{feature.displayPrice}}</span><span *ngIf="feature.isActive">{{feature.title}} is active.</span></li>
+      </ul>
+    </ion-item>
+    <ion-item class="list-content">
+      <ion-label>Purchase Points:</ion-label>
+      <ul>
+        <li *ngFor="let inAppPurchaseProduct of inAppPurchaseProducts">Purchase {{inAppPurchaseProduct.title}} for {{inAppPurchaseProduct.price}} <ion-button (click)="makeInAppPurchase(inAppPurchaseProduct)">buy</ion-button></li>
+      </ul>
+    </ion-item> -->
+    <!-- <ion-item>
+      <ion-label>See my past transactions</ion-label>
+      <ion-button (click)="openPastTransactionsPage()"><ion-icon name="eye-outline"></ion-icon></ion-button>
+    </ion-item> -->
+  </ion-list>
+</ion-content>

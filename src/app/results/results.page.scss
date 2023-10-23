@@ -1,0 +1,17 @@
+ion-card.product-plank {
+  height: 50px;
+  img.product-thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+}
+ion-card.dangerous {
+  background-color: coral;
+}
+ion-card.poisons {
+  background-color: crimson;
+}
+
+.product-plank {
+  text-overflow: ellipsis;
+}
