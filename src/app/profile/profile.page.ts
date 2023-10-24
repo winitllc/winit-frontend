@@ -6,12 +6,9 @@ import { AllergiesService } from '../util/allergies.service';
 import { ProfileService } from './profile.service';
 import { ProfileFactory, EditModeProfile, EditModeUser } from './profile.factory';
 import { ProfileState } from './profile.state';
-import { PremiumFeatureView } from '../util/premiumFeature.view';
 import { MedicalConditionsService } from '../util/medicalConditions.service';
 import { DietsService } from '../util/diets.service';
 import { SymptomsService } from '../util/symptoms.service';
-import { InAppPurchaseService } from '../util/inAppPurchase.service';
-import { PremiumFeaturePurchaseService } from '../util/premiumFeaturePurchase.service';
 import { AppConfig } from '../app.config';
 
 @Component({
@@ -28,7 +25,6 @@ export class ProfilePage {
   public allPossibleLifestyleDiets: model.Lifestyle[] = [];
   public allPossibleSymptoms: model.Symptom[] = [];
   public inAppPurchaseProducts: view.InAppPurchaseProduct[] = [];
-  public premiumFeatureViews: PremiumFeatureView[] = [];
 
   public nameEdit: string = '';
   public usernameEdit: string = '';
@@ -49,8 +45,6 @@ export class ProfilePage {
     private medicalConditionsService: MedicalConditionsService,
     private dietsService: DietsService,
     private symptomsService: SymptomsService,
-    private inAppPurchaseService: InAppPurchaseService,
-    private premiumFeaturePurchaseService: PremiumFeaturePurchaseService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -73,25 +67,11 @@ export class ProfilePage {
         console.log(`ProfilePage.ngOnInit: [DEBUG] lifestyles received: ${JSON.stringify(this.allPossibleLifestyleDiets)}`);
         this.allPossibleSymptoms = await this.symptomsService.getAllSymptoms();
         console.log(`ProfilePage.ngOnInit: [DEBUG] symptoms received: ${JSON.stringify(this.allPossibleSymptoms)}`);
-        this.inAppPurchaseProducts = await this.inAppPurchaseService.getProducts(AppConfig.inAppPurchases);
-        console.log(`ProfilePage.ngOnInit: [DEBUG] in app purchase products retrieved from apple: ${JSON.stringify(this.inAppPurchaseProducts)}`);
-        this.premiumFeatureViews = await this.premiumFeaturePurchaseService.getPremiumFeatures();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] premium features retrieved from the backend: ${JSON.stringify(this.premiumFeatureViews)}`);
-        this.setFeatures();
       });
       await loading.dismiss();
     } catch (error) {
       console.error(`ProfilePage.ngOnInit Error: [ERROR] ${JSON.stringify(error)}`);
       throw error;
-    }
-  }
-
-  private setFeatures(): void {
-    const profile = this.state.getProfile();
-    for (let feature of this.premiumFeatureViews) {
-      feature.isActive = profile.premiumFeaturesPurchasesMade?.reduce((previous: boolean, current: model.PremiumFeaturePurchaseConfirmation) => {
-        return previous || current.featureId === feature.featureId;
-      }, false) || false;
     }
   }
 

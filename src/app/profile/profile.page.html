@@ -30,28 +30,28 @@
     </ion-item>
     <ion-item class="list-content">
       <ion-label position="stacked">Allergies:</ion-label>
-      <ul *ngIf="state.profile.users[0].allergies.length > 0">
+      <ul *ngIf="state && state.profile && state.profile.users[0] && state.profile.users[0].allergies && state.profile.users[0].allergies.length > 0">
         <li *ngFor="let allergy of state.profile.users[0].allergies">{{allergy.commonName}}</li>
       </ul>
-      <ul *ngIf="state.profile.users[0].allergies.length === 0">
+      <ul *ngIf="state && state.profile && state.profile.users[0] && state.profile.users[0].allergies && state.profile.users[0].allergies.length === 0">
         <li>N/A</li>
       </ul>
     </ion-item>
     <ion-item class="list-content">
       <ion-label position="stacked">Medical Conditions:</ion-label>
-      <ul *ngIf="state.profile.users[0].medicalConditions.length > 0">
+      <ul *ngIf="state && state.profile && state.profile.users[0] && state.profile.users[0].medicalConditions && state.profile.users[0].medicalConditions.length > 0">
         <li *ngFor="let condition of state.profile.users[0].medicalConditions">{{condition.commonName}}</li>
       </ul>
-      <ul *ngIf="state.profile.users[0].medicalConditions.length === 0">
+      <ul *ngIf="state && state.profile && state.profile.users[0] && state.profile.users[0].medicalConditions && state.profile.users[0].medicalConditions.length === 0">
         <li>N/A</li>
       </ul>
     </ion-item>
     <ion-item class="list-content">
       <ion-label position="stacked">Symptoms:</ion-label>
-      <ul *ngIf="state.profile.users[0].symptoms.length > 0">
+      <ul *ngIf="state && state.profile && state.profile.users[0] && state.profile.users[0].symptoms && state.profile.users[0].symptoms.length > 0">
         <li *ngFor="let symptom of state.profile.users[0].symptoms">{{symptom.name}}</li>
       </ul>
-      <ul *ngIf="state.profile.users[0].symptoms.length === 0">
+      <ul *ngIf="state && state.profile && state.profile.users[0] && state.profile.users[0].symptoms && state.profile.users[0].symptoms.length === 0">
         <li>N/A</li>
       </ul>
     </ion-item>
@@ -81,21 +81,5 @@
         </li>
       </ul>
     </ion-item>
-    <!-- <ion-item class="list-content">
-      <ion-label>Unlock Premium Features:</ion-label>
-      <ul>
-        <li *ngFor="let feature of premiumFeatureViews"><ion-button *ngIf="!feature.isActive" (click)="unlockFeature(feature)">Unlock</ion-button><span *ngIf="!feature.isActive"> {{feature.title}} for {{feature.displayPrice}}</span><span *ngIf="feature.isActive">{{feature.title}} is active.</span></li>
-      </ul>
-    </ion-item>
-    <ion-item class="list-content">
-      <ion-label>Purchase Points:</ion-label>
-      <ul>
-        <li *ngFor="let inAppPurchaseProduct of inAppPurchaseProducts">Purchase {{inAppPurchaseProduct.title}} for {{inAppPurchaseProduct.price}} <ion-button (click)="makeInAppPurchase(inAppPurchaseProduct)">buy</ion-button></li>
-      </ul>
-    </ion-item> -->
-    <!-- <ion-item>
-      <ion-label>See my past transactions</ion-label>
-      <ion-button (click)="openPastTransactionsPage()"><ion-icon name="eye-outline"></ion-icon></ion-button>
-    </ion-item> -->
   </ion-list>
 </ion-content>

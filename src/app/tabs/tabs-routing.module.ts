@@ -20,35 +20,21 @@ const routes: Routes = [
         loadChildren: () => import('../browse/browse.module').then(m => m.BrowsePageModule)
       },
       {
-        path: 'tab3',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+        path: 'profile',
+        loadChildren: () => import('../profile/profile.module').then(m => m.ProfilePageModule)
       },
-      // {
-      //   path: 'profile',
-      //   loadChildren: () => import('../profile/profile.module').then(m => m.ProfilePageModule)
-      // },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: 'tabs/browse',
         pathMatch: 'full'
       }
-      // {
-      //   path: '',
-      //   redirectTo: 'tabs/browse',
-      //   pathMatch: 'full'
-      // }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/tab1',
+    redirectTo: 'tabs/browse',
     pathMatch: 'full'
   }
-  // {
-  //   path: '',
-  //   redirectTo: 'tabs/browse',
-  //   pathMatch: 'full'
-  // }
 ];
 
 
