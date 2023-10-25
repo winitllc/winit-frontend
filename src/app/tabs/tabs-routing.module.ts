@@ -8,13 +8,9 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+        path: 'scan',
+        loadChildren: () => import('../scan/scan.module').then(m => m.ScanPageModule)
       },
-      // {
-      //   path: 'scan',
-      //   loadChildren: () => import('../scan/scan.module').then(m => m.ScanPageModule)
-      // },
       {
         path: 'browse',
         loadChildren: () => import('../browse/browse.module').then(m => m.BrowsePageModule)
