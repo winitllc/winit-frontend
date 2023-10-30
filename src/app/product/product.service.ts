@@ -42,7 +42,7 @@ export class ProductService {
     }
   }
 
-  public async getProductById(id: number): Promise<SpoonacularProduct | undefined> {
+  public async getProductById(id: number): Promise<SpoonacularProduct> {
     const getProductByIdURL = `${EnvironmentConfig.api.spoonacularProducts.baseUrl}${EnvironmentConfig.api.spoonacularProducts.getById}${id}`;
     console.log(`ProductService.getProductById: requesting product by id: ${id}`);
     console.log(`ProductService.getProductById: url: ${getProductByIdURL}`);
@@ -58,15 +58,15 @@ export class ProductService {
         }
       }
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
-      console.log(`ProductService.getProductById: result from spoonacular: ${result}`);
-      const product: SpoonacularProduct = JSON.parse(result.data);
+      console.log(`ProductService.getProductById: result from spoonacular: ${JSON.stringify(result)}`);
+      const product: SpoonacularProduct = result.data;
       console.log(`ProductService.getProductById: product object: ${JSON.stringify(product)}`);
       product.type = 'spoonacular';
       return product;
     } catch (error) {
       console.error(`ProductService.getProductById: Error getting by id ${id}`);
       console.error(`ProductService.getProductById: Error: ${JSON.stringify(error)}`);
-      return undefined;
+      return JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
     }
   }
 

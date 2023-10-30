@@ -50,7 +50,7 @@ export class ResultsPage implements OnInit {
         // duration: 2000
       });
       await loading.present();
-      const product: SpoonacularProduct = await this.productService.getProductById(resultProduct.id) || JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
+      const product: SpoonacularProduct = await this.productService.getProductById(resultProduct.id);
       console.log(`ResultsPage.select: Product by id ${JSON.stringify(product)}`);
       this.pushToProductPage(product);
       await loading.dismiss();

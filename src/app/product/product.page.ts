@@ -57,15 +57,14 @@ export class ProductPage implements OnInit {
       // await this.auth.setup();
       this.noProduct = true;
       console.log(`ProductPage.ngOnInit: beginning of OnInit`);
-      this.route.queryParams.subscribe(async (params) => {
-        const navParams = this.router.getCurrentNavigation()?.extras.state;
-        console.log(`ProductPage.ngOnInit: nav params: ${JSON.stringify(navParams)}`);
-        this.confirmProductMode = Boolean(navParams ? navParams['confirmProductMode'] : false);
-        const product = navParams ? navParams['product'] : {};
+      const currNavigation = this.router.getCurrentNavigation();
+      if (currNavigation) {
+        const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));
+        console.log(`ProductPage.ngOnInit: routerState: ${JSON.stringify(routerState)}`);
+        const confirmProductMode: boolean = Boolean(routerState['confirmProductMode']);
+        this.confirmProductMode = confirmProductMode;
+        const product = routerState['product'];
         console.log(`ProductPage.ngOnInit: product from navParams: ${JSON.stringify(product)}`);
-        // if (this.confirmProductMode == null || this.confirmProductMode == undefined || !this.confirmProductMode || !product.hasOwnProperty('message')) {
-        //   await this.navCtrl.removeView(this.navCtrl.getPrevious());
-        // }
         this.productType = product.type;
         this.noProduct = false;
         if (product && product.hasOwnProperty('message') && product.message === AppConfig.controlMessages.noProduct) {
@@ -93,7 +92,7 @@ export class ProductPage implements OnInit {
           this.spoonacularProduct = JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
           this.noProductBarcode = product.barcode;
         }
-      });
+      }
     } catch (error) {
       console.error(`ProductPage.ngOnInit Error: ${JSON.stringify(error)}`);
       throw error;
