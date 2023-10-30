@@ -96,7 +96,7 @@ export class BrowsePage implements OnInit {
       // duration: 2000
     });
     await loading.present();
-    const productSearchResponse: SpoonacularSearchResult = await this.service.searchProductByText(categorySearchString) || JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
+    const productSearchResponse: SpoonacularSearchResult = await this.service.searchProductByText(categorySearchString);
     console.log(`BrowsePage.searchCategory: result from spoonacular: ${JSON.stringify(productSearchResponse)}`);
     this.pushToResultsPage(productSearchResponse, categorySearchString);
     console.log(`BrowsePage.searchCategory called with categorySearchString: ${categorySearchString}, categoryDisplayName: ${categoryDisplayName}`);

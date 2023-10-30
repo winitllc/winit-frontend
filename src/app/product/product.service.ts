@@ -3,6 +3,7 @@ import { CapacitorHttp, HttpResponse } from '@capacitor/core';
 import { SpoonacularSearchResult, SpoonacularProduct } from './product.model';
 import { EnvironmentConfig } from '../environment.config';
 import { AuthState } from '../util/auth.state';
+import { AppConfig } from '../app.config';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class ProductService {
     private authState: AuthState
   ) { }
 
-  public async searchProductByText(query: string, offset?: number): Promise<SpoonacularSearchResult | undefined> {
+  public async searchProductByText(query: string, offset?: number): Promise<SpoonacularSearchResult> {
     const productsByText = `${EnvironmentConfig.api.spoonacularProducts.baseUrl}${EnvironmentConfig.api.spoonacularProducts.getByText}`;
     console.log(`ProductService.searchProductByText: requesting products by query: ${query}`);
     console.log(`ProductService.searchProductByText: url: ${productsByText}`);
@@ -37,7 +38,7 @@ export class ProductService {
     } catch (error) {
       console.error(`ProductService.searchProductByText: Error getting by query ${query}`);
       console.error(`ProductService.searchProductByText: Error: ${JSON.stringify(error)}`);
-      return undefined;
+      return JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
     }
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SpoonacularSearchResultProduct, SpoonacularProduct, SpoonacularSearchResult } from '../product/product.model';
 import { ProductService } from '../product/product.service';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras, ParamMap } from '@angular/router';
 import { NavController, LoadingController } from '@ionic/angular';
 import { AppConfig } from '../app.config';
 
@@ -26,22 +26,19 @@ export class ResultsPage implements OnInit {
 
   ngOnInit() {
     console.log(`ResultsPage.ngOnInit: beginning of OnInit`);
-    this.route.queryParams.subscribe((params) => {
-      const navParams = this.router.getCurrentNavigation()?.extras.state || {};
-      // console.log(`ResultsPage.ngOnInit: nav params: ${JSON.stringify(navParams)}`);
-      this.productSearchResponse = JSON.parse(navParams['productSearchResponse']);
-      this.searchedText = navParams['searchedText'];
-      this.products = this.productSearchResponse.products;
-      console.log(`ResultsPage.ngOnInit: searchedText: ${this.searchedText}`);
-      console.log(`ResultsPage.ngOnInit: products: ${JSON.stringify(this.products)}`);
-      console.log(`ResultsPage.ngOnInit: productSearchResponse: ${JSON.stringify(this.productSearchResponse)}`);
-    });
-    // this.productSearchResponse = JSON.parse(this.route.snapshot.paramMap.get('productSearchResponse'));
-    // this.searchedText = this.route.snapshot.paramMap.get('searchedText');
-    // this.products = Object.values(this.productSearchResponse.products);
-    // console.log(`ResultsPage.ngOnInit: product search response from nav params: ${JSON.stringify(this.productSearchResponse)}`);
-    // console.log(`ResultsPage.ngOnInit: searchedText from nav params: ${JSON.stringify(this.productSearchResponse)}`);
-    // console.log(`ResultsPage.ngOnInit: products from nav params: ${JSON.stringify(this.products)}`);
+    const currNavigation = this.router.getCurrentNavigation();
+    if (currNavigation) {
+      const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));
+      console.log(`ResultsPage.ngOnInit: routerState: ${JSON.stringify(routerState)}`);
+      const productSearchResponse = routerState['productSearchResponse'];
+      console.log(`ResultsPage.ngOnInit: productSearchResponse: ${JSON.stringify(productSearchResponse)}`);
+      const searchedText = routerState['searchedText'];
+      console.log(`ResultsPage.ngOnInit: searchedText: ${JSON.stringify(searchedText)}`);
+      const products = productSearchResponse.products;
+      this.productSearchResponse = productSearchResponse;
+      this.searchedText = searchedText;
+      this.products = products;
+    }
   }
 
   public async select(resultProduct: SpoonacularSearchResultProduct): Promise<void> {
