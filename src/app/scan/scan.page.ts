@@ -6,7 +6,7 @@ import { AppConfig } from '../app.config';
 import { SpoonacularProduct } from '../product/product.model';
 import { ProductService } from '../product/product.service';
 import { ProfileService } from '../profile/profile.service';
-import { NavController, LoadingController } from '@ionic/angular';
+import { NavController, LoadingController, AlertController } from '@ionic/angular';
 import { NavigationExtras } from '@angular/router';
 
 @Component({
@@ -21,8 +21,9 @@ export class ScanPage implements OnInit {
     private navCtrl: NavController,
     private service: ProductService,
     public factory: ScanFactory,
-    private profileService: ProfileService
-  ) {}
+    private profileService: ProfileService,
+    private alertController: AlertController
+  ) { }
 
   async ngOnInit(): Promise<void> {
     try {
@@ -38,24 +39,44 @@ export class ScanPage implements OnInit {
   }
 
   public async scan(): Promise<void> {
-    try {
-      const listener = await BarcodeScanner.addListener(
-        'barcodeScanned',
-        async result => {
-          console.log(result.barcode);
-          const barcodeData: any = result.barcode;
-          if (barcodeData.hasOwnProperty('cancelled') && !barcodeData.cancelled) {
-            const barcode: string = this.factory.padCode(barcodeData);
-            return this.getByBarcode(barcode);
-          } else {
-            this.navigateBackward();
-          }
-        },
-      );
-      await BarcodeScanner.startScan();
-    } catch (error) {
-      console.error(`ScanPage.scan: Error scanning the product: ${JSON.stringify(error)}`);
+    const granted = await this.requestPermissions();
+    if (!granted) {
+      this.presentAlert();
     }
+    else {
+      try {
+        const listener = await BarcodeScanner.addListener(
+          'barcodeScanned',
+          async result => {
+            console.log(result.barcode);
+            const barcodeData: any = result.barcode;
+            if (barcodeData.hasOwnProperty('cancelled') && !barcodeData.cancelled) {
+              const barcode: string = this.factory.padCode(barcodeData);
+              return this.getByBarcode(barcode);
+            } else {
+              this.navigateBackward();
+            }
+          },
+        );
+        await BarcodeScanner.startScan();
+      } catch (error) {
+        console.error(`ScanPage.scan: Error scanning the product: ${JSON.stringify(error)}`);
+      }
+    }
+  }
+
+  async requestPermissions(): Promise<boolean> {
+    const { camera } = await BarcodeScanner.requestPermissions();
+    return camera === 'granted' || camera === 'limited';
+  }
+
+  async presentAlert(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Permission denied',
+      message: 'Please grant camera permission to use the barcode scanner.',
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   private async getByBarcode(barcode: string): Promise<void> {
@@ -94,7 +115,7 @@ export class ScanPage implements OnInit {
     }
   }
 
-  private pushToProductPage(product: model.WuzinitProductBase | {message: string, barcode: string}): void {
+  private pushToProductPage(product: model.WuzinitProductBase | { message: string, barcode: string }): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
       console.log(`ScanPage.pushToProductPage: pushing the product to product page: ${JSON.stringify(product)}`);
