@@ -7,8 +7,8 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <h2>Scan Barcode</h2>
+  <h2 *ngIf="headerDisplayed">Scan Barcode</h2>
   <div class="scan-div barcode-scanner-active">
-    <button class="submit start-scan" ion-button (click)="scan()"><p><ion-icon name="barcode"></ion-icon><br/>Scan</p></button>
+    <button *ngIf="buttonDisplayed" class="submit start-scan" ion-button (click)="scan()"><p><ion-icon name="barcode"></ion-icon><br/>Scan</p></button>
   </div>
 </ion-content>

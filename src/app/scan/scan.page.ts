@@ -16,6 +16,9 @@ import { NavigationExtras } from '@angular/router';
 })
 export class ScanPage implements OnInit {
 
+  headerDisplayed: boolean = true;
+  buttonDisplayed: boolean = true;
+
   constructor(
     private loadingController: LoadingController,
     private navCtrl: NavController,
@@ -35,10 +38,14 @@ export class ScanPage implements OnInit {
   }
 
   ionViewWillEnter(): void {
-    this.scan();
+    // this.scan();
+    this.buttonDisplayed = true;
+    this.headerDisplayed = true;
   }
 
   public async scan(): Promise<void> {
+    this.buttonDisplayed = false;
+    this.headerDisplayed = false;
     const granted = await this.requestPermissions();
     if (!granted) {
       this.presentAlert();

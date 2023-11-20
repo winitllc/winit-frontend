@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Sign in</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content no-padding style="background-color:white;">
+  <div class="login">
+    <img src="../../assets/logo.png" alt="" style="width: 65%;">
+    <div class="logininput">
+      <ion-item>
+        <ion-input type="Email" placeholder="Email" [(ngModel)]="userData.email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="Password" placeholder="Password" [(ngModel)]="userData.password"></ion-input>
+      </ion-item>
+
+    </div>
+    <ion-button ion-button round (click)="loginAction()">&nbsp;Sign In</ion-button>
+    <p><span><a (click)="registerAction()">Create An Account</a></span></p>
+    <!-- <p><span><a href="#" (click)="onForgotPassword()">Forgot Password?</a></span></p> -->
+
+
+  </div>
+</ion-content>

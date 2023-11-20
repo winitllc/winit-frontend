@@ -1,27 +1,51 @@
 ion-card.info {
   color: blue;
 }
+
 ion-card.warn {
   color: orange;
 }
+
 ion-card.error {
   color: red;
 }
+
 ion-card.raiseAlarm {
   background-color: red;
   color: yellow;
   size: 1.5em
 }
+
 div.scan-div {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  width:100%;
-  height:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
+
 button.start-scan {
   height: 5em;
   width: 5em;
   border-radius: 2.5em;
   font-size: 4em;
+}
+
+// Hide all elements
+body.barcode-scanner-active {
+  visibility: hidden;
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+// Show only the barcode scanner modal
+.barcode-scanner-modal {
+  visibility: visible;
+}
+
+@media (prefers-color-scheme: dark) {
+  .barcode-scanner-modal {
+    --background: transparent;
+    --ion-background-color: transparent;
+  }
 }
