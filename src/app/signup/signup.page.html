@@ -10,10 +10,10 @@
 
     <div class="logininput">
       <ion-item>
-        <ion-input placeholder="First Name" [(ngModel)]="userData.fName"></ion-input>
+        <ion-input placeholder="First Name" [(ngModel)]="userData.firstName"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input placeholder="Last Name" [(ngModel)]="userData.lName"></ion-input>
+        <ion-input placeholder="Last Name" [(ngModel)]="userData.lastName"></ion-input>
       </ion-item>
       <ion-item>
         <ion-input placeholder="Email" [(ngModel)]="userData.email"></ion-input>
@@ -22,11 +22,20 @@
         <ion-input placeholder="Confirm Email" [(ngModel)]="userData.confirmEmail"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input type="Password" placeholder="Password" [(ngModel)]="userData.password"></ion-input>
+        <ion-input type="Password" placeholder="Password" [(ngModel)]="userData.newPassword"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input placeholder="Date Of Birth (YYYY-MM-DD)" [(ngModel)]="userData.dateOfBirth"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input placeholder="Phone Number (10 digits)" [(ngModel)]="userData.phoneNumber"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input placeholder="Time Zone (e.g. America/Metlakatla)" [(ngModel)]="userData.timezone"></ion-input>
       </ion-item>
 
     </div>
-    <ion-button ion-button round (click)="registerAction()">&nbsp;Sign Up</ion-button>
+    <ion-button ion-button round (click)="registerAction()">&nbsp;Sign Up As Health Pro</ion-button>
     <p>Already have an account?<span><a (click)="goBack()"> Login</a></span></p>
     <!-- <p><span><a href="#" (click)="onForgotPassword()">Forgot Password?</a></span></p> -->
 
