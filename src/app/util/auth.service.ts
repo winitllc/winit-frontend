@@ -90,6 +90,15 @@ export class AuthService {
       );
   }
 
+  patientregisterAPI(user: any) {
+    return this.http
+      .post<any>(
+        'https://winitclinic.dev.eltex.dev/api/v1/patient/accounts/signup',
+        JSON.stringify(user),
+        this.httpHeader
+      );
+  }
+
   // Handle API errors
   handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

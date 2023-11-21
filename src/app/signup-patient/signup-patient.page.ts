@@ -3,24 +3,19 @@ import { AlertController, LoadingController, NavController } from '@ionic/angula
 import { AuthService } from '../util/auth.service';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.page.html',
-  styleUrls: ['./signup.page.scss'],
+  selector: 'app-signup-patient',
+  templateUrl: './signup-patient.page.html',
+  styleUrls: ['./signup-patient.page.scss'],
 })
-export class SignupPage implements OnInit {
-
+export class SignupPatientPage implements OnInit {
   userData = {
     "firstName": "",
     "lastName": "",
     "email": "",
     "confirmEmail": "",
-    "newPassword": "",
-    "phoneNumber": "",
-    "dateOfBirth": "",
-    "timezone": ""
+    "newPassword": ""
   };
   loading: any;
-
 
   constructor(
     private navCtrl: NavController,
@@ -29,22 +24,20 @@ export class SignupPage implements OnInit {
     private loadingController: LoadingController
   ) { }
 
-  ngOnInit() {
-  }
-
   goBack() {
     console.log('this is login button');
     console.log(this.userData);
     this.navCtrl.navigateRoot('/signin');
   }
 
-  registerAction() {
+  ngOnInit() {
+  }
+
+  registerPatientAction() {
     console.log('this is register action');
     console.log(this.userData);
-    // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
-    this.userData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    if (this.userData.firstName == '' || this.userData.lastName == '' || this.userData.email == '' || this.userData.confirmEmail == '' || this.userData.newPassword == '' || this.userData.phoneNumber == '' || this.userData.dateOfBirth == '') {
+    if (this.userData.firstName == '' || this.userData.lastName == '' || this.userData.email == '' || this.userData.confirmEmail == '' || this.userData.newPassword == '') {
       this.presentAlert();
     } else {
       if (this.userData.email != this.userData.confirmEmail) {
@@ -52,7 +45,7 @@ export class SignupPage implements OnInit {
       }
       else {
         this.presentLoading();
-        this.authService.registerAPI(this.userData).subscribe(async (response) => {
+        this.authService.patientregisterAPI(this.userData).subscribe(async (response) => {
           console.log(response);
           if (response['statusCode'] != 200) {
             this.loading.dismiss();
@@ -61,6 +54,7 @@ export class SignupPage implements OnInit {
             this.loading.dismiss();
             const userData = response['data'];
             console.log(userData);
+            this.presentAlertMultipleButtons('Sign up success. Please verify your email.');
             this.navCtrl.navigateRoot('/signin');
           }
         },
@@ -103,5 +97,6 @@ export class SignupPage implements OnInit {
     });
     await alert.present();
   }
+
 
 }

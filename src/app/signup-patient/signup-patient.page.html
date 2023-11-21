@@ -24,18 +24,9 @@
       <ion-item>
         <ion-input type="Password" placeholder="Password" [(ngModel)]="userData.newPassword"></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-input placeholder="Date Of Birth (YYYY-MM-DD)" [(ngModel)]="userData.dateOfBirth"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input placeholder="Phone Number (10 digits)" [(ngModel)]="userData.phoneNumber"></ion-input>
-      </ion-item>
-      <!-- <ion-item>
-        <ion-input placeholder="Time Zone (e.g. America/Metlakatla)" [(ngModel)]="userData.timezone"></ion-input>
-      </ion-item> -->
 
     </div>
-    <ion-button ion-button round (click)="registerAction()">&nbsp;Sign Up</ion-button>
+    <ion-button ion-button round (click)="registerPatientAction()">&nbsp;Sign Up</ion-button>
     <p>Already have an account?<span><a (click)="goBack()"> Login</a></span></p>
     <!-- <p><span><a href="#" (click)="onForgotPassword()">Forgot Password?</a></span></p> -->
 
