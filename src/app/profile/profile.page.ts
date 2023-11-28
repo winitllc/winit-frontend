@@ -1,10 +1,18 @@
 import { Component, NgZone } from '@angular/core';
-import { AlertController, LoadingController, NavController } from '@ionic/angular';
+import {
+  AlertController,
+  LoadingController,
+  NavController,
+} from '@ionic/angular';
 import { model, view } from 'wuzinit-common';
 import { AuthService } from '../util/auth.service';
 import { AllergiesService } from '../util/allergies.service';
 import { ProfileService } from './profile.service';
-import { ProfileFactory, EditModeProfile, EditModeUser } from './profile.factory';
+import {
+  ProfileFactory,
+  EditModeProfile,
+  EditModeUser,
+} from './profile.factory';
 import { ProfileState } from './profile.state';
 import { MedicalConditionsService } from '../util/medicalConditions.service';
 import { DietsService } from '../util/diets.service';
@@ -16,10 +24,9 @@ import { Storage } from '@ionic/storage-angular';
   selector: 'app-profile',
   templateUrl: 'profile.page.html',
   styleUrls: ['profile.page.scss'],
-  providers: [ProfileService]
+  providers: [ProfileService],
 })
 export class ProfilePage {
-
   public editMode: boolean = false;
   public allPossibleAllergies: model.Allergy[] = [];
   public allPossibleMedicalConditions: model.Medical[] = [];
@@ -50,46 +57,69 @@ export class ProfilePage {
     private symptomsService: SymptomsService,
     private storage: Storage,
     private authService: AuthService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     try {
-
       this.fetchProfileData();
 
       const loading = await this.loadingController.create({
-        message: `Loading...`
+        message: `Loading...`,
       });
       await loading.present();
       this.zone.run(async () => {
         const profile = await this.service.getProfile();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] profile from profile service: ${JSON.stringify(profile)}`);
+        console.log(
+          `ProfilePage.ngOnInit: [DEBUG] profile from profile service: ${JSON.stringify(
+            profile
+          )}`
+        );
         if (!profile) {
           throw new Error(`No profile found: ${profile}`);
         }
-        this.allPossibleAllergies = await this.allergiesService.getAllAllergies();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] allergies received: ${JSON.stringify(this.allPossibleAllergies)}`);
-        this.allPossibleMedicalConditions = await this.medicalConditionsService.getAllMedicalConditions();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] medical conditions received: ${JSON.stringify(this.allPossibleMedicalConditions)}`);
-        this.allPossibleLifestyleDiets = await this.dietsService.getAllLifestyleDiets();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] lifestyles received: ${JSON.stringify(this.allPossibleLifestyleDiets)}`);
+        this.allPossibleAllergies =
+          await this.allergiesService.getAllAllergies();
+        console.log(
+          `ProfilePage.ngOnInit: [DEBUG] allergies received: ${JSON.stringify(
+            this.allPossibleAllergies
+          )}`
+        );
+        this.allPossibleMedicalConditions =
+          await this.medicalConditionsService.getAllMedicalConditions();
+        console.log(
+          `ProfilePage.ngOnInit: [DEBUG] medical conditions received: ${JSON.stringify(
+            this.allPossibleMedicalConditions
+          )}`
+        );
+        this.allPossibleLifestyleDiets =
+          await this.dietsService.getAllLifestyleDiets();
+        console.log(
+          `ProfilePage.ngOnInit: [DEBUG] lifestyles received: ${JSON.stringify(
+            this.allPossibleLifestyleDiets
+          )}`
+        );
         this.allPossibleSymptoms = await this.symptomsService.getAllSymptoms();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] symptoms received: ${JSON.stringify(this.allPossibleSymptoms)}`);
+        console.log(
+          `ProfilePage.ngOnInit: [DEBUG] symptoms received: ${JSON.stringify(
+            this.allPossibleSymptoms
+          )}`
+        );
       });
       await loading.dismiss();
     } catch (error) {
-      console.error(`ProfilePage.ngOnInit Error: [ERROR] ${JSON.stringify(error)}`);
+      console.error(
+        `ProfilePage.ngOnInit Error: [ERROR] ${JSON.stringify(error)}`
+      );
       throw error;
     }
   }
 
   async fetchProfileData() {
-
     const loading = await this.loadingController.create({
-      message: `Loading...`
+      message: `Loading...`,
     });
 
-    this.authService.getUserProfileData().subscribe(
+    this.service.getUserProfileData().subscribe(
       (data: any) => {
         // Handle the response data
         console.log('data fetched from apiii');
@@ -107,18 +137,21 @@ export class ProfilePage {
   }
 
   getHealthProfileData() {
-    this.authService.getUserHealthProfile(this.profileData['healthProfiles'][0]['id']).subscribe(
-      (data: any) => {
-        // Handle the response data
-        console.log('data fetched from health profile api');
-        console.log(data);
-        this.healthProfileData = data['data'];
-      },
-      (error) => {
-        // Handle errors
-        console.error(error);
-      }
-    );
+    this.service
+      .getUserHealthProfile(this.profileData['healthProfiles'][0]['id'])
+      .subscribe(
+        (data: any) => {
+          // Handle the response data
+          console.log('data fetched from health profile api');
+          console.log(data);
+          this.healthProfileData = data['data'];
+          console.log(this.healthProfileData);
+        },
+        (error) => {
+          // Handle errors
+          console.error(error);
+        }
+      );
   }
 
   async confirmLogout(): Promise<void> {
@@ -128,15 +161,15 @@ export class ProfilePage {
       buttons: [
         {
           text: 'Cancel',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Confirm',
           handler: () => {
             this.logout();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
     await alert.present();
   }
@@ -156,8 +189,11 @@ export class ProfilePage {
     try {
       this.navCtrl.navigateRoot('');
     } catch (error) {
-      console.error(`ProfilePage.returnHome: Error returning to home page: ${JSON.stringify(error)}`);
+      console.error(
+        `ProfilePage.returnHome: Error returning to home page: ${JSON.stringify(
+          error
+        )}`
+      );
     }
   }
-
 }
