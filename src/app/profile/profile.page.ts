@@ -10,6 +10,7 @@ import { MedicalConditionsService } from '../util/medicalConditions.service';
 import { DietsService } from '../util/diets.service';
 import { SymptomsService } from '../util/symptoms.service';
 import { AppConfig } from '../app.config';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-profile',
@@ -32,6 +33,8 @@ export class ProfilePage {
   public allergyEdit: string[] = [];
   public conditionEdit: string[] = [];
   public symptomsEdit: string[] = [];
+  profileData: any;
+  healthProfileData: any;
 
   constructor(
     public state: ProfileState,
@@ -45,10 +48,15 @@ export class ProfilePage {
     private medicalConditionsService: MedicalConditionsService,
     private dietsService: DietsService,
     private symptomsService: SymptomsService,
-  ) {}
+    private storage: Storage,
+    private authService: AuthService
+  ) { }
 
   async ngOnInit(): Promise<void> {
     try {
+
+      this.fetchProfileData();
+
       const loading = await this.loadingController.create({
         message: `Loading...`
       });
@@ -60,7 +68,7 @@ export class ProfilePage {
           throw new Error(`No profile found: ${profile}`);
         }
         this.allPossibleAllergies = await this.allergiesService.getAllAllergies();
-        console.log(`ProfilePage.ngOnInit: [DEBUG] allergies received: ${JSON.stringify(this.allPossibleAllergies)}`);  
+        console.log(`ProfilePage.ngOnInit: [DEBUG] allergies received: ${JSON.stringify(this.allPossibleAllergies)}`);
         this.allPossibleMedicalConditions = await this.medicalConditionsService.getAllMedicalConditions();
         console.log(`ProfilePage.ngOnInit: [DEBUG] medical conditions received: ${JSON.stringify(this.allPossibleMedicalConditions)}`);
         this.allPossibleLifestyleDiets = await this.dietsService.getAllLifestyleDiets();
@@ -73,6 +81,44 @@ export class ProfilePage {
       console.error(`ProfilePage.ngOnInit Error: [ERROR] ${JSON.stringify(error)}`);
       throw error;
     }
+  }
+
+  async fetchProfileData() {
+
+    const loading = await this.loadingController.create({
+      message: `Loading...`
+    });
+
+    this.authService.getUserProfileData().subscribe(
+      (data: any) => {
+        // Handle the response data
+        console.log('data fetched from apiii');
+        console.log(data);
+        this.profileData = data['data'];
+        console.log(this.profileData);
+        console.log(this.profileData['healthProfiles'][0]['id']);
+        this.getHealthProfileData();
+      },
+      (error) => {
+        // Handle errors
+        console.error(error);
+      }
+    );
+  }
+
+  getHealthProfileData() {
+    this.authService.getUserHealthProfile(this.profileData['healthProfiles'][0]['id']).subscribe(
+      (data: any) => {
+        // Handle the response data
+        console.log('data fetched from health profile api');
+        console.log(data);
+        this.healthProfileData = data['data'];
+      },
+      (error) => {
+        // Handle errors
+        console.error(error);
+      }
+    );
   }
 
   async confirmLogout(): Promise<void> {
@@ -100,6 +146,7 @@ export class ProfilePage {
   private logout(): void {
     this.auth.logout().then(async () => {
       console.log(`ProfilePage.logout: auth logout complete; returning home`);
+      this.storage.remove('accessToken');
       await this.returnHome();
       await this.auth.setup();
     });

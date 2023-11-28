@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { model, util } from 'wuzinit-common';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,13 @@ export class AuthState {
 
   getAuthHeaders(): any {
     const idToken: string = `Bearer ${this.getIDToken()}`;
+    return {
+      'Authorization': idToken
+    };
+  }
+
+  getAuthHeader(): any {
+    const idToken: string = 'Bearer ' + AuthService.AccessToken;
     return {
       'Authorization': idToken
     };

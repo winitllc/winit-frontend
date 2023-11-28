@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, NavController } from '@ionic/angular';
 import { AuthService } from '../util/auth.service';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-signin',
@@ -14,12 +15,12 @@ export class SigninPage implements OnInit {
   };
   loading: any;
 
-
   constructor(
     private navCtrl: NavController,
     private authService: AuthService,
     private alertController: AlertController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private storage: Storage
   ) { }
 
   ngOnInit() {
@@ -42,15 +43,19 @@ export class SigninPage implements OnInit {
           this.loading.dismiss();
           const userData = response['data'];
           console.log(userData);
-          this.navCtrl.navigateRoot('/tabs');
+          AuthService.AccessToken = response['data']['accessToken'];
+
+          this.storage.set('accessToken', response['data']['accessToken']).then(() => {
+            this.navCtrl.navigateRoot('/tabs');
+          });
         }
       },
-      (error)=> {
-        console.log('this is error');
-        this.loading.dismiss();
-        this.presentAlertMultipleButtons(error['error']['data'][0]['message']);
-        console.log(error);
-      });
+        (error) => {
+          console.log('this is error');
+          this.loading.dismiss();
+          this.presentAlertMultipleButtons(error['error']['data'][0]['message']);
+          console.log(error);
+        });
     }
   }
 

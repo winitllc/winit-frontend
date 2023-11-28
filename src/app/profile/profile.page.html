@@ -17,16 +17,16 @@
   </ion-header>
   <!-- <ion-list *ngIf="!editMode"> -->
   <ion-list>
-    <ion-list-header class="list-header">
-      <ion-label>{{state.profile.users[0].name}}</ion-label>
+    <ion-list-header *ngIf="profileData != undefined" class="list-header">
+      <ion-label>{{profileData.profile.firstName}} {{profileData.profile.lastName}}</ion-label>
     </ion-list-header>
-    <ion-item class="list-content">
+    <ion-item class="list-content"  *ngIf="profileData != undefined" >
       <ion-label position="stacked">Username:</ion-label>
-      <span class="ion-padding-start">{{state.profile.users[0].username}}</span>
+      <span class="ion-padding-start">{{profileData.profile.showName}}</span>
     </ion-item>
-    <ion-item class="list-content">
+    <ion-item class="list-content" *ngIf="profileData != undefined">
       <ion-label position="stacked">Email:</ion-label>
-      <span class="ion-padding-start">{{state.profile.users[0].email}}</span>
+      <span class="ion-padding-start">{{profileData.email}}</span>
     </ion-item>
     <ion-item class="list-content">
       <ion-label position="stacked">Allergies:</ion-label>
