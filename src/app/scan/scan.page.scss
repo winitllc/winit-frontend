@@ -32,7 +32,7 @@ button.start-scan {
 }
 
 // Hide all elements
-body.barcode-scanner-active {
+ion-content.barcode-scanner-active {
   visibility: hidden;
   --background: transparent;
   --ion-background-color: transparent;

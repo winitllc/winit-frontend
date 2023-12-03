@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export default class ScanFactory {
 
-  public padCode(barcodeData: any): string {
-    return '0'.repeat(12 - barcodeData.text.length) + barcodeData.text;
+  public padCode(barcode: string): string {
+    return '0'.repeat(12 - barcode.length) + barcode;
   }
 }
