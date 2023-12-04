@@ -128,20 +128,20 @@ export class ScanPage implements OnInit {
         await loading.dismiss();
       } else {
         console.log(`ScanPage.getByBarcode: get from our db instead`);
-        this.pushToProductPage({
-          message: AppConfig.controlMessages.noProduct,
-          barcode
-        });
-        // const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode);
-        // console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
-        // if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
-        //   this.pushToProductPage(wuzinitResult);
-        // } else {
-        //   this.pushToProductPage({
-        //     message: AppConfig.controlMessages.noProduct,
-        //     barcode
-        //   });
-        // }
+        // this.pushToProductPage({
+        //   message: AppConfig.controlMessages.noProduct,
+        //   barcode
+        // });
+        const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode) as model.WuzinitProduct;
+        console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
+        if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
+          this.pushToProductPage(wuzinitResult);
+        } else {
+          this.pushToProductPage({
+            message: AppConfig.controlMessages.noProduct,
+            barcode
+          });
+        }
       }
     } catch (error) {
       console.error(`ScanPage.getByBarcode: Error retrieving data by barcode ${barcode}:\n${JSON.stringify(error)}`);
