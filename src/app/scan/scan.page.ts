@@ -49,16 +49,26 @@ export class ScanPage implements OnInit {
           }
         );
       });
-      // this.scan();
     } catch (error) {
       console.error(`ScanPage.ngOnInit Error: ${JSON.stringify(error)}`);
     }
   }
 
   ionViewWillEnter(): void {
-    // this.scan();
+    console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
     this.buttonDisplayed = true;
     this.headerDisplayed = true;
+    this.activateScanner = false;
+    BarcodeScanner.removeAllListeners().then(() => {
+      BarcodeScanner.addListener(
+        'googleBarcodeScannerModuleInstallProgress',
+        (event) => {
+          this.ngZone.run(() => {
+            console.log('googleBarcodeScannerModuleInstallProgress', event);
+          });
+        }
+      );
+    });
   }
 
   public async scan(): Promise<void> {
@@ -74,16 +84,13 @@ export class ScanPage implements OnInit {
           'barcodeScanned',
           async (event) => {
             console.log(`ScanPage.scan: barcode result: ${JSON.stringify(event)}`);
-            // this.ngZone.run(() => {
-            //   console.log(`ScanPage.scan: in ngZone`);
-              listener.remove();
-              console.log(`ScanPage.scan: listener removed`);
-              this.activateScanner = false;
-              console.log(`ScanPage.scan: activateScanner = false`);
-              const barcode: string = event.barcode.rawValue;
-              console.log(`ScanPage.scan: padded barcode: ${JSON.stringify(barcode)}`);
-              this.getByBarcode(barcode);
-            // });
+            listener.remove();
+            console.log(`ScanPage.scan: listener removed`);
+            this.activateScanner = false;
+            console.log(`ScanPage.scan: activateScanner = false`);
+            const barcode: string = event.barcode.rawValue;
+            console.log(`ScanPage.scan: padded barcode: ${JSON.stringify(barcode)}`);
+            this.getByBarcode(barcode);
           },
         );
         console.log(`ScanPage.scan: listener set up`);
@@ -128,20 +135,16 @@ export class ScanPage implements OnInit {
         await loading.dismiss();
       } else {
         console.log(`ScanPage.getByBarcode: get from our db instead`);
-        this.pushToProductPage({
-          message: AppConfig.controlMessages.noProduct,
-          barcode
-        });
-        // const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode);
-        // console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
-        // if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
-        //   this.pushToProductPage(wuzinitResult);
-        // } else {
-        //   this.pushToProductPage({
-        //     message: AppConfig.controlMessages.noProduct,
-        //     barcode
-        //   });
-        // }
+        const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode) as model.WuzinitProduct;
+        console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
+        if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
+          this.pushToProductPage(wuzinitResult);
+        } else {
+          this.pushToProductPage({
+            message: AppConfig.controlMessages.noProduct,
+            barcode
+          });
+        }
       }
     } catch (error) {
       console.error(`ScanPage.getByBarcode: Error retrieving data by barcode ${barcode}:\n${JSON.stringify(error)}`);
@@ -158,6 +161,11 @@ export class ScanPage implements OnInit {
           product
         }
       };
+      this.headerDisplayed = true;
+      this.buttonDisplayed = true;
+      this.activateScanner = false;
+      BarcodeScanner.removeAllListeners();
+      console.log(`ScanPage.pushToProductPage: reset the header and button booleans, and reset the activate scanner boolean`);
       this.navCtrl.navigateForward('product', navExtras);
     } catch (error) {
       console.error(`ScanPage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);

@@ -4,6 +4,7 @@ import { SpoonacularSearchResult, SpoonacularProduct } from './product.model';
 import { EnvironmentConfig } from '../environment.config';
 import { AuthState } from '../util/auth.state';
 import { AppConfig } from '../app.config';
+import { model } from 'wuzinit-common';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,9 @@ export class ProductService {
       const requestOptions = {
         url: productsByText,
         headers: {
-          'X-API-Key': apiKey
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
         },
         params: {
           apiKey,
@@ -51,12 +54,15 @@ export class ProductService {
       const requestOptions = {
         url: getProductByIdURL,
         headers: {
-          'X-API-Key': apiKey
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
         },
         params: {
           apiKey
         }
       }
+      console.log(`ProductService.getProductById: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
       console.log(`ProductService.getProductById: result from spoonacular: ${JSON.stringify(result)}`);
       const product: SpoonacularProduct = result.data;
@@ -79,15 +85,18 @@ export class ProductService {
       const requestOptions = {
         url: getSpoonacularProductByBarcodeURL,
         headers: {
-          'X-API-Key': apiKey
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
         },
         params: {
           apiKey
         }
       }
+      console.log(`ProductService.getSpoonacularProductByBarcode: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
-      console.log(`ProductService.getSpoonacularProductByBarcode: result from spoonacular: ${result}`);
-      const product: SpoonacularProduct = JSON.parse(result.data);
+      console.log(`ProductService.getSpoonacularProductByBarcode: result from spoonacular: ${JSON.stringify(result)}`);
+      const product: SpoonacularProduct = result.data as SpoonacularProduct;
       console.log(`ProductService.getSpoonacularProductByBarcode: product object: ${JSON.stringify(product)}`);
       product.type = 'spoonacular';
       return product;
@@ -116,27 +125,31 @@ export class ProductService {
   //   }
   // }
 
-  // public async getWuzinitProductByBarcode(code: string): Promise<model.WuzinitProduct> {
-  //   const getWuzinitProductByBarcodeURL: string = `${EnvironmentConfig.api.wuzinitProducts.baseUrl}${EnvironmentConfig.api.wuzinitProducts.getByCode}`;
-  //   console.log(`ProductService.getWuzinitProductByBarcode: requesting product by barcode: ${code}`);
-  //   console.log(`ProductService.getWuzinitProductByBarcode: url: ${getWuzinitProductByBarcodeURL}`);
-  //   try {
-  //     const response: any = await this.http.get(getWuzinitProductByBarcodeURL, {
-  //       params: {
-  //         code
-  //       },
-  //       responseType: 'json'
-  //     }).toPromise();
-  //     if (response.data.hasOwnProperty('code')) {
-  //       const product: model.WuzinitProduct = response.data;
-  //       product.type = 'wuzinit';
-  //       return product;
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (error) {
-  //     console.error(`ProductService.getWuzinitProductByBarcode: Error getting by barcode ${code}`);
-  //     console.error(`ProductService.getWuzinitProductByBarcode: Error: ${JSON.stringify(error)}`);
-  //   }
-  // }
+  public async getWuzinitProductByBarcode(code: string): Promise<model.WuzinitProduct | undefined> {
+    const getWuzinitProductByBarcodeURL: string = `${EnvironmentConfig.api.wuzinitProducts.baseUrl}${EnvironmentConfig.api.wuzinitProducts.getByCode}`;
+    console.log(`ProductService.getWuzinitProductByBarcode: requesting product by barcode: ${code}`);
+    console.log(`ProductService.getWuzinitProductByBarcode: url: ${getWuzinitProductByBarcodeURL}`);
+    try {
+      const requestOptions = {
+        url: getWuzinitProductByBarcodeURL,
+        headers: {},
+        params: {
+          code
+        }
+      }
+      const result: HttpResponse = await CapacitorHttp.get(requestOptions);
+      console.log(`ProductService.getWuzinitProductByBarcode: result from backend: ${JSON.stringify(result)}`);
+      if (result.data.hasOwnProperty('code')) {
+        const product: model.WuzinitProduct = result.data;
+        product.type = 'wuzinit';
+        return product;
+      } else {
+        return undefined;
+      }
+    } catch (error) {
+      console.error(`ProductService.getWuzinitProductByBarcode: Error getting by barcode ${code}`);
+      console.error(`ProductService.getWuzinitProductByBarcode: Error: ${JSON.stringify(error)}`);
+      return undefined;
+    }
+  }
 }

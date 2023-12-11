@@ -38,14 +38,7 @@ ion-content.barcode-scanner-active {
   --ion-background-color: transparent;
 }
 
-// Show only the barcode scanner modal
-.barcode-scanner-modal {
+// Hide all elements
+ion-content.barcode-scanner-inactive {
   visibility: visible;
-}
-
-@media (prefers-color-scheme: dark) {
-  .barcode-scanner-modal {
-    --background: transparent;
-    --ion-background-color: transparent;
-  }
 }
