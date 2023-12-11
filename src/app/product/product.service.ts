@@ -24,7 +24,9 @@ export class ProductService {
       const requestOptions = {
         url: productsByText,
         headers: {
-          'X-API-Key': apiKey
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
         },
         params: {
           apiKey,
@@ -52,12 +54,15 @@ export class ProductService {
       const requestOptions = {
         url: getProductByIdURL,
         headers: {
-          'X-API-Key': apiKey
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
         },
         params: {
           apiKey
         }
       }
+      console.log(`ProductService.getProductById: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
       console.log(`ProductService.getProductById: result from spoonacular: ${JSON.stringify(result)}`);
       const product: SpoonacularProduct = result.data;
@@ -80,15 +85,18 @@ export class ProductService {
       const requestOptions = {
         url: getSpoonacularProductByBarcodeURL,
         headers: {
-          'X-API-Key': apiKey
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
         },
         params: {
           apiKey
         }
       }
+      console.log(`ProductService.getSpoonacularProductByBarcode: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
-      console.log(`ProductService.getSpoonacularProductByBarcode: result from spoonacular: ${result}`);
-      const product: SpoonacularProduct = JSON.parse(result.data);
+      console.log(`ProductService.getSpoonacularProductByBarcode: result from spoonacular: ${JSON.stringify(result)}`);
+      const product: SpoonacularProduct = result.data as SpoonacularProduct;
       console.log(`ProductService.getSpoonacularProductByBarcode: product object: ${JSON.stringify(product)}`);
       product.type = 'spoonacular';
       return product;
