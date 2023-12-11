@@ -84,16 +84,13 @@ export class ScanPage implements OnInit {
           'barcodeScanned',
           async (event) => {
             console.log(`ScanPage.scan: barcode result: ${JSON.stringify(event)}`);
-            // this.ngZone.run(() => {
-            //   console.log(`ScanPage.scan: in ngZone`);
-              listener.remove();
-              console.log(`ScanPage.scan: listener removed`);
-              this.activateScanner = false;
-              console.log(`ScanPage.scan: activateScanner = false`);
-              const barcode: string = event.barcode.rawValue;
-              console.log(`ScanPage.scan: padded barcode: ${JSON.stringify(barcode)}`);
-              this.getByBarcode(barcode);
-            // });
+            listener.remove();
+            console.log(`ScanPage.scan: listener removed`);
+            this.activateScanner = false;
+            console.log(`ScanPage.scan: activateScanner = false`);
+            const barcode: string = event.barcode.rawValue;
+            console.log(`ScanPage.scan: padded barcode: ${JSON.stringify(barcode)}`);
+            this.getByBarcode(barcode);
           },
         );
         console.log(`ScanPage.scan: listener set up`);
@@ -138,10 +135,6 @@ export class ScanPage implements OnInit {
         await loading.dismiss();
       } else {
         console.log(`ScanPage.getByBarcode: get from our db instead`);
-        // this.pushToProductPage({
-        //   message: AppConfig.controlMessages.noProduct,
-        //   barcode
-        // });
         const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode) as model.WuzinitProduct;
         console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
         if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
