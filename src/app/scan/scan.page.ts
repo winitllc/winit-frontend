@@ -138,8 +138,10 @@ export class ScanPage implements OnInit {
         const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode) as model.WuzinitProduct;
         console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
         if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
+          await loading.dismiss();
           this.pushToProductPage(wuzinitResult);
         } else {
+          await loading.dismiss();
           this.pushToProductPage({
             message: AppConfig.controlMessages.noProduct,
             barcode
