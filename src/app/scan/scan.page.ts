@@ -49,16 +49,26 @@ export class ScanPage implements OnInit {
           }
         );
       });
-      // this.scan();
     } catch (error) {
       console.error(`ScanPage.ngOnInit Error: ${JSON.stringify(error)}`);
     }
   }
 
   ionViewWillEnter(): void {
-    // this.scan();
+    console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
     this.buttonDisplayed = true;
     this.headerDisplayed = true;
+    this.activateScanner = false;
+    BarcodeScanner.removeAllListeners().then(() => {
+      BarcodeScanner.addListener(
+        'googleBarcodeScannerModuleInstallProgress',
+        (event) => {
+          this.ngZone.run(() => {
+            console.log('googleBarcodeScannerModuleInstallProgress', event);
+          });
+        }
+      );
+    });
   }
 
   public async scan(): Promise<void> {
@@ -158,6 +168,11 @@ export class ScanPage implements OnInit {
           product
         }
       };
+      this.headerDisplayed = true;
+      this.buttonDisplayed = true;
+      this.activateScanner = false;
+      BarcodeScanner.removeAllListeners();
+      console.log(`ScanPage.pushToProductPage: reset the header and button booleans, and reset the activate scanner boolean`);
       this.navCtrl.navigateForward('product', navExtras);
     } catch (error) {
       console.error(`ScanPage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);
