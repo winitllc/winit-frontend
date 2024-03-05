@@ -26,8 +26,8 @@
     </div>
     <div *ngIf="confirmProductMode" class="confirm-product-mode">
       <ion-buttons>
-        <button ion-button color="warning" (click)="dismissConfirmProductMode()"><p>Go Back</p><ion-icon name="checkmark-circle"></ion-icon></button>
-        <button ion-button color="primary" (click)="confirmProduct()"><p>Confirm</p><ion-icon name="checkmark-circle"></ion-icon></button>
+        <!-- <button ion-button color="warning" (click)="dismissConfirmProductMode()"><p>Go Back</p><ion-icon name="checkmark-circle"></ion-icon></button> -->
+        <!-- <button ion-button color="primary" (click)="confirmProduct()"><p>Confirm</p><ion-icon name="checkmark-circle"></ion-icon></button> -->
       </ion-buttons>
     </div>
     <h2>Ingredients</h2>
@@ -43,9 +43,9 @@
   </div>
   <div *ngIf="noProduct">
     <div class="productBadge">
-      <ion-badge class="productBadge"color="blank"><ion-icon name="help"></ion-icon></ion-badge>
+      <ion-badge class="productBadge" color="blank"><ion-icon name="help"></ion-icon></ion-badge>
     </div>
-    <div class="productImage"(click)="presentAddProductModal()">
+    <div class="productImage" (click)="openModal()">
       <img src="assets/imgs/noProduct.png">
     </div>
     <h2>Ingredients</h2>

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { NavController, ActionSheetController, Platform, LoadingController } from '@ionic/angular';
+import { NavController, ActionSheetController, Platform, LoadingController, ModalController } from '@ionic/angular';
 import { Share } from '@capacitor/share';
 import { AppConfig } from '../app.config';
 import { SpoonacularProduct, SpoonacularProductIngredient, SpoonacularSearchResult } from './product.model';
 import { model } from 'wuzinit-common';
 import { ProfileState } from '../profile/profile.state';
 import { ProductService } from './product.service';
+import { AddProductModalPage } from './addProductModal.page';
 
 @Component({
   selector: 'app-product',
@@ -48,7 +49,8 @@ export class ProductPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private profileState: ProfileState
+    private profileState: ProfileState,
+    private modalCtrl: ModalController
   ) { }
 
   async ngOnInit() {
@@ -117,38 +119,38 @@ export class ProductPage implements OnInit {
     }
   }
 
-  public presentAddProductModal(): void {
-    // console.log(`ProductPage.presentAddProductModal: presenting add product modal with barcode: ${this.noProductBarcode}`);
-    // const addProductModal: Modal = this.modalController.create(AddProductModalComponent, {
-    //   barcode: this.noProductBarcode
-    // });
-    // addProductModal.onDidDismiss(async (data) => {
-    //   console.log(`ProductPage.presentAddProductModal: modal dismissed`);
-    //   if (data.hasOwnProperty('product')) {
-    //     console.log(`ProductPage.presentAddProductModal: product from modal: ${JSON.stringify(data.product)}`);
-    //     this.updateWithNewProduct(data.product);
-    //     this.noProduct = false;
-    //     await this.setAlerts();
-    //     this.displaySuccessToast();
-    //   }
-    // });
-    // addProductModal.present();
-    console.log(`ProductPage.presentAddProductModal: modal presented`);
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: AddProductModalPage,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    console.log(`ProductPage.openModal: data: ${JSON.stringify(data)}`);
+    if (role === 'confirm') {
+      console.log(`ProductPage.openModal: confirm pressed`)
+    }
   }
 
-  public dismissConfirmProductMode(): void {
-    // if (this.confirmProductMode) {
-    //   this.viewCtrl.dismiss();
-    // }
-  }
-
-  public confirmProduct(): void {
-    // if (this.confirmProductMode) {
-    //   this.viewCtrl.dismiss({
-    //     confirmed: true
-    //   });
-    // }
-  }
+  // public presentAddProductModal(): void {
+  //   console.log(`ProductPage.presentAddProductModal: presenting add product modal with barcode: ${this.noProductBarcode}`);
+  //   const addProductModal: Modal = this.modalController.create(AddProductModalComponent, {
+  //     barcode: this.noProductBarcode
+  //   });
+  //   addProductModal.onDidDismiss(async (data) => {
+  //     console.log(`ProductPage.presentAddProductModal: modal dismissed`);
+  //     if (data.hasOwnProperty('product')) {
+  //       console.log(`ProductPage.presentAddProductModal: product from modal: ${JSON.stringify(data.product)}`);
+  //       this.updateWithNewProduct(data.product);
+  //       this.noProduct = false;
+  //       await this.setAlerts();
+  //       this.displaySuccessToast();
+  //     }
+  //   });
+  //   addProductModal.present();
+  //   console.log(`ProductPage.presentAddProductModal: modal presented`);
+  // }
 
   // private displaySuccessToast(): void {
   //   const toastOptions: ToastOptions = {
