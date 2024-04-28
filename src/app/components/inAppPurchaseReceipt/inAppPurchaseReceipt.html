@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>
+      <img class="wuzinit-logo" src="assets/imgs/logo.png" alt="W">
+      Receipt
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="closeModal()"><ion-icon name="close"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="body-content">
+  <ion-list>
+    <ion-list-header>
+      Receipt for {{product.title}}
+    </ion-list-header>
+    <ion-card>
+      <p>Transaction ID: {{receipt.transactionId}}</p>
+      <p>Product Name: {{receipt.productTitle}}</p>
+      <p>Receipt: {{receipt.receipt}}</p>
+    </ion-card>
+  </ion-list>
+  <ion-buttons>
+    <button ion-button (click)="closeModal()"><p>Confirm</p><ion-icon name="thumbs-up"></ion-icon></button>
+  </ion-buttons>
+</ion-content>

@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>
+      <img class="wuzinit-logo" src="assets/imgs/logo.png" alt="W">
+      Filter
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="body-content">
+  <ion-list>
+    <ion-list-header>
+      Toggle Default Filters
+    </ion-list-header>
+    <ion-item>
+      <ion-label>Poisonous Ingredients</ion-label>
+      <ion-toggle [(ngModel)]="toggleFilters.poisonousIngredients"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Dangerous Ingredients</ion-label>
+      <ion-toggle [(ngModel)]="toggleFilters.dangerousIngredients"></ion-toggle>
+    </ion-item>
+  </ion-list>
+  <div *ngIf="resultsPage">
+    <button ion-button (click)="applyFilter()"><p>Redo Search</p><ion-icon name="refresh"></ion-icon></button>
+  </div>
+  <div *ngIf="!resultsPage">
+    <button ion-button (click)="applyFilter()"><p>Apply</p></button>
+  </div>
+</ion-content>

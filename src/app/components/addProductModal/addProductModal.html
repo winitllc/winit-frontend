@@ -1,0 +1,108 @@
+<ion-header>
+    <ion-toolbar color="secondary">
+        <ion-title>
+            <img class="wuzinit-logo" src="assets/imgs/logo.png" alt="W">
+            Add Product
+        </ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="body-content">
+    <ion-grid>
+        <ion-row class="feedbackArea">
+            <ion-col col-10>
+                <h6>Get points by adding each section!</h6>
+            </ion-col>
+            <ion-col col-2>
+                <ion-badge *ngIf="feedback.confirmedSectionsLength === 0 || !feedback.confirmedSections.productName" color="blank"><span><p>{{feedback.pointsAwarded}}</p><ion-icon name="star"></ion-icon></span></ion-badge>
+                <ion-badge *ngIf="feedback.confirmedSectionsLength > 0 && feedback.confirmedSections.productName" color="star"><span><p>{{feedback.pointsAwarded}}</p><ion-icon name="star"></ion-icon></span></ion-badge>
+            </ion-col>
+        </ion-row>
+        <ion-row class="infoArea">
+            <p>You can use your camera to fill in each section. Name and at least one other section, required. (Feel free to input any text sections by hand!)</p>
+        </ion-row>
+        <ion-row class="sectionConfirm">
+            <ion-col col-4>
+                <ion-buttons start>
+                    <button ion-button round="true" (click)="previousSection()" [ngClass]="{'previous-section': true, 'disabled': currentSectionIndex <= 0}">Last</button>
+                </ion-buttons>
+            </ion-col>
+            <ion-col col-8>
+                <ion-buttons end>
+                    <button ion-button round="true" (click)="skipSection()" [ngClass]="{'skip-section': true, 'disabled': currentSectionIndex >= 2}">Skip</button>
+                </ion-buttons>
+            </ion-col>
+        </ion-row>
+        <ion-row class="sectionArea">
+            <ion-list *ngIf="currentSection.sectionKey == 'productName'">
+                <ion-card *ngIf="!currentSection.loading && currentSection.imageData.length > 0">
+                    <img src="{{currentSection.imageData}}">
+                </ion-card>
+                <ion-card *ngIf="currentSection.loading">
+                    <h6>loading<ion-spinner name="dots" color="dark" style="top: 1em"></ion-spinner></h6>
+                </ion-card>
+                <ion-card>
+                    <ion-item>
+                        <ion-label stacked>{{currentSection.sectionLabel}}</ion-label>
+                        <ion-input type="text" clearInput="true" [(ngModel)]="currentSection.text"></ion-input>
+                    </ion-item>
+                    <ion-buttons>
+                        <button color="primary" *ngIf="currentSection.text.length === 0 && currentSection.imageData.length === 0" ion-button (click)="nameSection()"><p>Capture</p><ion-icon name="camera"></ion-icon></button>
+                        <button color="warning" *ngIf="currentSection.text.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="nameSection()"><ion-icon name="reverse-camera"></ion-icon></button>
+                        <button color="danger" *ngIf="currentSection.text.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
+                    </ion-buttons>
+                    <ion-badge class="sectionConfirmed" *ngIf="currentSection.confirmed" color="primary"><ion-icon name="checkmark-circle"></ion-icon></ion-badge>
+                </ion-card>
+            </ion-list>
+            <ion-list *ngIf="currentSection.sectionKey == 'productImage'">
+                <ion-card *ngIf="!currentSection.loading && currentSection.imageData.length > 0">
+                    <img src="{{currentSection.imageData}}">
+                </ion-card>
+                <ion-card *ngIf="currentSection.loading">
+                    <h6>loading<ion-spinner name="dots" color="dark" style="top: 1em"></ion-spinner></h6>
+                </ion-card>
+                <ion-card>
+                    <ion-label stacked>{{currentSection.sectionLabel}}</ion-label>
+                    <ion-buttons>
+                        <button color="primary" *ngIf="currentSection.imageData.length === 0" ion-button (click)="imageSection()"><ion-icon name="camera"></ion-icon></button>
+                        <button color="warning" *ngIf="currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="imageSection()"><ion-icon name="reverse-camera"></ion-icon></button>
+                        <button color="danger" *ngIf="currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
+                    </ion-buttons>
+                    <ion-badge class="sectionConfirmed" *ngIf="currentSection.confirmed" color="primary"><ion-icon name="checkmark-circle"></ion-icon></ion-badge>
+                </ion-card>
+            </ion-list>
+            <ion-list *ngIf="currentSection.sectionKey == 'productIngredients'">
+                <ion-card *ngIf="!currentSection.loading && currentSection.imageData.length > 0">
+                    <img src="{{currentSection.imageData}}">
+                </ion-card>
+                <ion-card *ngIf="currentSection.loading">
+                    <h6>loading<ion-spinner name="dots" color="dark" style="top: 1em"></ion-spinner></h6>
+                </ion-card>
+                <ion-card>
+                    <ion-item>
+                        <ion-label stacked>{{currentSection.sectionLabel}}</ion-label>
+                        <ion-textarea type="text" rows="4" [(ngModel)]="currentSection.ingredientsSections.ingredients" placeholder="Ingredients"></ion-textarea>
+                        <ion-textarea type="text" rows="4" [(ngModel)]="currentSection.ingredientsSections.contains" placeholder="Contains"></ion-textarea>
+                        <ion-textarea type="text" rows="4" [(ngModel)]="currentSection.ingredientsSections.traces" placeholder="Traces"></ion-textarea>
+                    </ion-item>
+                    <ion-buttons>
+                        <button color="primary" *ngIf="currentSection.ingredientsSections.ingredients.length === 0 && currentSection.imageData.length === 0" ion-button (click)="ingredientsSection()"><ion-icon name="camera"></ion-icon></button>
+                        <button color="warning" *ngIf="currentSection.ingredientsSections.ingredients.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="ingredientsSection()"><ion-icon name="reverse-camera"></ion-icon></button>
+                        <button color="danger" *ngIf="currentSection.ingredientsSections.ingredients.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
+                    </ion-buttons>
+                    <ion-badge class="sectionConfirmed" *ngIf="currentSection.confirmed" color="primary"><ion-icon name="checkmark-circle"></ion-icon></ion-badge>
+                </ion-card>
+            </ion-list>
+        </ion-row>
+        <ion-row class="progressBar">
+            <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productName}" (click)="selectSection(0)"></ion-col>
+            <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productImage}" (click)="selectSection(1)"></ion-col>
+            <!-- <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productNutrition}" (click)="selectSection()"></ion-col> -->
+            <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productIngredients}" (click)="selectSection(2)"></ion-col>
+        </ion-row>
+    </ion-grid>
+    <button [ngClass]="{'submit-product': true, 'disabled': !(feedback.confirmedSections.productName || feedback.confirmedSections.productImage || feedback.confirmedSections.productIngredients)}" ion-button (click)="confirmSubmitProduct()"><p>Submit</p><ion-icon name="thumbs-up"></ion-icon></button>
+</ion-content>

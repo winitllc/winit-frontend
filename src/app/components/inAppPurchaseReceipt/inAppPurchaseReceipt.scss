@@ -1,0 +1,17 @@
+wuzinit-in-app-purchase-receipt {
+  ion-buttons {
+    height: 2em;
+    text-align: center;
+    button {
+      display: inline-flex;
+      p {
+        padding-right: 2px;
+      }
+    }
+  }
+  ion-card {
+    p {
+      white-space: initial;
+    }
+  }
+}

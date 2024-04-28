@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>
+      <img class="wuzinit-logo" src="assets/imgs/logo.png" alt="W">
+      Confirm Section
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="body-content">
+  <ion-list>
+    <ion-list-header>
+      Does the Product {{sectionName}} look correct?
+    </ion-list-header>
+    <ion-card *ngIf="sectionText && sectionText.length > 0">
+      <ion-item>
+        <ion-input [(ngModel)]="sectionText"></ion-input>
+      </ion-item>
+    </ion-card>
+    <ion-card class="textarea-card" *ngIf="ingredientsSections && ingredientsSections.ingredients.length > 0">
+      <ion-item>
+        <ion-label stacked>Ingredients: </ion-label>
+        <ion-textarea rows="4" [(ngModel)]="ingredientsSections.ingredients"></ion-textarea>
+      </ion-item>
+    </ion-card>
+    <ion-card class="textarea-card" *ngIf="ingredientsSections && ingredientsSections.contains.length > 0">
+      <ion-item>
+        <ion-label stacked>Contains: </ion-label>
+        <ion-textarea rows="4" [(ngModel)]="ingredientsSections.contains"></ion-textarea>
+      </ion-item>
+    </ion-card>
+    <ion-card class="textarea-card" *ngIf="ingredientsSections && ingredientsSections.traces.length > 0">
+      <ion-item>
+        <ion-label stacked>Traces: </ion-label>
+        <ion-textarea rows="4" [(ngModel)]="ingredientsSections.traces"></ion-textarea>
+      </ion-item>
+    </ion-card>
+    <ion-card>
+      <img src="{{sectionImageData}}">
+    </ion-card>
+  </ion-list>
+  <ion-buttons>
+    <button ion-button (click)="cancelModal()"><p>Try Again</p><ion-icon name="thumbs-down"></ion-icon></button>
+    <button ion-button (click)="confirmSection()"><p>Confirm</p><ion-icon name="thumbs-up"></ion-icon></button>
+  </ion-buttons>
+</ion-content>

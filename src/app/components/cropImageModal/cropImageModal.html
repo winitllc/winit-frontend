@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-toolbar color="secondary">
+        <ion-title>
+            <img class="wuzinit-logo" src="assets/imgs/logo.png" alt="W">
+            Crop Image
+        </ion-title>
+        <ion-buttons end>
+            <button ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></button>
+        </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content padding class="body-content">
+    <ion-list>
+        <ion-list-header>
+            Crop
+        </ion-list-header>
+        <ion-card>
+            <image-cropper
+                [imageBase64]="imageBase64"
+                [maintainAspectRatio]="false"
+                format="jpeg"
+                (imageCropped)="imageCropped($event)"
+                (imageLoaded)="imageLoaded()"
+                (cropperReady)="cropperReady()"
+                (loadImageFailed)="loadImageFailed()"
+                (rotateLeft)="rotateLeft()"
+                (rotateRight)="rotateRight()"
+                (flipHorizontal)="flipHorizontal()"
+                (flipVertical)="flipVertical()"
+                (resetImage)="resetImage()"
+            ></image-cropper>
+        </ion-card>
+    </ion-list>
+    <button ion-button (click)="cancelModal()"><p>Try Again</p><ion-icon name="close"></ion-icon></button>
+    <button ion-button (click)="crop()"><p>Crop</p><ion-icon name="crop"></ion-icon></button>
+  </ion-content>
+  

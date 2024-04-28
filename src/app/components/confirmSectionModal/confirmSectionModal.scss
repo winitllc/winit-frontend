@@ -1,0 +1,29 @@
+wuzinit-confirm-section {
+  ion-buttons {
+    height: 2em;
+    text-align: center;
+    button {
+      display: inline-flex;
+      p {
+        padding-right: 2px;
+      }
+    }
+  }
+  ion-card {
+    p {
+      white-space: initial;
+    }
+    ion-input {
+      width: 80%;
+      background-color: color($colors, light);
+      margin: 5px;
+      font-size: 1rem;
+    }
+    ion-textarea {
+      width: 80%;
+      background-color: color($colors, light);
+      margin: 5px;
+      font-size: 1rem;
+    }
+  }
+}

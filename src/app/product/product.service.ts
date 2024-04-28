@@ -92,7 +92,7 @@ export class ProductService {
         params: {
           apiKey
         }
-      }
+      };
       console.log(`ProductService.getSpoonacularProductByBarcode: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
       console.log(`ProductService.getSpoonacularProductByBarcode: result from spoonacular: ${JSON.stringify(result)}`);
@@ -107,23 +107,34 @@ export class ProductService {
     }
   }
 
-  // public async addProductUpdate(product: model.WuzinitProduct): Promise<model.WuzinitProduct> {
-  //   const addProductUpdateURL: string = EnvironmentConfig.api.wuzinitProducts.baseUrl + EnvironmentConfig.api.wuzinitProducts.addProductUpdate;
-  //   try {
-  //     console.log(`ProductService.addProductUpdate: sending ${JSON.stringify(product)} to ${addProductUpdateURL}`);
-  //     const addProductUpdateResponse: any = await this.http.post(addProductUpdateURL, {
-  //       product
-  //     }, {
-  //       responseType: 'json'
-  //     }).toPromise();
-  //     if (addProductUpdateResponse.hasOwnProperty('data') && addProductUpdateResponse.data.hasOwnProperty('code')) {
-  //       return addProductUpdateResponse.data as model.WuzinitProduct;
-  //     }
-  //   } catch (error) {
-  //     console.error(`ProductService.addProductUpdate: Error saving the product ${JSON.stringify(product)}`);
-  //     console.error(`ProductService.addProductUpdate: Error: ${JSON.stringify(error)}`);
-  //   }
-  // }
+  public async addProductUpdate(product: model.WuzinitProduct): Promise<model.WuzinitProduct> {
+    const addProductUpdateURL: string = EnvironmentConfig.api.wuzinitProducts.baseUrl + EnvironmentConfig.api.wuzinitProducts.addProductUpdate;
+    try {
+      console.log(`ProductService.addProductUpdate: sending ${JSON.stringify(product)} to ${addProductUpdateURL}`);
+      // const addProductUpdateResponse: any = await this.http.post(addProductUpdateURL, {
+      const requestOptions = {
+        url: addProductUpdateURL,
+        headers: {
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive'
+        },
+        data: {
+          product
+        }
+      };
+      const addProductUpdateResponse: any = await CapacitorHttp.post(requestOptions);
+      if (addProductUpdateResponse.hasOwnProperty('data') && addProductUpdateResponse.data.hasOwnProperty('code')) {
+        return addProductUpdateResponse.data as model.WuzinitProduct;
+      } else {
+        throw new Error(`ProductService.addProductUpdate threw an error; ${JSON.stringify(addProductUpdateResponse.data)}`);
+      }
+    } catch (error) {
+      console.error(`ProductService.addProductUpdate: Error saving the product ${JSON.stringify(product)}`);
+      console.error(`ProductService.addProductUpdate: Error: ${JSON.stringify(error)}`);
+      throw new Error(`ProductService.addProductUpdate threw an error; ${JSON.stringify(error)}`);
+    }
+  }
 
   public async getWuzinitProductByBarcode(code: string): Promise<model.WuzinitProduct | undefined> {
     const getWuzinitProductByBarcodeURL: string = `${EnvironmentConfig.api.wuzinitProducts.baseUrl}${EnvironmentConfig.api.wuzinitProducts.getByCode}`;
