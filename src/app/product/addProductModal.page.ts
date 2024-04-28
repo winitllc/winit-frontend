@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { ModalController } from '@ionic/angular';
 
@@ -6,10 +6,14 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-product-modal',
   templateUrl: 'addProductModal.page.html',
 })
-export class AddProductModalPage {
-  name: string = "";
+export class AddProductModalPage implements OnInit {
+  @Input() name: string = "";
 
   constructor(private modalCtrl: ModalController) {}
+
+  ngOnInit() {
+    console.log(`AddProductModalPage.constructor: name: ${this.name}`);
+  }
 
   cancel() {
     return this.modalCtrl.dismiss(null, 'cancel');

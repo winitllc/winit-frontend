@@ -120,12 +120,25 @@ export class ProductPage implements OnInit {
   }
 
   async openModal() {
-    const modal = await this.modalCtrl.create({
+    const modal: HTMLIonModalElement = await this.modalCtrl.create({
       component: AddProductModalPage,
+      componentProps: {
+        barcode: this.noProductBarcode
+      }
     });
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
+    console.log(`ProductPage.presentAddProductModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`ProductPage.presentAddProductModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    if (data.hasOwnProperty('product')) {
+      console.log(`ProductPage.presentAddProductModal: product from modal: ${JSON.stringify(data.product)}`);
+      this.updateWithNewProduct(data.product);
+      this.noProduct = false;
+      await this.setAlerts();
+      // this.displaySuccessToast();
+      console.log(`ProductPage.presentAddProductModal: display a success`);
+    }
 
     console.log(`ProductPage.openModal: data: ${JSON.stringify(data)}`);
     if (role === 'confirm') {
@@ -405,14 +418,14 @@ export class ProductPage implements OnInit {
     console.log(`ProductPage.updateSpoonacularProduct: product keywords: ${JSON.stringify(this.productKeywords)}`);
   }
 
-  // private updateWithNewProduct(newProduct: model.WuzinitProduct): void {
-  //   console.log(`ProductPage.updateWithNewProduct: updating product`);
-  //   this.productType = 'wuzinit';
-  //   this.wuzinitProduct = newProduct;
+  private updateWithNewProduct(newProduct: model.WuzinitProduct): void {
+    console.log(`ProductPage.updateWithNewProduct: updating product`);
+    this.productType = 'wuzinit';
+    this.wuzinitProduct = newProduct;
 
-  //   console.log(`ProductPage.updateWithNewProduct: new product: ${JSON.stringify(this.wuzinitProduct)}`);
-  //   console.log(`ProductPage.updateWithNewProduct: product keywords: ${JSON.stringify(this.productKeywords)}`);
-  // }
+    console.log(`ProductPage.updateWithNewProduct: new product: ${JSON.stringify(this.wuzinitProduct)}`);
+    console.log(`ProductPage.updateWithNewProduct: product keywords: ${JSON.stringify(this.productKeywords)}`);
+  }
 
 }
 
