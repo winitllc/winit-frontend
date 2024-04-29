@@ -1,5 +1,5 @@
 import { Component, NgZone } from "@angular/core";
-import { AlertController, ModalController, NavController, NavParams } from "@ionic/angular";
+import { AlertController, ModalController, NavController, NavParams, LoadingController } from "@ionic/angular";
 import { model } from 'wuzinit-common';
 import { AppConfig } from '../../app.config';
 import { Camera, CameraResultType } from "@capacitor/camera";
@@ -76,7 +76,7 @@ export class AddProductModalComponent {
     public navCtrl: NavController,
     public navParams: NavParams,
     private alertCtrl: AlertController,
-    private camera: Camera,
+    private loadingCtrl: LoadingController,
     private modalController: ModalController,
     private zone: NgZone,
     private imageService: ImageService,
@@ -93,7 +93,7 @@ export class AddProductModalComponent {
     switch (section.sectionKey) {
       case 'productName':
         console.log(`AddProductModalComponent.updateProduct: setting product name: ${section.text}`);
-        this.product.productName = section.text;
+        this.product.productName = section.text || 'N/A';
         break;
       case 'productImage':
         console.log(`AddProductModalComponent.updateProduct: setting product image: ${section.imageData}`);
@@ -101,10 +101,10 @@ export class AddProductModalComponent {
         break;
       case 'productIngredients':
         console.log(`AddProductModalComponent.updateProduct: setting product ingredients: ${section.text}`);
-        this.product.ingredientsText = section.ingredientsSections.ingredients;
-        this.product.ingredientsList = section.ingredientsSections.ingredients.split(', ');
-        this.product.tracesList = section.ingredientsSections.traces.split(', ');
-        this.product.containsList = section.ingredientsSections.contains.split(', ');
+        this.product.ingredientsText = section.ingredientsSections?.ingredients || 'N/A';
+        this.product.ingredientsList = section.ingredientsSections?.ingredients.split(', ') || [];
+        this.product.tracesList = section.ingredientsSections?.traces.split(', ') || [];
+        this.product.containsList = section.ingredientsSections?.contains.split(', ') || [];
         break;
       default:
         console.error(`AddProductModalComponent.updateProduct: not sure what section we are trying to update: ${JSON.stringify(section)}`);
@@ -188,8 +188,9 @@ export class AddProductModalComponent {
   async confirmSubmitProduct(): Promise<void> {
     try {
       await this.presentConfirmProductModal();
-      this.navCtrl.push(LoadingPage, {
-        loadingMessage: `Saving ${this.product.productName}`
+      const loading = await this.loadingCtrl.create({
+        message: `Saving ${this.product.productName}`,
+        spinner: 'circular'
       });
       if (this.product.images.front && this.product.images.front.length > 0) {
         const newImageKey: string = `${Math.random() * 1000000}.${this.product.code}.jpg`;
@@ -201,7 +202,7 @@ export class AddProductModalComponent {
       console.log(`AddProductModalComponent.confirmSubmitProduct: saving the product to the product update database`);
       await this.productService.addProductUpdate(this.product);
       console.log(`AddProductModalComponent.confirmSubmitProduct: product added to the product update database`);
-      this.navCtrl.pop();
+      loading.dismiss();
       this.submitProduct();
     } catch (error) {
       console.error(`AddProductModalComponent.confirmSubmitProduct: error confirming the product: ${JSON.stringify(error)}`);
@@ -256,7 +257,7 @@ export class AddProductModalComponent {
         ingredientsText = ingredientsText.substr(0, Math.floor(ingredientsText.length/2));
       }
       const ingredientsSections: IngredientsSections = this.extractIngredientsSections(ingredientsText);
-      await this.presentConfirmSectionModal(this.currentSection.sectionKey, imageToText.image, null, ingredientsSections);
+      await this.presentConfirmSectionModal(this.currentSection.sectionKey, imageToText.image, undefined, ingredientsSections);
       console.log(`AddProductModalComponent.ingredientsSection: updating the ingredients section`);
       this.setCurrentSectionData(imageToText.image, ingredientsText, ingredientsSections);
       console.log(`AddProductModalComponent.ingredientsSection: ingredients section updated`);
@@ -290,8 +291,8 @@ export class AddProductModalComponent {
     try {
       console.log(`AddProductModalComponent.captureAndCropImage: running captureAndCropImage function`);
       const imageData: string = await this.captureImage();
-      const croppedImageData: string = await this.presentCropImageModal(imageData);
-      return croppedImageData;
+      // const croppedImageData: string = await this.presentCropImageModal(imageData);
+      return imageData;
     } catch (error) {
       console.error(`AddProductModalComponent.captureAndCropImage: error capturing image: ${JSON.stringify(error)}`);
       return this.captureAndCropImage();
@@ -348,7 +349,7 @@ export class AddProductModalComponent {
   }
 
   private async presentConfirmSectionModal(sectionName: string, sectionImageData: string, text?: string, ingredientsSections?: IngredientsSections): Promise<void> {
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
       const input: any = {
         sectionName,
         sectionImageData
@@ -360,53 +361,64 @@ export class AddProductModalComponent {
         input.sectionText = text;
       }
       console.log(`AddProductModalComponent.presentConfirmSectionModal: input to the confirm section modal: ${JSON.stringify(input)}`);
-      const sectionModal: HTMLIonModalElement = this.modalController.create(ConfirmSectionModalComponent, input);
-      sectionModal.onDidDismiss((data) => {
-        if (data.hasOwnProperty('sectionImageData')) {
-          resolve();
-        } else {
-          reject();
+      // const sectionModal: HTMLIonModalElement = this.modalController.create(ConfirmSectionModalComponent, input);
+      const sectionModal: HTMLIonModalElement = await this.modalController.create({
+        component: ConfirmSectionModalComponent,
+        componentProps: {
+          input
         }
       });
+      const { data, role } = await sectionModal.onWillDismiss();
+      // sectionModal.onDidDismiss((data) => {
+        console.log(`AddProductModalComponent.presentConfirmSectionModal: data from the confirm section modal: ${JSON.stringify(data)}`);
+        console.log(`AddProductModalComponent.presentConfirmSectionModal: role from the confirm section modal: ${JSON.stringify(role)}`);
+        if (data.hasOwnProperty('sectionImageData')) {
+          return data;
+        } else {
+          throw new Error(`AddProductModalComponent.presentConfirmSectionModal Error: data from section modal: ${JSON.stringify(data)}`);
+        }
+      // });
       sectionModal.present();
-    });
+    // });
   }
 
-  private async presentCropImageModal(imageBase64: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const sectionModal: HTMLIonModalElement = this.modalController.create(CropImageModalComponent, {
-        imageBase64
-      });
-      sectionModal.onDidDismiss((data) => {
-        console.log(`AddProductModalComponent.presentCropImageModal: crop image modal dismissed`);
-        if (data.hasOwnProperty('croppedImage')) {
-          console.log(`AddProductModalComponent.presentCropImageModal: croppedImage found in modal`);
-          resolve(data.croppedImage);
-        } else {
-          reject();
-        }
-      });
-      sectionModal.present();
-    });
-  }
+  // private async presentCropImageModal(imageBase64: string): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     const sectionModal: HTMLIonModalElement = this.modalController.create(CropImageModalComponent, {
+  //       imageBase64
+  //     });
+  //     sectionModal.onDidDismiss((data) => {
+  //       console.log(`AddProductModalComponent.presentCropImageModal: crop image modal dismissed`);
+  //       if (data.hasOwnProperty('croppedImage')) {
+  //         console.log(`AddProductModalComponent.presentCropImageModal: croppedImage found in modal`);
+  //         resolve(data.croppedImage);
+  //       } else {
+  //         reject();
+  //       }
+  //     });
+  //     sectionModal.present();
+  //   });
+  // }
 
   private async presentConfirmProductModal(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const productConfirmPageModal: HTMLIonModalElement = this.modalController.create(ProductPage, {
+    const productConfirmPageModal: HTMLIonModalElement = await this.modalController.create({
+      component: ConfirmSectionModalComponent,
+      componentProps: {
         confirmProductMode: true,
         product: this.product
-      });
-      productConfirmPageModal.onDidDismiss(async (data) => {
-        if (data.hasOwnProperty('confirmed') && data.confirmed) {
-          console.log(`AddProductModalComponent.presentConfirmProductModal: confirmed`);
-          await this.calculateReward();
-          resolve();
-        } else {
-          reject();
-        }
-      });
-      productConfirmPageModal.present();
+      }
     });
+    const { data, role } = await productConfirmPageModal.onWillDismiss();
+    console.log(`AddProductModalComponent.presentConfirmProductModal: data from confirm: ${JSON.stringify(data)}`);
+    console.log(`AddProductModalComponent.presentConfirmProductModal: role from confirm: ${JSON.stringify(role)}`);
+    if (data.hasOwnProperty('confirmed') && data.confirmed) {
+      console.log(`AddProductModalComponent.presentConfirmProductModal: confirmed`);
+      await this.calculateReward();
+      return;
+    } else {
+      throw new Error(`AddProductModalComponent.presentConfirmProductModal: error from the product confirmation: ${JSON.stringify(data)}`);
+    }
+    productConfirmPageModal.present();
   }
 
   private async calculateReward(): Promise<void> {
@@ -416,12 +428,14 @@ export class AddProductModalComponent {
   private updateFeedbackSections(section: string, remove: boolean): void {
     this.zone.run(() => {
       console.log(`AddProductModalComponent.updateFeedbackSections: section to update: ${section}`);
-      console.log(`AddProductModalComponent.updateFeedbackSections: current value of confirmed section: ${this.feedback.confirmedSections[section]}`);
       if (section === 'productName') {
+        console.log(`AddProductModalComponent.updateFeedbackSections: current value of confirmed section: ${this.feedback.confirmedSections[section]}`);
         this.feedback.confirmedSections.productName = !remove;
       } else if (section === 'productImage') {
+        console.log(`AddProductModalComponent.updateFeedbackSections: current value of confirmed section: ${this.feedback.confirmedSections[section]}`);
         this.feedback.confirmedSections.productImage = !remove;
       } else if (section === 'productIngredients') {
+        console.log(`AddProductModalComponent.updateFeedbackSections: current value of confirmed section: ${this.feedback.confirmedSections[section]}`);
         this.feedback.confirmedSections.productIngredients = !remove;
       }
       console.log(`AddProductModalComponent.updateFeedbackSections: new confirmed sections: ${JSON.stringify(this.feedback.confirmedSections)}`);
@@ -443,13 +457,13 @@ export class AddProductModalComponent {
 
   private singleOrDoubleText(ingredientsText: string): boolean {
     const singleOrDoubleTextRegex: RegExp = /ingredients/ig;
-    const singleOrDoubleText: string[] = ingredientsText.match(singleOrDoubleTextRegex);
+    const singleOrDoubleText: string[] = ingredientsText.match(singleOrDoubleTextRegex) || [];
     return singleOrDoubleText.length === 2;
   }
 
   private extractSectionTokens(ingredientsText: string): string[] {
     const ingredientsTokensRegex: RegExp = /may contain traces of|may contain trace amounts of|allergy information: contains|ingredients([\s]?[:|-]?)|contains([\s]?[:|-]?)/ig;
-    const sectionTokens: string[] = ingredientsText.match(ingredientsTokensRegex);
+    const sectionTokens: string[] = ingredientsText.match(ingredientsTokensRegex) || [];
     console.log(`AddProductModalComponent.extractIngredientsSections: section tokens: ${sectionTokens}`);
     if (!sectionTokens || sectionTokens.length === 0) {
       throw new Error(`EXTRACT_INGREDIENTS_ERROR - Couldn't find any ueful tokens in the input ingredientsText: ${ingredientsText}`);
@@ -501,9 +515,9 @@ export class AddProductModalComponent {
     return sectionsObject;
   }
 
-  private presentConfirm(message: string, retryHandler: () => any) {
-    let alert = this.alertCtrl.create({
-      title: 'Retry',
+  private async presentConfirm(message: string, retryHandler: () => any) {
+    let alert = await this.alertCtrl.create({
+      header: 'Retry',
       message,
       buttons: [
         {
@@ -521,7 +535,7 @@ export class AddProductModalComponent {
         }
       ]
     });
-    alert.present();
+    await alert.present();
   }
 }
 
@@ -537,14 +551,16 @@ interface AddSectionModel {
 }
 
 interface AddProductFeedback {
-  confirmedSections: {
-    productName: boolean;
-    productImage: boolean;
-    // productNutrition: boolean;
-    productIngredients: boolean;
-  },
+  confirmedSections: ConfirmedSection;
   confirmedSectionsLength: number;
   pointsAwarded: number;
+}
+
+interface ConfirmedSection {
+  productName: boolean;
+  productImage: boolean;
+  // productNutrition: boolean;
+  productIngredients: boolean;
 }
 
 export interface IngredientsSections {

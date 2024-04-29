@@ -1,8 +1,7 @@
 import { Component } from "@angular/core";
-import { ViewController, NavController, NavParams, IonicPage } from "ionic-angular";
+import { ModalController, NavController, NavParams } from "@ionic/angular";
 import { IngredientsSections } from '../addProductModal/addProductModal';
 
-@IonicPage()
 @Component({
   selector: 'wuzinit-confirm-section',
   templateUrl: 'confirmSectionModal.html'
@@ -15,7 +14,7 @@ export class ConfirmSectionModalComponent {
   public sectionName: string;
 
   constructor(
-    public viewCtrl: ViewController,
+    private modalController: ModalController,
     public navCtrl: NavController,
     public navParams: NavParams
   ) {
@@ -26,7 +25,7 @@ export class ConfirmSectionModalComponent {
   }
 
   confirmSection(): void {
-    this.viewCtrl.dismiss({
+    this.modalController.dismiss({
       sectionText: this.sectionText,
       ingredientsSections: this.ingredientsSections,
       sectionImageData: this.sectionImageData
@@ -34,6 +33,6 @@ export class ConfirmSectionModalComponent {
   }
 
   cancelModal(): void {
-    this.viewCtrl.dismiss();
+    this.modalController.dismiss();
   }
 }
