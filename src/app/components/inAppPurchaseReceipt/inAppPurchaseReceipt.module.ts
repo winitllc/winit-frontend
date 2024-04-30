@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
 import { InAppPurchaseReceipt } from './inAppPurchaseReceipt';
 
 @NgModule({
@@ -7,7 +6,7 @@ import { InAppPurchaseReceipt } from './inAppPurchaseReceipt';
     InAppPurchaseReceipt,
   ],
   imports: [
-    IonicPageModule.forChild(InAppPurchaseReceipt),
+    InAppPurchaseReceipt,
   ],
   exports: [
     InAppPurchaseReceipt

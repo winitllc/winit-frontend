@@ -1,5 +1,5 @@
-// import { model } from 'wuzinit-common';
+import { model } from 'wuzinit-common';
 
-// export interface PremiumFeatureView extends model.PremiumFeature {
-//   isActive: boolean;
-// }
+export interface PremiumFeatureView extends model.PremiumFeature {
+  isActive: boolean;
+}

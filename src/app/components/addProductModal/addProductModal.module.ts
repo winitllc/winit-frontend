@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
 import { AddProductModalComponent } from './addProductModal';
 
 @NgModule({
@@ -7,7 +6,7 @@ import { AddProductModalComponent } from './addProductModal';
     AddProductModalComponent
   ],
   imports: [
-    IonicPageModule.forChild(AddProductModalComponent),
+    AddProductModalComponent,
   ],
   exports: [
     AddProductModalComponent

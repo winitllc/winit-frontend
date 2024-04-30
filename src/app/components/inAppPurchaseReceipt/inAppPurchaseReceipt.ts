@@ -1,8 +1,7 @@
 import { Component } from "@angular/core";
-import { ViewController, NavController, NavParams, IonicPage } from "ionic-angular";
+import { ModalController, NavController, NavParams } from "@ionic/angular";
 import { model, view } from 'wuzinit-common';
 
-@IonicPage()
 @Component({
   selector: 'wuzinit-in-app-purchase-receipt',
   templateUrl: 'inAppPurchaseReceipt.html'
@@ -13,7 +12,7 @@ export class InAppPurchaseReceipt {
   product: view.InAppPurchaseProduct;
 
   constructor(
-    public viewCtrl: ViewController,
+    public modalCtrl: ModalController,
     public navCtrl: NavController,
     public navParams: NavParams
   ) {
@@ -22,6 +21,6 @@ export class InAppPurchaseReceipt {
   }
 
   closeModal(): void {
-    this.viewCtrl.dismiss();
+    this.modalCtrl.dismiss();
   }
 }

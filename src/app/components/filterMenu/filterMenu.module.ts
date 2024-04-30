@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
 import { FilterMenuComponent } from './filterMenu';
 
 @NgModule({
@@ -7,7 +6,7 @@ import { FilterMenuComponent } from './filterMenu';
     FilterMenuComponent,
   ],
   imports: [
-    IonicPageModule.forChild(FilterMenuComponent),
+    FilterMenuComponent,
   ],
   exports: [
     FilterMenuComponent

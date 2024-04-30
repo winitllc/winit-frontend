@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
 import { PremiumFeaturePurchaseConfirmation } from './premiumFeaturePurchaseConfirmation';
 
 @NgModule({
@@ -7,7 +6,7 @@ import { PremiumFeaturePurchaseConfirmation } from './premiumFeaturePurchaseConf
     PremiumFeaturePurchaseConfirmation,
   ],
   imports: [
-    IonicPageModule.forChild(PremiumFeaturePurchaseConfirmation),
+    PremiumFeaturePurchaseConfirmation,
   ],
   exports: [
     PremiumFeaturePurchaseConfirmation

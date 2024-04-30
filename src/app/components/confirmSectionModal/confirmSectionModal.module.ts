@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
 import { ConfirmSectionModalComponent } from './confirmSectionModal';
 
 @NgModule({
@@ -7,7 +6,7 @@ import { ConfirmSectionModalComponent } from './confirmSectionModal';
     ConfirmSectionModalComponent,
   ],
   imports: [
-    IonicPageModule.forChild(ConfirmSectionModalComponent),
+    ConfirmSectionModalComponent,
   ],
   exports: [
     ConfirmSectionModalComponent

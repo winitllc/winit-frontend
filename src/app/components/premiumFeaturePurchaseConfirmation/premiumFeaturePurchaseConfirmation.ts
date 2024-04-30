@@ -1,9 +1,8 @@
 import { Component } from "@angular/core";
-import { ViewController, NavController, NavParams, IonicPage } from "ionic-angular";
+import { ModalController, NavController, NavParams } from "@ionic/angular";
 import { model } from 'wuzinit-common';
-import { PremiumFeatureView } from '../../pages/profile/profile';
+import { PremiumFeatureView } from '../../util/premiumFeature.view';
 
-@IonicPage()
 @Component({
   selector: 'wuzinit-premium-feature-purchase-confirmation',
   templateUrl: 'premiumFeaturePurchaseConfirmation.html'
@@ -14,7 +13,7 @@ export class PremiumFeaturePurchaseConfirmation {
   premiumFeature: PremiumFeatureView;
 
   constructor(
-    public viewCtrl: ViewController,
+    public modalCtrl: ModalController,
     public navCtrl: NavController,
     public navParams: NavParams
   ) {
@@ -23,6 +22,6 @@ export class PremiumFeaturePurchaseConfirmation {
   }
 
   closeModal(): void {
-    this.viewCtrl.dismiss();
+    this.modalCtrl.dismiss();
   }
 }
