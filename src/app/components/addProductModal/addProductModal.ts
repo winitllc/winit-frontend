@@ -9,7 +9,6 @@ import { ConfirmSectionModalComponent } from "../confirmSectionModal/confirmSect
 import { ProductPage } from "../../product/product.page";
 import { ProductService } from "../../product/product.service";
 import { EnvironmentConfig } from "../../environment.config";
-import { LoadingPage } from "../../loading/loading";
 import { SpoonacularProduct } from "../../product/product.model";
 import { ProfileService } from "../../profile/profile.service";
 
