@@ -3,7 +3,7 @@ import { ModalController, NavController, NavParams } from "@ionic/angular";
 
 @Component({
   selector: 'wuzinit-filter',
-  templateUrl: 'filterMenu.html'
+  templateUrl: './filterMenu.html'
 })
 export class FilterMenuComponent {
 

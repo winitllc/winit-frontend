@@ -4,7 +4,7 @@ import { model, view } from 'wuzinit-common';
 
 @Component({
   selector: 'wuzinit-past-purchases',
-  templateUrl: 'pastPurchases.html'
+  templateUrl: './pastPurchases.html'
 })
 export class PastPurchasesComponent {
 

@@ -31,8 +31,11 @@
       </ion-buttons>
     </div>
     <h2>Ingredients</h2>
-    <p>
+    <p *ngIf="ingredientsText.length > 0">
       <span *ngFor="let ingredient of ingredientsText"><span [ngClass]="ingredient.warningType">{{ingredient.name}}</span>, </span>
+    </p>
+    <p *ngIf="ingredientsText.length === 0">
+      <span><img src="assets/imgs/noProduct.png" (click)="openModal()"></span>
     </p>
     <br>
     <h4>Categories</h4>

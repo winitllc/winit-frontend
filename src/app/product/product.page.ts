@@ -7,7 +7,7 @@ import { SpoonacularProduct, SpoonacularProductIngredient, SpoonacularSearchResu
 import { model } from 'wuzinit-common';
 import { ProfileState } from '../profile/profile.state';
 import { ProductService } from './product.service';
-import { AddProductModalPage } from './addProductModal.page';
+import { AddProductModalComponent } from '../components/addProductModal/addProductModal';
 
 @Component({
   selector: 'app-product',
@@ -121,7 +121,7 @@ export class ProductPage implements OnInit {
 
   async openModal() {
     const modal: HTMLIonModalElement = await this.modalCtrl.create({
-      component: AddProductModalPage,
+      component: AddProductModalComponent,
       componentProps: {
         barcode: this.noProductBarcode
       }

@@ -4,7 +4,7 @@ import { model, view } from 'wuzinit-common';
 
 @Component({
   selector: 'wuzinit-in-app-purchase-receipt',
-  templateUrl: 'inAppPurchaseReceipt.html'
+  templateUrl: './inAppPurchaseReceipt.html'
 })
 export class InAppPurchaseReceipt {
 

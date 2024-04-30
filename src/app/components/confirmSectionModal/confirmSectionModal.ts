@@ -4,7 +4,7 @@ import { IngredientsSections } from '../addProductModal/addProductModal';
 
 @Component({
   selector: 'wuzinit-confirm-section',
-  templateUrl: 'confirmSectionModal.html'
+  templateUrl: './confirmSectionModal.html'
 })
 export class ConfirmSectionModalComponent {
 

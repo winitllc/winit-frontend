@@ -50,9 +50,9 @@
                         <ion-input type="text" clearInput="true" [(ngModel)]="currentSection.text"></ion-input>
                     </ion-item>
                     <ion-buttons>
-                        <button color="primary" *ngIf="currentSection.text.length === 0 && currentSection.imageData.length === 0" ion-button (click)="nameSection()"><p>Capture</p><ion-icon name="camera"></ion-icon></button>
-                        <button color="warning" *ngIf="currentSection.text.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="nameSection()"><ion-icon name="reverse-camera"></ion-icon></button>
-                        <button color="danger" *ngIf="currentSection.text.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
+                        <button color="primary" *ngIf="currentSection && currentSection.text && currentSection.imageData && (currentSection.text.length === 0 && currentSection.imageData.length === 0)" ion-button (click)="nameSection()"><p>Capture</p><ion-icon name="camera"></ion-icon></button>
+                        <button color="warning" *ngIf="currentSection && currentSection.text && currentSection.imageData && (currentSection.text.length > 0 || currentSection.imageData.length > 0)" ion-button class="side-by-side" (click)="nameSection()"><ion-icon name="reverse-camera"></ion-icon></button>
+                        <button color="danger" *ngIf="currentSection && currentSection.text && currentSection.imageData && (currentSection.text.length > 0 || currentSection.imageData.length > 0)" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
                     </ion-buttons>
                     <ion-badge class="sectionConfirmed" *ngIf="currentSection.confirmed" color="primary"><ion-icon name="checkmark-circle"></ion-icon></ion-badge>
                 </ion-card>
@@ -82,16 +82,16 @@
                     <h6>loading<ion-spinner name="dots" color="dark" style="top: 1em"></ion-spinner></h6>
                 </ion-card>
                 <ion-card>
-                    <ion-item>
+                    <ion-item *ngIf="currentSection && currentSection.ingredientsSections">
                         <ion-label stacked>{{currentSection.sectionLabel}}</ion-label>
                         <ion-textarea type="text" rows="4" [(ngModel)]="currentSection.ingredientsSections.ingredients" placeholder="Ingredients"></ion-textarea>
                         <ion-textarea type="text" rows="4" [(ngModel)]="currentSection.ingredientsSections.contains" placeholder="Contains"></ion-textarea>
                         <ion-textarea type="text" rows="4" [(ngModel)]="currentSection.ingredientsSections.traces" placeholder="Traces"></ion-textarea>
                     </ion-item>
                     <ion-buttons>
-                        <button color="primary" *ngIf="currentSection.ingredientsSections.ingredients.length === 0 && currentSection.imageData.length === 0" ion-button (click)="ingredientsSection()"><ion-icon name="camera"></ion-icon></button>
-                        <button color="warning" *ngIf="currentSection.ingredientsSections.ingredients.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="ingredientsSection()"><ion-icon name="reverse-camera"></ion-icon></button>
-                        <button color="danger" *ngIf="currentSection.ingredientsSections.ingredients.length > 0 || currentSection.imageData.length > 0" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
+                        <button color="primary" *ngIf="currentSection && currentSection.ingredientsSections && currentSection.imageData && (currentSection.ingredientsSections.ingredients.length === 0 && currentSection.imageData.length === 0)" ion-button (click)="ingredientsSection()"><ion-icon name="camera"></ion-icon></button>
+                        <button color="warning" *ngIf="currentSection && currentSection.ingredientsSections && currentSection.imageData && (currentSection.ingredientsSections.ingredients.length > 0 || currentSection.imageData.length > 0)" ion-button class="side-by-side" (click)="ingredientsSection()"><ion-icon name="reverse-camera"></ion-icon></button>
+                        <button color="danger" *ngIf="currentSection && currentSection.ingredientsSections && currentSection.imageData && (currentSection.ingredientsSections.ingredients.length > 0 || currentSection.imageData.length > 0)" ion-button class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></button>
                     </ion-buttons>
                     <ion-badge class="sectionConfirmed" *ngIf="currentSection.confirmed" color="primary"><ion-icon name="checkmark-circle"></ion-icon></ion-badge>
                 </ion-card>

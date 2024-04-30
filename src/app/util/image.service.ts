@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { EnvironmentConfig } from '../app/environment.config';
+import { EnvironmentConfig } from '../environment.config';
 import { Rekognition, S3 } from 'aws-sdk';
-import Auth from './auth';
+import { AuthState } from './auth.state';
 import { util } from 'wuzinit-common';
 
 @Injectable()
@@ -13,7 +13,7 @@ export default class ImageService {
 
   constructor(
     private http: HttpClient,
-    private auth: Auth
+    private auth: AuthState
   ) {
     const credentials: util.AWSCredentials = this.auth.getIAMCredentials();
     console.log(`ImageService.constructor: IAM credentials: ${JSON.stringify(credentials)}`);
@@ -42,9 +42,9 @@ export default class ImageService {
       console.log(`ImageService.imageToText: sending payload to rekognition`);
       const detectionsData: Rekognition.DetectTextResponse = await this.rekognition.detectText(detectTextOptions).promise();
       if (detectionsData.hasOwnProperty('TextDetections')) {
-        const detectedText: string = detectionsData.TextDetections.map((detection: any): string => {
+        const detectedText: string = detectionsData.TextDetections?.map((detection: any): string => {
           return detection.DetectedText;
-        }).join(' ');
+        }).join(' ') || 'No text detected.';
         console.log(`ImageService.imageToText: received following detected text from rekognition: ${detectedText}`);
         return detectedText;
       } else {

@@ -5,7 +5,7 @@ import { AppConfig } from '../../app.config';
 import { Camera, CameraResultType } from "@capacitor/camera";
 import ImageService from "../../util/image.service";
 import { ConfirmSectionModalComponent } from "../confirmSectionModal/confirmSectionModal";
-import { CropImageModalComponent } from "../cropImageModal/cropImageModal";
+// import { CropImageModalComponent } from "../cropImageModal/cropImageModal";
 import { ProductPage } from "../../product/product.page";
 import { ProductService } from "../../product/product.service";
 import { EnvironmentConfig } from "../../environment.config";
@@ -15,13 +15,13 @@ import { ProfileService } from "../../profile/profile.service";
 
 @Component({
   selector: 'wuzinit-add-product',
-  templateUrl: 'addProductModal.html'
+  templateUrl: './addProductModal.html'
 })
 export class AddProductModalComponent {
 
   public product: model.WuzinitProduct;
   public currentSection: AddSectionModel;
-  private currentSectionIndex: number;
+  public currentSectionIndex: number;
 
   public feedback: AddProductFeedback = {
     confirmedSections: {
