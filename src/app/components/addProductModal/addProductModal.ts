@@ -1,4 +1,4 @@
-import { Component, NgZone } from "@angular/core";
+import { Component, Input, NgZone } from "@angular/core";
 import { AlertController, ModalController, NavController, NavParams, LoadingController } from "@ionic/angular";
 import { model } from 'wuzinit-common';
 import { AppConfig } from '../../app.config';
@@ -21,6 +21,7 @@ export class AddProductModalComponent {
   public product: model.WuzinitProduct;
   public currentSection: AddSectionModel;
   public currentSectionIndex: number;
+  @Input() barcode: string = "";
 
   public feedback: AddProductFeedback = {
     confirmedSections: {
@@ -72,12 +73,10 @@ export class AddProductModalComponent {
   }];
 
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private modalController: ModalController,
-    private zone: NgZone,
+    // private zone: NgZone,
     private imageService: ImageService,
     private productService: ProductService,
     private profileService: ProfileService
@@ -85,7 +84,7 @@ export class AddProductModalComponent {
     this.currentSectionIndex = 0;
     this.currentSection = Object.assign({}, this.sectionStates[this.currentSectionIndex]);
     this.product = AppConfig.emptyWuzinitProduct;
-    this.product.code = navParams.get('barcode');
+    this.product.code = this.barcode;
   }
 
   updateProduct(section: AddSectionModel): void {
@@ -111,21 +110,21 @@ export class AddProductModalComponent {
   }
 
   updateCurrentSection(section: AddSectionModel): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       console.log(`AddProductModalComponent.updateCurrentSection: updating the current section with ${JSON.stringify(section)}`);
       this.currentSection = Object.assign({}, section);
       console.log(`AddProductModalComponent.updateCurrentSection: section states: ${JSON.stringify(this.sectionStates)}`);
-    });
+    // });
   }
 
   private updateSectionState(index: number, section: AddSectionModel): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       this.sectionStates[index] = Object.assign({}, section);
-    });
+    // });
   }
 
   private confirmSection(): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       console.log(`AddProductModalComponent.confirmSection: confirming the section`);
       this.currentSection.skipped = false;
       console.log(`AddProductModalComponent.confirmSection: section skipped set to false`);
@@ -144,11 +143,11 @@ export class AddProductModalComponent {
       this.currentSectionIndex = newSectionIndex;
       console.log(`AddProductModalComponent.confirmSection: new current section: ${JSON.stringify(this.currentSection)}`);
       console.log(`AddProductModalComponent.confirmSection: product: ${JSON.stringify(this.product)}`);
-    });
+    // });
   }
 
   skipSection(): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       console.log(`AddProductModalComponent.skipSection: skipping the section`);
       console.log(`AddProductModalComponent.skipSection: updating the section index`);
       const newSectionIndex = this.calculateNextSectionIndex();
@@ -159,11 +158,11 @@ export class AddProductModalComponent {
       this.currentSectionIndex = newSectionIndex;
       console.log(`AddProductModalComponent.skipSection: new current section: ${JSON.stringify(this.currentSection)}`);
       console.log(`AddProductModalComponent.skipSection: product: ${JSON.stringify(this.product)}`);
-    });
+    // });
   }
 
   previousSection(): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       console.log(`AddProductModalComponent.previousSection: going back a section`);
       console.log(`AddProductModalComponent.previousSection: updating the section index`);
       const newSectionIndex = this.calculatePreviousSectionIndex();
@@ -174,14 +173,14 @@ export class AddProductModalComponent {
       this.currentSectionIndex = newSectionIndex;
       console.log(`AddProductModalComponent.previousSection: new current section: ${JSON.stringify(this.currentSection)}`);
       console.log(`AddProductModalComponent.previousSection: product: ${JSON.stringify(this.product)}`);
-    });
+    // });
   }
 
   selectSection(sectionIndex: number): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       this.updateCurrentSection(this.sectionStates[sectionIndex]);
       this.currentSectionIndex = sectionIndex;
-    });
+    // });
   }
 
   async confirmSubmitProduct(): Promise<void> {
@@ -313,7 +312,7 @@ export class AddProductModalComponent {
   }
 
   resetSection(): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       this.currentSection.imageData = '';
       this.currentSection.confirmed = false;
       this.currentSection.skipped = false;
@@ -328,7 +327,7 @@ export class AddProductModalComponent {
           traces: ''
         };
       }
-    });
+    // });
     this.updateFeedbackSections(this.currentSection.sectionKey, true);
   }
 
@@ -425,7 +424,7 @@ export class AddProductModalComponent {
   }
 
   private updateFeedbackSections(section: string, remove: boolean): void {
-    this.zone.run(() => {
+    // this.zone.run(() => {
       console.log(`AddProductModalComponent.updateFeedbackSections: section to update: ${section}`);
       if (section === 'productName') {
         console.log(`AddProductModalComponent.updateFeedbackSections: current value of confirmed section: ${this.feedback.confirmedSections[section]}`);
@@ -443,7 +442,7 @@ export class AddProductModalComponent {
       console.log(`AddProductModalComponent.updateFeedbackSections: updated pointsAwarded in feedback: ${JSON.stringify(this.feedback)}`);
       this.feedback.confirmedSectionsLength = confirmedSectionsLength;
       console.log(`AddProductModalComponent.updateFeedbackSections: updated confirmedSectionsLength to be ${confirmedSectionsLength} in feedback: ${JSON.stringify(this.feedback)}`);
-    });
+    // });
   }
 
   private calculateNextSectionIndex(): number {

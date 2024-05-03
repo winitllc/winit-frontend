@@ -5,7 +5,7 @@
       Confirm Section
     </ion-title>
     <ion-buttons end>
-      <button ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></button>
+      <ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -35,7 +35,7 @@
     <ion-card class="textarea-card" *ngIf="ingredientsSections && ingredientsSections.traces.length > 0">
       <ion-item>
         <ion-label stacked>Traces: </ion-label>
-        <ion-textarea rows="4" [(ngModel)]="ingredientsSections.traces"></ion-textarea>
+        <ion-textarea rows="4" [(ngModel)]="ingredientsSections && ingredientsSections.traces ? ingredientsSections.traces : []"></ion-textarea>
       </ion-item>
     </ion-card>
     <ion-card>
@@ -43,7 +43,7 @@
     </ion-card>
   </ion-list>
   <ion-buttons>
-    <button ion-button (click)="cancelModal()"><p>Try Again</p><ion-icon name="thumbs-down"></ion-icon></button>
-    <button ion-button (click)="confirmSection()"><p>Confirm</p><ion-icon name="thumbs-up"></ion-icon></button>
+    <ion-button (click)="cancelModal()"><p>Try Again</p><ion-icon name="thumbs-down"></ion-icon></ion-button>
+    <ion-button (click)="confirmSection()"><p>Confirm</p><ion-icon name="thumbs-up"></ion-icon></ion-button>
   </ion-buttons>
 </ion-content>

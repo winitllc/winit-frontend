@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ModalController, NavController, NavParams } from "@ionic/angular";
 import { IngredientsSections } from '../addProductModal/addProductModal';
 
@@ -8,10 +8,10 @@ import { IngredientsSections } from '../addProductModal/addProductModal';
 })
 export class ConfirmSectionModalComponent {
 
-  public sectionText?: string;
-  public ingredientsSections?: IngredientsSections;
-  public sectionImageData: String;
-  public sectionName: string;
+  @Input() sectionText?: string;
+  @Input() ingredientsSections?: IngredientsSections;
+  @Input() sectionImageData: String;
+  @Input() sectionName: string;
 
   constructor(
     private modalController: ModalController,

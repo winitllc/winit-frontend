@@ -5,7 +5,7 @@
             Add Product
         </ion-title>
         <ion-buttons end>
-            <button ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></button>
+            <ion-button (click)="cancelModal()"><ion-icon name="close"></ion-icon></ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
@@ -27,12 +27,12 @@
         <ion-row class="sectionConfirm">
             <ion-col col-4>
                 <ion-buttons start>
-                    <button ion-button round="true" (click)="previousSection()" [ngClass]="{'previous-section': true, 'disabled': currentSectionIndex <= 0}">Last</button>
+                    <ion-button round="true" (click)="previousSection()" [ngClass]="{'previous-section': true, 'disabled': currentSectionIndex <= 0}">Last</ion-button>
                 </ion-buttons>
             </ion-col>
             <ion-col col-8>
                 <ion-buttons end>
-                    <button ion-button round="true" (click)="skipSection()" [ngClass]="{'skip-section': true, 'disabled': currentSectionIndex >= 2}">Skip</button>
+                    <ion-button round="true" (click)="skipSection()" [ngClass]="{'skip-section': true, 'disabled': currentSectionIndex >= 2}">Skip</ion-button>
                 </ion-buttons>
             </ion-col>
         </ion-row>
