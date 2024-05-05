@@ -15,7 +15,7 @@
     <ion-list-header>
       Does the Product {{sectionName}} look correct?
     </ion-list-header>
-    <ion-card *ngIf="sectionText && sectionText.length > 0">
+    <!-- <ion-card *ngIf="sectionText && sectionText.length > 0">
       <ion-item>
         <ion-input [(ngModel)]="sectionText"></ion-input>
       </ion-item>
@@ -35,12 +35,12 @@
     <ion-card class="textarea-card" *ngIf="ingredientsSections && ingredientsSections.traces.length > 0">
       <ion-item>
         <ion-label stacked>Traces: </ion-label>
-        <ion-textarea rows="4" [(ngModel)]="ingredientsSections && ingredientsSections.traces ? ingredientsSections.traces : []"></ion-textarea>
+        <ion-textarea rows="4" [(ngModel)]="ingredientsSections && ingredientsSections.traces"></ion-textarea>
       </ion-item>
     </ion-card>
     <ion-card>
       <img src="{{sectionImageData}}">
-    </ion-card>
+    </ion-card> -->
   </ion-list>
   <ion-buttons>
     <ion-button (click)="cancelModal()"><p>Try Again</p><ion-icon name="thumbs-down"></ion-icon></ion-button>

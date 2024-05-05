@@ -12,7 +12,7 @@
 
 <ion-content padding class="body-content">
     <ion-grid>
-        <ion-row class="feedbackArea">
+        <!-- <ion-row class="feedbackArea">
             <ion-col col-10>
                 <h6>Get points by adding each section!</h6>
             </ion-col>
@@ -20,11 +20,11 @@
                 <ion-badge *ngIf="feedback.confirmedSectionsLength === 0 || !feedback.confirmedSections.productName" color="blank"><span><p>{{feedback.pointsAwarded}}</p><ion-icon name="star"></ion-icon></span></ion-badge>
                 <ion-badge *ngIf="feedback.confirmedSectionsLength > 0 && feedback.confirmedSections.productName" color="star"><span><p>{{feedback.pointsAwarded}}</p><ion-icon name="star"></ion-icon></span></ion-badge>
             </ion-col>
-        </ion-row>
+        </ion-row> -->
         <ion-row class="infoArea">
             <p>You can use your camera to fill in each section. Name and at least one other section, required. (Feel free to input any text sections by hand!)</p>
         </ion-row>
-        <ion-row class="sectionConfirm">
+        <!-- <ion-row class="sectionConfirm">
             <ion-col col-4>
                 <ion-buttons start>
                     <ion-button round="true" (click)="previousSection()" [ngClass]="{'previous-section': true, 'disabled': currentSectionIndex <= 0}">Last</ion-button>
@@ -35,8 +35,8 @@
                     <ion-button round="true" (click)="skipSection()" [ngClass]="{'skip-section': true, 'disabled': currentSectionIndex >= 2}">Skip</ion-button>
                 </ion-buttons>
             </ion-col>
-        </ion-row>
-        <ion-row class="sectionArea">
+        </ion-row> -->
+        <!-- <ion-row class="sectionArea">
             <ion-list *ngIf="currentSection.sectionKey == 'productName'">
                 <ion-card *ngIf="!currentSection.loading && currentSection.imageData.length > 0">
                     <img src="{{currentSection.imageData}}">
@@ -96,13 +96,12 @@
                     <ion-badge class="sectionConfirmed" *ngIf="currentSection.confirmed" color="primary"><ion-icon name="checkmark-circle"></ion-icon></ion-badge>
                 </ion-card>
             </ion-list>
-        </ion-row>
-        <ion-row class="progressBar">
+        </ion-row> -->
+        <!-- <ion-row class="progressBar">
             <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productName}" (click)="selectSection(0)"></ion-col>
             <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productImage}" (click)="selectSection(1)"></ion-col>
-            <!-- <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productNutrition}" (click)="selectSection()"></ion-col> -->
             <ion-col size="12" [ngClass]="{'lit': feedback.confirmedSections.productIngredients}" (click)="selectSection(2)"></ion-col>
-        </ion-row>
+        </ion-row> -->
     </ion-grid>
-    <button [ngClass]="{'submit-product': true, 'disabled': !(feedback.confirmedSections.productName || feedback.confirmedSections.productImage || feedback.confirmedSections.productIngredients)}" ion-button (click)="confirmSubmitProduct()"><p>Submit</p><ion-icon name="thumbs-up"></ion-icon></button>
+    <!-- <button [ngClass]="{'submit-product': true, 'disabled': !(feedback.confirmedSections.productName || feedback.confirmedSections.productImage || feedback.confirmedSections.productIngredients)}" ion-button (click)="confirmSubmitProduct()"><p>Submit</p><ion-icon name="thumbs-up"></ion-icon></button> -->
 </ion-content>

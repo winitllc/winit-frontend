@@ -15,19 +15,19 @@
     <ion-list-header>
       Premium Features
     </ion-list-header>
-    <ion-card *ngFor="let feature of premiumFeaturePurchaseConfirmations">
+    <!-- <ion-card *ngFor="let feature of premiumFeaturePurchaseConfirmations">
       <p>Feature: {{feature.featureTitle}}</p>
       <p>Transaction Id: {{feature.transactionId}}</p>
-    </ion-card>
+    </ion-card> -->
   </ion-list>
   <ion-list>
-    <ion-list-header>
+    <!-- <ion-list-header>
       Past In App Purchases
     </ion-list-header>
     <ion-card *ngFor="let confirmation of inAppPurchaseConfirmations">
       <p>Product: {{confirmation.productTitle}}</p>
       <p>Transaction Id: {{confirmation.transactionId}}</p>
-    </ion-card>
+    </ion-card> -->
   </ion-list>
   <ion-buttons>
     <ion-button (click)="closeModal()"><p>Close</p><ion-icon name="thumbs-up"></ion-icon></ion-button>
