@@ -7,7 +7,7 @@ import { SpoonacularProduct, SpoonacularProductIngredient, SpoonacularSearchResu
 import { model } from 'wuzinit-common';
 import { ProfileState } from '../profile/profile.state';
 import { ProductService } from './product.service';
-import { AddProductModalComponent } from '../components/addProductModal/addProductModal';
+import { AddProductModalPage } from './addProductModal.page';
 
 @Component({
   selector: 'app-product',
@@ -18,7 +18,7 @@ export class ProductPage implements OnInit {
 
   public confirmProductMode: boolean = false;
   public noProduct: boolean = false;
-  public noProductBarcode: string = '';
+  public productBarcode: string = '';
 
   public allergensText: WarningInfo[] = [];
   public allergenPoisonWarning: boolean = false;
@@ -69,10 +69,11 @@ export class ProductPage implements OnInit {
         console.log(`ProductPage.ngOnInit: product from navParams: ${JSON.stringify(product)}`);
         this.productType = product.type;
         this.noProduct = false;
+        this.productBarcode = product.upc;
         if (product && product.hasOwnProperty('message') && product.message === AppConfig.controlMessages.noProduct) {
           this.noProduct = true;
           this.spoonacularProduct = JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
-          this.noProductBarcode = product.barcode;
+          this.productBarcode = product.upc;
         } else if (product && product.hasOwnProperty('id')) {
           console.log(`ProductPage.ngOnInit: using spoonacular product from navParams`);
           this.spoonacularProduct = product;
@@ -92,7 +93,7 @@ export class ProductPage implements OnInit {
         } else {
           this.noProduct = true;
           this.spoonacularProduct = JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
-          this.noProductBarcode = product.barcode;
+          this.productBarcode = product.upc;
         }
       }
     } catch (error) {
@@ -121,9 +122,9 @@ export class ProductPage implements OnInit {
 
   async openModal() {
     const modal: HTMLIonModalElement = await this.modalCtrl.create({
-      component: AddProductModalComponent,
+      component: AddProductModalPage,
       componentProps: {
-        barcode: this.noProductBarcode
+        barcode: this.productBarcode
       }
     });
     modal.present();
@@ -147,9 +148,9 @@ export class ProductPage implements OnInit {
   }
 
   // public presentAddProductModal(): void {
-  //   console.log(`ProductPage.presentAddProductModal: presenting add product modal with barcode: ${this.noProductBarcode}`);
-  //   const addProductModal: Modal = this.modalController.create(AddProductModalComponent, {
-  //     barcode: this.noProductBarcode
+  //   console.log(`ProductPage.presentAddProductModal: presenting add product modal with barcode: ${this.productBarcode}`);
+  //   const addProductModal: Modal = this.modalController.create(AddProductModalPage, {
+  //     barcode: this.productBarcode
   //   });
   //   addProductModal.onDidDismiss(async (data) => {
   //     console.log(`ProductPage.presentAddProductModal: modal dismissed`);

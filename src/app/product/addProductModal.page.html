@@ -11,6 +11,11 @@
 </ion-header>
 <ion-content class="ion-padding">
   <ion-item>
-    <ion-input labelPlacement="stacked" label="Enter your name" [(ngModel)]="name" placeholder="Your name"></ion-input>
+    <!-- <ion-input labelPlacement="stacked" label="Enter your barcode" [(ngModel)]="barcode" placeholder="Your barcode"></ion-input> -->
+    <ion-textarea type="text" rows="4" [(ngModel)]="ingredientsText" placeholder="Ingredients Text"></ion-textarea>
+  </ion-item>
+  <ion-item>
+    <ion-button color="primary" (click)="checkIngredients()"><ion-icon name="camera"></ion-icon></ion-button>
+    <ion-button color="danger" class="side-by-side" (click)="resetSection()"><ion-icon name="close-circle"></ion-icon></ion-button>
   </ion-item>
 </ion-content>
