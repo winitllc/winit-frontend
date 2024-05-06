@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 import { ModalController } from '@ionic/angular';
-// import ImageService from '../util/image.service';
+import ImageService from '../util/image.service';
 
 @Component({
   selector: 'app-product-modal',
@@ -14,7 +14,7 @@ export class AddProductModalPage implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
-    // private imageService: ImageService
+    private imageService: ImageService
   ) {}
 
   ngOnInit() {
@@ -44,10 +44,12 @@ export class AddProductModalPage implements OnInit {
     try {
       console.log(`AddProductModalComponent.imageToText: running imageToText function`);
       const imageData: string = await this.captureImage();
-      console.log(`AddProductModalComponent.imageToText: cropped imageData data: ${imageData}.`);
+      console.log(`AddProductModalComponent.imageToText: imageData data: ${imageData}.`);
+      console.log(`AddProductModalComponent.imageToText: length of imageData data: ${imageData.length}.`);
+      console.log(`AddProductModalComponent.imageToText: length of imageData data: ${imageData.split('').reverse().join('')}.`);
       return {
-        text: 'TBD',
-        // text: await this.imageService.imageToText(imageData),
+        // text: 'TBD',
+        text: await this.imageService.imageToText(imageData),
         image: imageData
       };
     } catch (error) {
@@ -60,13 +62,13 @@ export class AddProductModalPage implements OnInit {
     console.log(`AddProductModalPage.captureImage: capture image selected`);
     try {
       const imageData = await Camera.getPhoto({
-        quality: 50,
+        quality: 2,
         allowEditing: true,
-        resultType: CameraResultType.Base64,
-        source: CameraSource.Prompt
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera
       });
       console.log(`AddProductModalComponent.captureImage: imageData: ${JSON.stringify(imageData)}`);
-      return imageData.dataUrl || "";
+      return imageData.path || "";
     } catch (error) {
       console.error(`AddProductModalPage.captureImage: error from camera: ${JSON.stringify(error)}`);
       return "";

@@ -68,12 +68,12 @@ export class AuthState {
   }
 
   getIAMCredentials(): util.AWSCredentials {
-    if (this.iamCredentials && this.iamCredentials.accessKeyId) {
-      return this.iamCredentials;
-    }
+    // if (this.iamCredentials && this.iamCredentials.accessKeyId) {
+    //   return this.iamCredentials;
+    // }
     return {
-      accessKeyId: '',
-      secretAccessKey: ''
+      accessKeyId: 'AKIATPFW657WWZN2JI4K',
+      secretAccessKey: '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'
     };
   }
   
