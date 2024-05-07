@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 
 import { ModalController } from '@ionic/angular';
 import ImageService from '../util/image.service';
@@ -11,6 +11,7 @@ import ImageService from '../util/image.service';
 export class AddProductModalPage implements OnInit {
   @Input() barcode: string = "";
   ingredientsText: string = "";
+  imageSrc: string = "";
 
   constructor(
     private modalCtrl: ModalController,
@@ -24,7 +25,7 @@ export class AddProductModalPage implements OnInit {
   async checkIngredients() {
     console.log(`AddProductModalPage.checkIngredients: ingredientsText: ${this.ingredientsText}`);
     const imageToTextData = await this.imageToText();
-    console.log(`AddProductModalPage.checkIngredients: imageToTextData: ${imageToTextData}`);
+    console.log(`AddProductModalPage.checkIngredients: imageToTextData: ${JSON.stringify(imageToTextData)}`);
   }
 
   resetSection() {
@@ -43,14 +44,21 @@ export class AddProductModalPage implements OnInit {
     console.log(`AddProductModalComponent.imageToText: image to text selected`);
     try {
       console.log(`AddProductModalComponent.imageToText: running imageToText function`);
-      const imageData: string = await this.captureImage();
-      console.log(`AddProductModalComponent.imageToText: imageData data: ${imageData}.`);
-      console.log(`AddProductModalComponent.imageToText: length of imageData data: ${imageData.length}.`);
-      console.log(`AddProductModalComponent.imageToText: length of imageData data: ${imageData.split('').reverse().join('')}.`);
+      // const imageData = await this.captureImagePhoto();
+      const imageData = await this.captureImageBase64();
+      console.log(`AddProductModalComponent.imageToText: imageData data: ${JSON.stringify(imageData)}.`);
+      // console.log(`AddProductModalComponent.imageToText: length of imageData data: ${imageData.webPath?.length}.`);
+      // console.log(`AddProductModalComponent.imageToText: reversed imageData data: ${imageData.webPath?.split('').reverse().join('')}.`);
+      // const imageText = await this.imageService.imageToText(imageData.path || '');
+      const imageText = await this.imageService.imageToText(imageData || '');
+      console.log(`AddProductModalComponent.imageToText: text from service: ${imageText}.`);
+      // this.imageSrc = imageData.webPath || '';
+      this.imageSrc = imageData || '';
       return {
         // text: 'TBD',
-        text: await this.imageService.imageToText(imageData),
-        image: imageData
+        text: imageText,
+        // image: imageData.webPath || ''
+        image: imageData || ''
       };
     } catch (error) {
       console.error(`AddProductModalComponent.imageToText: error capturing image and converting to text: ${JSON.stringify(error)}`);
@@ -58,8 +66,8 @@ export class AddProductModalPage implements OnInit {
     }
   }
 
-  async captureImage() {
-    console.log(`AddProductModalPage.captureImage: capture image selected`);
+  async captureImagePhoto(): Promise<Photo> {
+    console.log(`AddProductModalPage.captureImagePhoto: capture image selected`);
     try {
       const imageData = await Camera.getPhoto({
         quality: 2,
@@ -67,11 +75,34 @@ export class AddProductModalPage implements OnInit {
         resultType: CameraResultType.Uri,
         source: CameraSource.Camera
       });
-      console.log(`AddProductModalComponent.captureImage: imageData: ${JSON.stringify(imageData)}`);
-      return imageData.path || "";
+      console.log(`AddProductModalComponent.captureImagePhoto: imageData: ${JSON.stringify(imageData)}`);
+      return imageData || {
+        "webPath":"",
+        "exif":{},
+        "format":"",
+        "saved":false,
+        "path":""
+      };
     } catch (error) {
-      console.error(`AddProductModalPage.captureImage: error from camera: ${JSON.stringify(error)}`);
-      return "";
+      console.error(`AddProductModalPage.captureImagePhoto: error from camera: ${JSON.stringify(error)}`);
+      throw error;
+    }
+  }
+
+  async captureImageBase64(): Promise<string> {
+    console.log(`AddProductModalPage.captureImageBase64: capture image selected`);
+    try {
+      const imageData = await Camera.getPhoto({
+        quality: 2,
+        allowEditing: true,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Camera
+      });
+      console.log(`AddProductModalComponent.captureImageBase64: imageData: ${JSON.stringify(imageData)}`);
+      return imageData.base64String || '';
+    } catch (error) {
+      console.error(`AddProductModalPage.captureImageBase64: error from camera: ${JSON.stringify(error)}`);
+      throw error;
     }
   }
 }

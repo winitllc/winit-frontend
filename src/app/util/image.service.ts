@@ -44,28 +44,26 @@ export default class ImageService {
       //   bytes.set([imageToConvert.charCodeAt(idx)], idx);
       // });
       // console.log(`ImageService.imageToText: image bytes length: ${JSON.stringify(bytes.length)}`);
-      // const detectTextOptions: DetectTextCommandInput = {
-      //   "Image": {
-      //     "Bytes": new TextEncoder().encode(imageToConvert)
-      //     // "Bytes": bytes
-      //   }
-      // };
-      // const detectTextOptions: DetectTextCommandInput = {
-      //   "Image": {
-      //     "Bytes": new TextEncoder().encode(imageToConvert)
-      //     // "Bytes": bytes
-      //   }
-      // };
-      const contents = await Filesystem.readFile({
-        path: imageToConvert
-      });
-      console.log(`ImageService.imageToText: image bytes length: ${JSON.stringify(contents)}`);
+      const bytes = new TextEncoder().encode(imageToConvert);
       const detectTextOptions: DetectTextCommandInput = {
-        "Image": {
-          "Bytes": new TextEncoder().encode(contents.data as string)
-          // "Bytes": bytes
+        Image: {
+          // Bytes: bytes
+          S3Object: {
+            Bucket: 'wuzinit-product-images-bucket',
+            Name: 'wuzinit-text.jpg'
+          }
         }
       };
+      // const contents = await Filesystem.readFile({
+      //   path: imageToConvert
+      // });
+      // console.log(`ImageService.imageToText: image bytes length: ${JSON.stringify(contents)}`);
+      // const detectTextOptions: DetectTextCommandInput = {
+      //   "Image": {
+      //     "Bytes": new TextEncoder().encode(contents.data as string)
+      //     // "Bytes": bytes
+      //   }
+      // };
       console.log(`ImageService.imageToText: detect text options: ${JSON.stringify(detectTextOptions)}`);
       const rekognitionCommand = new DetectTextCommand(detectTextOptions);
       const rekognitionResponse = await rekognitionClient.send(rekognitionCommand);
