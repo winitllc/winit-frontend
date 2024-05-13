@@ -23,11 +23,14 @@ export class AddProductModalPage implements OnInit {
   async checkIngredients() {
     console.log(`AddProductModalPage.checkIngredients: ingredientsText: ${this.ingredientsText}`);
     const imageToTextData = await this.imageToText();
+    this.imageSrc = imageToTextData.image;
+    this.ingredientsText = imageToTextData.text;
     console.log(`AddProductModalPage.checkIngredients: imageToTextData: ${JSON.stringify(imageToTextData)}`);
   }
 
   resetSection() {
     this.ingredientsText = "";
+    this.imageSrc = "";
   }
 
   cancel() {
@@ -43,13 +46,10 @@ export class AddProductModalPage implements OnInit {
     try {
       console.log(`AddProductModalComponent.imageToText: running imageToText function`);
       const imageData = await this.imageService.captureImageDataURL();
-      console.log(`AddProductModalComponent.imageToText: imageData data: ${JSON.stringify(imageData)}`);
       const rawImageData = imageData.replace('data:image/jpeg;base64,', '');
-      console.log(`AddProductModalComponent.imageToText: rawImageData data: ${JSON.stringify(rawImageData)}`);
       const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData);
       const imageText = await this.imageService.imageToText(imageKeyInS3);
       console.log(`AddProductModalComponent.imageToText: text from service: ${imageText}.`);
-      // this.imageSrc = imageData;
       return {
         text: imageText,
         image: imageData || ''

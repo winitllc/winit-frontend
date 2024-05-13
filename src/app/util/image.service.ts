@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EnvironmentConfig } from '../environment.config';
-import { DetectTextCommand, DetectTextCommandInput, RekognitionClient } from "@aws-sdk/client-rekognition";
+import { DetectTextCommand, DetectTextCommandInput, RekognitionClient, TextDetection } from "@aws-sdk/client-rekognition";
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { AuthState } from './auth.state';
 import { util } from 'wuzinit-common';
@@ -79,8 +79,21 @@ export default class ImageService {
       console.log(`ImageService.imageToText: detect text options: ${JSON.stringify(detectTextOptions)}`);
       const rekognitionCommand = new DetectTextCommand(detectTextOptions);
       const rekognitionResponse = await this.rekognitionClient.send(rekognitionCommand);
-      console.log(`ImageService.imageToText: response from rekognition: ${JSON.stringify(rekognitionResponse)}`);
-      return 'TBD';
+      // console.log(`ImageService.imageToText: response from rekognition: ${JSON.stringify(rekognitionResponse)}`);
+      const rekognitionTextDetected: string[] = rekognitionResponse.TextDetections?.filter((detection: TextDetection) => {
+        if ((detection.Confidence || 0) < 95) {
+          console.log(`ImageService.imageToText: confidence: ${detection.Confidence}`);
+          console.log(`ImageService.imageToText: detected text: ${detection.DetectedText}`);
+        }
+        return detection.Confidence && detection.Confidence >= 95;
+      }).map((detection: TextDetection) => {
+        return detection.DetectedText || '';
+      }) || [];
+      const fullText: string = rekognitionTextDetected.join(' ').split('.').join('.\n');
+      console.log(`ImageService.imageToText: detected text from rekognition: ${fullText}`);
+      const halfText: string = fullText.substring(0, (fullText.length / 2));
+      console.log(`ImageService.imageToText: text to return: ${halfText}`);
+      return halfText;
     } catch (error) {
       console.error(`ImageService.imageToText: error using rekognition: ${JSON.stringify(error)}`);
       throw error;
