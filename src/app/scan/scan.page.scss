@@ -31,14 +31,10 @@ button.start-scan {
   font-size: 4em;
 }
 
-// Hide all elements
-ion-content.barcode-scanner-active {
-  visibility: hidden;
-  --background: transparent;
-  --ion-background-color: transparent;
+button.start-scan p {
+  font-size: 1em !important;
 }
 
-// Hide all elements
-ion-content.barcode-scanner-inactive {
-  visibility: visible;
+div.alert-div p {
+  font-size: 0.8em;
 }
