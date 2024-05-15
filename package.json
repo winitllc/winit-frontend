@@ -1,5 +1,5 @@
 {
-  "name": "updated-frontend",
+  "name": "WINIT",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -43,7 +43,7 @@
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "wuzinit-common": "git+ssh://git@bitbucket.org/glennium/wuzinit-common.git",
+    "wuzinit-common": "https://haseebbutt687@bitbucket.org/glennium/wuzinit-common.git",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

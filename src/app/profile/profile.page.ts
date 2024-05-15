@@ -57,7 +57,7 @@ export class ProfilePage {
     private symptomsService: SymptomsService,
     private storage: Storage,
     private authService: AuthService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     try {
@@ -122,12 +122,17 @@ export class ProfilePage {
     this.service.getUserProfileData().subscribe(
       (data: any) => {
         // Handle the response data
-        console.log('data fetched from apiii');
+        console.log('data fetched from api/accounts/me');
         console.log(data);
         this.profileData = data['data'];
         console.log(this.profileData);
-        console.log(this.profileData['healthProfiles'][0]['id']);
-        this.getHealthProfileData();
+        console.log(this.profileData.profile.showName);
+        // console.log(this.profileData['healthProfiles'][0]['id'] != undefined);
+        if (this.profileData['healthProfiles'] != undefined) {
+          if (this.profileData['healthProfiles'].length > 0) {
+            this.getHealthProfileData();
+          }
+        }
       },
       (error) => {
         // Handle errors

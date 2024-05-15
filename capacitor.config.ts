@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'updated-frontend',
+  appId: 'com.whatsinit.app',
+  appName: 'WINIT',
   webDir: 'www',
   server: {
     androidScheme: 'https'

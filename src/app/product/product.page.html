@@ -4,9 +4,7 @@
       <ion-back-button></ion-back-button>
       <ion-button menuToggle (click)="addMenu()"><ion-icon name="menu"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title *ngIf="productType == 'spoonacular'">{{ spoonacularProduct.title }}</ion-title>
-    <ion-title *ngIf="productType == 'wuzinit'">{{ wuzinitProduct ? wuzinitProduct.productName : '' }}</ion-title>
-    <ion-title *ngIf="noProduct">product</ion-title>
+    <ion-title>product</ion-title>
   </ion-toolbar>
 </ion-header>
 

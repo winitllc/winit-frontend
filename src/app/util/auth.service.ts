@@ -103,7 +103,7 @@ export class AuthService {
 
   loginAPI(user: any) {
     return this.http.post<any>(
-      'https://winitclinic.dev.eltex.dev/api/v1/accounts/signin',
+      'https://winitclinic.com/api/v1/accounts/signin',
       JSON.stringify(user),
       this.httpHeader
     );
@@ -111,7 +111,7 @@ export class AuthService {
 
   registerAPI(user: any) {
     return this.http.post<any>(
-      'https://winitclinic.dev.eltex.dev/api/v1/accounts/signup',
+      'https://winitclinic.com/api/v1/accounts/signup',
       JSON.stringify(user),
       this.httpHeader
     );
@@ -119,7 +119,7 @@ export class AuthService {
 
   patientregisterAPI(user: any) {
     return this.http.post<any>(
-      'https://winitclinic.dev.eltex.dev/api/v1/patient/accounts/signup',
+      'https://winitclinic.com/api/v1/patient/accounts/signup',
       JSON.stringify(user),
       this.httpHeader
     );

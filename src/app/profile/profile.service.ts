@@ -133,7 +133,7 @@ export class ProfileService {
     });
 
     return this.http
-      .get<any>(`https://winitclinic.dev.eltex.dev/api/v1/accounts/me`, {
+      .get<any>(`https://winitclinic.com/api/v1/accounts/me`, {
         headers,
       })
       .pipe(retry(2)); 
@@ -148,7 +148,7 @@ export class ProfileService {
 
     return this.http
       .get<any>(
-        `https://winitclinic.dev.eltex.dev/api/v1/patient/health-profiles/` +
+        `https://winitclinic.com/api/v1/patient/health-profiles/` +
           id,
         { headers }
       )

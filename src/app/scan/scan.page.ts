@@ -1,5 +1,5 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { BarcodeScanner, BarcodeFormat, LensFacing, Barcode } from '@capacitor-mlkit/barcode-scanning';
+import { Component, OnInit } from '@angular/core';
+import { BarcodeScanner, BarcodeFormat, LensFacing } from '@capacitor-mlkit/barcode-scanning';
 import { model } from 'wuzinit-common';
 import ScanFactory from './scan.factory';
 import { AppConfig } from '../app.config';
@@ -18,13 +18,11 @@ export class ScanPage implements OnInit {
 
   headerDisplayed: boolean = true;
   buttonDisplayed: boolean = true;
-  activateScanner: boolean = false;
 
   constructor(
     private loadingController: LoadingController,
     private navCtrl: NavController,
     private service: ProductService,
-    private ngZone: NgZone,
     public factory: ScanFactory,
     private profileService: ProfileService,
     private alertController: AlertController
@@ -33,42 +31,16 @@ export class ScanPage implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       console.log(`ScanPage.ngOnInit setting up scan page`);
-      BarcodeScanner.isSupported().then((result) => {
-        console.log(`ScanPage.ngOnInit: scanner is supported: ${JSON.stringify(result)}`);
-      });
-      BarcodeScanner.checkPermissions().then((result) => {
-        console.log(`ScanPage.ngOnInit: scanner is permitted: ${JSON.stringify(result)}`);
-      });
-      BarcodeScanner.removeAllListeners().then(() => {
-        BarcodeScanner.addListener(
-          'googleBarcodeScannerModuleInstallProgress',
-          (event) => {
-            this.ngZone.run(() => {
-              console.log('googleBarcodeScannerModuleInstallProgress', event);
-            });
-          }
-        );
-      });
+      // this.scan();
     } catch (error) {
       console.error(`ScanPage.ngOnInit Error: ${JSON.stringify(error)}`);
     }
   }
 
   ionViewWillEnter(): void {
-    console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
+    // this.scan();
     this.buttonDisplayed = true;
     this.headerDisplayed = true;
-    this.activateScanner = false;
-    BarcodeScanner.removeAllListeners().then(() => {
-      BarcodeScanner.addListener(
-        'googleBarcodeScannerModuleInstallProgress',
-        (event) => {
-          this.ngZone.run(() => {
-            console.log('googleBarcodeScannerModuleInstallProgress', event);
-          });
-        }
-      );
-    });
   }
 
   public async scan(): Promise<void> {
@@ -82,23 +54,18 @@ export class ScanPage implements OnInit {
       try {
         const listener = await BarcodeScanner.addListener(
           'barcodeScanned',
-          async (event) => {
-            console.log(`ScanPage.scan: barcode result: ${JSON.stringify(event)}`);
-            listener.remove();
-            console.log(`ScanPage.scan: listener removed`);
-            this.activateScanner = false;
-            console.log(`ScanPage.scan: activateScanner = false`);
-            const barcode: string = event.barcode.rawValue;
-            console.log(`ScanPage.scan: padded barcode: ${JSON.stringify(barcode)}`);
-            this.getByBarcode(barcode);
+          async result => {
+            console.log(result.barcode);
+            const barcodeData: any = result.barcode;
+            if (barcodeData.hasOwnProperty('cancelled') && !barcodeData.cancelled) {
+              const barcode: string = this.factory.padCode(barcodeData);
+              return this.getByBarcode(barcode);
+            } else {
+              this.navigateBackward();
+            }
           },
         );
-        console.log(`ScanPage.scan: listener set up`);
-        this.activateScanner = true;
-        await BarcodeScanner.startScan({
-          formats: [BarcodeFormat.UpcA],
-          lensFacing: LensFacing.Back
-        });
+        await BarcodeScanner.startScan();
       } catch (error) {
         console.error(`ScanPage.scan: Error scanning the product: ${JSON.stringify(error)}`);
       }
@@ -121,7 +88,6 @@ export class ScanPage implements OnInit {
 
   private async getByBarcode(barcode: string): Promise<void> {
     try {
-      console.log(`ScanPage.getByBarcode: barcode to search: ${JSON.stringify(barcode)}`);
       const loading = await this.loadingController.create({
         // cssClass: 'my-custom-class',
         message: `Loading product with barcode: ${barcode}`,
@@ -135,18 +101,20 @@ export class ScanPage implements OnInit {
         await loading.dismiss();
       } else {
         console.log(`ScanPage.getByBarcode: get from our db instead`);
-        const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode) as model.WuzinitProduct;
-        console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
-        if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
-          await loading.dismiss();
-          this.pushToProductPage(wuzinitResult);
-        } else {
-          await loading.dismiss();
-          this.pushToProductPage({
-            message: AppConfig.controlMessages.noProduct,
-            barcode
-          });
-        }
+        this.pushToProductPage({
+          message: AppConfig.controlMessages.noProduct,
+          barcode
+        });
+        // const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode);
+        // console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
+        // if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
+        //   this.pushToProductPage(wuzinitResult);
+        // } else {
+        //   this.pushToProductPage({
+        //     message: AppConfig.controlMessages.noProduct,
+        //     barcode
+        //   });
+        // }
       }
     } catch (error) {
       console.error(`ScanPage.getByBarcode: Error retrieving data by barcode ${barcode}:\n${JSON.stringify(error)}`);
@@ -163,11 +131,6 @@ export class ScanPage implements OnInit {
           product
         }
       };
-      this.headerDisplayed = true;
-      this.buttonDisplayed = true;
-      this.activateScanner = false;
-      BarcodeScanner.removeAllListeners();
-      console.log(`ScanPage.pushToProductPage: reset the header and button booleans, and reset the activate scanner boolean`);
       this.navCtrl.navigateForward('product', navExtras);
     } catch (error) {
       console.error(`ScanPage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);

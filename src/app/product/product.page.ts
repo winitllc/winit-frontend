@@ -73,7 +73,7 @@ export class ProductPage implements OnInit {
           this.noProductBarcode = product.barcode;
         } else if (product && product.hasOwnProperty('id')) {
           console.log(`ProductPage.ngOnInit: using spoonacular product from navParams`);
-          this.spoonacularProduct = product;
+          this.spoonacularProduct = JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
           this.updateSpoonacularProduct(product);
           await this.setAlerts();
           // return this.cache.putCurrentProduct(this.spoonacularProduct);
@@ -271,10 +271,8 @@ export class ProductPage implements OnInit {
     // this.allergensText = this.addWarnings(Object.values(this.product.details.allergens), dangerousIngredients, poisonousIngredients, 'allergens');
     // this.tracesText = this.addWarnings(Object.values(this.product.details.traces_tags), dangerousIngredients, poisonousIngredients, 'traces');
     if (this.productType === 'wuzinit') {
-      console.log(`ProductPage.setAlerts: product from wuzinit to set on the page: ${JSON.stringify(this.spoonacularProduct)}`);
       this.ingredientsText = this.addWuzinitWarnings(this.wuzinitProduct ? this.wuzinitProduct.ingredientsList : [], dangerousIngredients, poisonousIngredients, 'ingredients');
     } else if (this.productType === 'spoonacular') {
-      console.log(`ProductPage.setAlerts: product from spoonacular to set on the page: ${JSON.stringify(this.spoonacularProduct)}`);
       this.ingredientsText = this.addSpoonacularWarnings(this.spoonacularProduct?.ingredients || [], dangerousIngredients, poisonousIngredients, 'ingredients');
     }
     this.addFeedback();
@@ -299,9 +297,7 @@ export class ProductPage implements OnInit {
 
   private addSpoonacularWarnings(items: SpoonacularProductIngredient[], dangerousIngredients: string[], poisonousIngredients: string[], section: string): WarningInfo[] {
     console.log(`ProductPage.addSpoonacularWarnings: adding the warnings for the ${section} section`);
-    console.log(`ProductPage.addSpoonacularWarnings: items to edit: ${JSON.stringify(items)}`);
     return items.map((item: SpoonacularProductIngredient): WarningInfo => {
-      console.log(`ProductPage.addSpoonacularWarnings: item to check for warnings: ${JSON.stringify(item)}`);
       const addPoisonWarning = this.checkForPoisonWarnings(item.name, poisonousIngredients, section);
       const addDangerWarning = this.checkForDangerWarnings(item.name, dangerousIngredients, section);
       return {

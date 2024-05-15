@@ -6,9 +6,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" [className]="activateScanner ? 'barcode-scanner-active' : 'barcode-scanner-inactive'">
+<ion-content [fullscreen]="true">
   <h2 *ngIf="headerDisplayed">Scan Barcode</h2>
-  <div class="scan-div">
+  <div class="scan-div barcode-scanner-active">
     <button *ngIf="buttonDisplayed" class="submit start-scan" ion-button (click)="scan()"><p><ion-icon name="barcode"></ion-icon><br/>Scan</p></button>
   </div>
 </ion-content>
