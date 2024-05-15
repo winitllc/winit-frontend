@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import ImageService from '../util/image.service';
+import { ScanCropperModalPage } from './scan-cropperModal.page';
 
 @Component({
   selector: 'app-scan',
@@ -13,7 +15,8 @@ export class ScanPage implements OnInit {
   imageSrc: string = "";
 
   constructor(
-    private imageService: ImageService
+    private imageService: ImageService,
+    private modalCtrl: ModalController
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -52,18 +55,34 @@ export class ScanPage implements OnInit {
     try {
       console.log(`ScanPage.imageToText: running imageToText function`);
       const imageData = await this.imageService.captureImageDataURL();
-      const rawImageData = imageData.replace('data:image/jpeg;base64,', '');
+      const croppedImageData = await this.openCropperModal(imageData);
+      const rawImageData = croppedImageData.replace('data:image/jpeg;base64,', '');
       const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData);
       const imageText = await this.imageService.imageToText(imageKeyInS3);
       console.log(`ScanPage.imageToText: text from service: ${imageText}.`);
       return {
         text: imageText,
-        image: imageData || ''
+        image: croppedImageData || ''
       };
     } catch (error) {
       console.error(`ScanPage.imageToText: error capturing image and converting to text: ${JSON.stringify(error)}`);
       return this.imageToText();
     }
+  }
+
+  async openCropperModal(imageData: string): Promise<string> {
+    const modal: HTMLIonModalElement = await this.modalCtrl.create({
+      component: ScanCropperModalPage,
+      componentProps: {
+        imageInput: imageData
+      }
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log(`ProductPage.openCropperModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`ProductPage.openCropperModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    return data as string;
   }
 }
 

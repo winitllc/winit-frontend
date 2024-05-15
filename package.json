@@ -46,6 +46,7 @@
     "@ionic/pwa-elements": "^3.2.2",
     "@ionic/storage-angular": "^4.0.0",
     "ionicons": "^7.4.0",
+    "ngx-image-cropper": "^8.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.6.2",
     "wuzinit-common": "bitbucket:glennium/wuzinit-common",

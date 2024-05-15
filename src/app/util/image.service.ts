@@ -105,7 +105,7 @@ export default class ImageService {
     try {
       const imageData = await Camera.getPhoto({
         quality: 2,
-        allowEditing: true,
+        allowEditing: false,
         resultType: CameraResultType.Uri,
         source: CameraSource.Camera
       });
@@ -128,7 +128,7 @@ export default class ImageService {
     try {
       const imageData = await Camera.getPhoto({
         quality: 2,
-        allowEditing: true,
+        allowEditing: false,
         resultType: CameraResultType.DataUrl,
         source: CameraSource.Camera
       });
@@ -146,7 +146,7 @@ export default class ImageService {
     try {
       const imageData = await Camera.getPhoto({
         quality: 2,
-        allowEditing: true,
+        allowEditing: false,
         resultType: CameraResultType.Base64,
         source: CameraSource.Camera
       });
