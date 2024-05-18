@@ -9,23 +9,32 @@
 <ion-content *ngIf="!imageCaptured">
   <h2>Scan Ingredients</h2>
   <div class="scan-div">
-    <button class="submit start-scan" ion-button (click)="scan()"><p><ion-icon name="scan"></ion-icon><br/>Scan Ingredients</p></button>
+    <button class="submit start-scan" ion-button (click)="scan()">
+      <p><ion-icon name="scan"></ion-icon></p>
+    </button>
   </div>
 </ion-content>
 <ion-content *ngIf="imageCaptured">
   <div class="alert-div">
-    <ion-list>
-      <ion-item>
-        <!-- <ion-textarea type="text" rows="8" [(ngModel)]="ingredientsText" placeholder="Ingredients Text"></ion-textarea> -->
-        <p>{{ingredientsText}}</p>
-      </ion-item>
-      <ion-item *ngIf="imageSrc && imageSrc.length > 0">
-        <ion-img  src="{{imageSrc}}"  alt="Image containing product ingredients"></ion-img>
-      </ion-item>
-      <ion-item>
-        <ion-button class="submit continue-scan side-by-side" (click)="scan()"><p><ion-icon name="scan"></ion-icon><br/>Scan</p></ion-button>
-        <ion-button color="danger" class="side-by-side" (click)="resetSection()"><p><ion-icon name="close-circle"></ion-icon>Cancel</p></ion-button>
-      </ion-item>
-    </ion-list>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div [innerHtml]="ingredientsTextHTML"></div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-img  src="{{imageSrc}}"  alt="Image containing product ingredients"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button class="submit continue-scan" (click)="scan()"><p><ion-icon name="scan"></ion-icon>Scan</p></ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button color="danger" (click)="resetSection()"><p><ion-icon name="close-circle"></ion-icon>Reset</p></ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

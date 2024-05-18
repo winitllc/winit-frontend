@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
 import ImageService from '../util/image.service';
 import { ScanCropperModalPage } from './scan-cropperModal.page';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-scan',
@@ -11,14 +12,15 @@ import { ScanCropperModalPage } from './scan-cropperModal.page';
 export class ScanPage implements OnInit {
 
   imageCaptured: boolean = false;
-  ingredientsText: string = "";
-  imageSrc: string = "";
+  ingredientsTextHTML: any = '';
+  imageSrc: string = '';
   loading: HTMLIonLoadingElement | null = null;
 
   constructor(
     private imageService: ImageService,
     private modalCtrl: ModalController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private sanitizer: DomSanitizer
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -33,22 +35,21 @@ export class ScanPage implements OnInit {
   ionViewWillEnter(): void {
     console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
     this.imageCaptured = false;
-    this.ingredientsText = "";
+    this.ingredientsTextHTML = "";
     this.imageSrc = "";
   }
 
   async scan() {
-    console.log(`ScanPage.scan: ingredientsText: ${this.ingredientsText}`);
     const imageToTextData = await this.imageToText();
     this.imageCaptured = true;
     this.imageSrc = imageToTextData.image;
-    this.ingredientsText = imageToTextData.text;
+    this.ingredientsTextHTML = this.sanitizer.bypassSecurityTrustHtml(this.addAlertHighlights(imageToTextData.text));
     console.log(`ScanPage.scan: imageToTextData: ${JSON.stringify(imageToTextData)}`);
   }
 
   resetSection() {
     this.imageCaptured = false;
-    this.ingredientsText = "";
+    this.ingredientsTextHTML = "";
     this.imageSrc = "";
   }
 
@@ -91,13 +92,39 @@ export class ScanPage implements OnInit {
     return data as string;
   }
 
+  addAlertHighlights(ingredientsText: string): string {
+    const ingredientsTextHTML: string = ingredientsText.split(/\.\s+|\.$/).map((sentence) => {
+      console.log(`ProductPage.addAlertHighlights: sentence to check: ${sentence}`);
+      return sentence.split(/,\s+/).map((phrase) => {
+        console.log(`ProductPage.addAlertHighlights: phrase to check: ${phrase}`);
+        return phrase.split(' ').map((word) => {
+          console.log(`ProductPage.addAlertHighlights: word to check: ${word}`);
+          return this.matchWarnings(word) ? `<span style="background-color: red">${word}</span>` : word;
+        }).join(' ');
+      }).join(', ');
+    }).join('. ');
+    console.log(`ProductPage.addAlertHighlights: new text for ingredients with highlights: ${ingredientsTextHTML}`);
+    return ingredientsTextHTML;
+  }
+
+  matchWarnings(phraseOrWord: string): boolean {
+    const warnings = ['wheat', 'gluten', 'milk', 'egg', 'peanut'];
+    return warnings.reduce((prevResult, currWarning) => {
+      console.log(`ProductPage.addAlertHighlights: currWarning to check: ${currWarning}`);
+      return prevResult || phraseOrWord.toLowerCase().includes(currWarning.toLowerCase());
+    }, false);
+  }
+
   async presentLoading(loadingMessage: string) {
     if (this.loading) {
       this.dismissLoading();
     }
-    this.loading = await this.loadingCtrl.create({
-      message: loadingMessage
-    });
+    const loadingOpts: LoadingOptions = {
+      message: loadingMessage,
+      showBackdrop: true,
+      spinner: 'circular'
+    };
+    this.loading = await this.loadingCtrl.create(loadingOpts);
 
     this.loading.present();
   }
