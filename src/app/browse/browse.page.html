@@ -1,20 +1,20 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Browse
+      Home
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <!-- <wuzinit-store-ad-banner></wuzinit-store-ad-banner> -->
-  <div class="search-area">
+  <!-- <div class="search-area">
     <input type="text" [(ngModel)]="searchBox">
     <button class="submit" ion-button (click)="searchByText()">Search</button>
-  </div>
+  </div> -->
   <div class="categories-area">
-    <h2>Categories</h2>
-    <ion-grid>
+    <h2>About Us</h2>
+    <!-- <ion-grid>
       <ion-row *ngFor="let category of categories">
         <ion-col class="browse-category" (click)="searchCategory(category.left.searchName, category.left.displayName)">
           <b *ngIf="category.left.displayName.search(' ') === -1">{{category.left.displayName}}</b>
@@ -25,6 +25,6 @@
           <b *ngIf="category.right.displayName.search(' ') > -1">{{category.right.displayName.split(' ')[0]}}</b>
         </ion-col>
       </ion-row>
-    </ion-grid>
+    </ion-grid> -->
   </div>
 </ion-content>

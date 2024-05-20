@@ -6,6 +6,7 @@ import { ScanPage } from './scan.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 
 import { ScanPageRoutingModule } from './scan-routing.module';
+import { ScanCropperModalPage } from './scan-cropperModal.page';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { ScanPageRoutingModule } from './scan-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    ScanPageRoutingModule
+    ScanPageRoutingModule,
+    ScanCropperModalPage
   ],
   declarations: [ScanPage]
 })

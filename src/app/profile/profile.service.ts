@@ -133,7 +133,7 @@ export class ProfileService {
     });
 
     return this.http
-      .get<any>(`https://winitclinic.com/api/v1/accounts/me`, {
+      .get<any>(`https://winitclinic.dev.eltex.dev/api/v1/accounts/me`, {
         headers,
       })
       .pipe(retry(2)); 
@@ -148,7 +148,7 @@ export class ProfileService {
 
     return this.http
       .get<any>(
-        `https://winitclinic.com/api/v1/patient/health-profiles/` +
+        `https://winitclinic.dev.eltex.dev/api/v1/patient/health-profiles/` +
           id,
         { headers }
       )
@@ -241,19 +241,19 @@ export class ProfileService {
   //   }
   // }
 
-  // public async addToProfilePoints(pointsToAdd: number): Promise<void> {
-  //   const profilePoints: model.WuzinitPoints = this.state.getProfilePoints();
-  //   try {
-  //     profilePoints.pointsBalance = profilePoints.pointsBalance + Math.max(0, pointsToAdd);
-  //     profilePoints.pointsAllTime = profilePoints.pointsAllTime + Math.max(0, pointsToAdd);
-  //     console.log(`ProfileService.addToProfilePoints: [DEBUG] New Profile Points: ${JSON.stringify(profilePoints)}`);
-  //     await this.saveProfilePoints(profilePoints);
-  //     this.state.setProfilePoints(profilePoints);
-  //   } catch (error) {
-  //     console.error(`ProfileService.addToProfilePoints: [ERROR] Error adding ${pointsToAdd} to profile points: ${JSON.stringify(profilePoints)}`);
-  //     console.error(`ProfileService.addToProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
-  //   }
-  // }
+  public async addToProfilePoints(pointsToAdd: number): Promise<void> {
+    const profilePoints: model.WuzinitPoints = this.state.getProfilePoints();
+    try {
+      profilePoints.pointsBalance = profilePoints.pointsBalance + Math.max(0, pointsToAdd);
+      profilePoints.pointsAllTime = profilePoints.pointsAllTime + Math.max(0, pointsToAdd);
+      console.log(`ProfileService.addToProfilePoints: [DEBUG] New Profile Points: ${JSON.stringify(profilePoints)}`);
+      await this.saveProfilePoints(profilePoints);
+      this.state.setProfilePoints(profilePoints);
+    } catch (error) {
+      console.error(`ProfileService.addToProfilePoints: [ERROR] Error adding ${pointsToAdd} to profile points: ${JSON.stringify(profilePoints)}`);
+      console.error(`ProfileService.addToProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
+    }
+  }
 
   // public async subtractFromProfilePoints(pointsToSubtract: number): Promise<model.WuzinitPoints> {
   //   const profilePoints: model.WuzinitPoints = this.state.getProfilePoints();
@@ -270,18 +270,28 @@ export class ProfileService {
   //   }
   // }
 
-  // public async saveProfilePoints(profilePoints: model.WuzinitPoints): Promise<void> {
-  //   const updateProfileURL: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.updateProfilePoints;
-  //   try {
-  //     const response = await this.http.post(updateProfileURL, profilePoints, {
-  //         'Content-Type': 'application/json'
-  //     });
-  //     console.log(`ProfileService.saveProfilePoints: [DEBUG] response from backend: ${JSON.stringify(response)}`);
-  //   } catch (error) {
-  //     console.error(`ProfileService.saveProfilePoints: [ERROR] Error updating profile points: ${JSON.stringify(profilePoints)}`);
-  //     console.error(`ProfileService.saveProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
-  //   }
-  // }
+  public async saveProfilePoints(profilePoints: model.WuzinitPoints): Promise<void> {
+    const updateProfileURL: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.updateProfilePoints;
+    try {
+      const requestOptions = {
+        url: updateProfileURL,
+        headers: {
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
+          'Content-Type': 'application/json'
+        },
+        data: {
+          profilePoints
+        }
+      };
+      const response: any = await CapacitorHttp.post(requestOptions);
+      console.log(`ProfileService.saveProfilePoints: [DEBUG] response from backend: ${JSON.stringify(response)}`);
+    } catch (error) {
+      console.error(`ProfileService.saveProfilePoints: [ERROR] Error updating profile points: ${JSON.stringify(profilePoints)}`);
+      console.error(`ProfileService.saveProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
+    }
+  }
 
   // PRIVATE METHODS //
   /////////////////////
