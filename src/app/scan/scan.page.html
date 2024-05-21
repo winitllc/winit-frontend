@@ -6,9 +6,35 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <h2 *ngIf="headerDisplayed">Scan Barcode</h2>
-  <div class="scan-div barcode-scanner-active">
-    <button *ngIf="buttonDisplayed" class="submit start-scan" ion-button (click)="scan()"><p><ion-icon name="barcode"></ion-icon><br/>Scan</p></button>
+<ion-content *ngIf="!imageCaptured">
+  <h2>Scan Ingredients</h2>
+  <div class="scan-div">
+    <button class="submit start-scan" ion-button (click)="scan()">
+      <p><ion-icon name="scan"></ion-icon></p>
+    </button>
+  </div>
+</ion-content>
+<ion-content *ngIf="imageCaptured">
+  <div class="alert-div">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div [innerHtml]="ingredientsTextHTML"></div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-img  src="{{imageSrc}}"  alt="Image containing product ingredients"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button class="submit continue-scan" (click)="scan()"><p><ion-icon name="scan"></ion-icon>Scan</p></ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button color="danger" (click)="resetSection()"><p><ion-icon name="close-circle"></ion-icon>Reset</p></ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

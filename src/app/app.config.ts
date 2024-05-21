@@ -175,30 +175,47 @@ export const AppConfig = {
     ]
   },
   emptySpoonacularProduct: {
-    id: -1,
-    type: 'spoonacular',
-    title: "",
-    breadcrumbs: [
-        "N/A"
-    ],
-    images: [],
-    badges: [],
-    important_badges: [],
-    ingredientCount: 0.0,
-    generatedText: null,
-    ingredientList: "",
-    ingredients: [],
-    likes: 0.0,
-    number_of_servings: null,
-    nutrition: {
-        calories: 0,
-        carbs: "0g",
-        fat: "0g",
-        protein: "0g"
+    "credits":{},
+    "servings":{
+      "number":0,
+      "raw":"N/A",
+      "unit":"N/A",
+      "size":0
     },
-    price: 0.0,
-    serving_size: "",
-    spoonacular_score: 0.0
+    "title":"Not Found",
+    "id":0,
+    "importantBadges":[],
+    "nutrition":{
+      "caloricBreakdown":{
+        "percentProtein":0,
+        "percentCarbs":0,
+        "percentFat":0
+      },
+      "nutrients":[],
+      "fat":"N/A",
+      "carbs":"N/A",
+      "calories":0,
+      "protein":"N/A"
+    },
+    "upc":"0",
+    "generatedText":null,
+    "image":null,
+    "usdaCode":null,
+    "ingredients":[],
+    "imageType":null,
+    "images":[],
+    "description":null,
+    "breadcrumbs":[],
+    "aisle":null,
+    "badges":[],
+    "ingredientCount":0,
+    "likes":0,
+    "spoonacularScore":null,
+    "ingredientList":"N/A",
+    "price":0,
+    "brand":"N/A",
+    "category":"upc 0",
+    "type":"spoonacular"
   },
   emptyWuzinitProduct: {
     code: '',

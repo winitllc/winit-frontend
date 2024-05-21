@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BarcodeScanner, BarcodeFormat, LensFacing } from '@capacitor-mlkit/barcode-scanning';
-import { model } from 'wuzinit-common';
-import ScanFactory from './scan.factory';
-import { AppConfig } from '../app.config';
-import { SpoonacularProduct } from '../product/product.model';
-import { ProductService } from '../product/product.service';
-import { ProfileService } from '../profile/profile.service';
-import { NavController, LoadingController, AlertController } from '@ionic/angular';
-import { NavigationExtras } from '@angular/router';
+import { LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
+import ImageService from '../util/image.service';
+import { ScanCropperModalPage } from './scan-cropperModal.page';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-scan',
@@ -16,128 +11,130 @@ import { NavigationExtras } from '@angular/router';
 })
 export class ScanPage implements OnInit {
 
-  headerDisplayed: boolean = true;
-  buttonDisplayed: boolean = true;
+  imageCaptured: boolean = false;
+  ingredientsTextHTML: any = '';
+  imageSrc: string = '';
+  loading: HTMLIonLoadingElement | null = null;
 
   constructor(
-    private loadingController: LoadingController,
-    private navCtrl: NavController,
-    private service: ProductService,
-    public factory: ScanFactory,
-    private profileService: ProfileService,
-    private alertController: AlertController
+    private imageService: ImageService,
+    private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController,
+    private sanitizer: DomSanitizer
   ) { }
 
   async ngOnInit(): Promise<void> {
     try {
       console.log(`ScanPage.ngOnInit setting up scan page`);
-      // this.scan();
+      this.imageCaptured = false;
     } catch (error) {
       console.error(`ScanPage.ngOnInit Error: ${JSON.stringify(error)}`);
     }
   }
 
   ionViewWillEnter(): void {
-    // this.scan();
-    this.buttonDisplayed = true;
-    this.headerDisplayed = true;
+    console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
+    this.imageCaptured = false;
+    this.ingredientsTextHTML = "";
+    this.imageSrc = "";
   }
 
-  public async scan(): Promise<void> {
-    this.buttonDisplayed = false;
-    this.headerDisplayed = false;
-    const granted = await this.requestPermissions();
-    if (!granted) {
-      this.presentAlert();
-    }
-    else {
-      try {
-        const listener = await BarcodeScanner.addListener(
-          'barcodeScanned',
-          async result => {
-            console.log(result.barcode);
-            const barcodeData: any = result.barcode;
-            if (barcodeData.hasOwnProperty('cancelled') && !barcodeData.cancelled) {
-              const barcode: string = this.factory.padCode(barcodeData);
-              return this.getByBarcode(barcode);
-            } else {
-              this.navigateBackward();
-            }
-          },
-        );
-        await BarcodeScanner.startScan();
-      } catch (error) {
-        console.error(`ScanPage.scan: Error scanning the product: ${JSON.stringify(error)}`);
-      }
-    }
+  async scan() {
+    const imageToTextData = await this.imageToText();
+    this.imageCaptured = true;
+    this.imageSrc = imageToTextData.image;
+    this.ingredientsTextHTML = this.sanitizer.bypassSecurityTrustHtml(this.addAlertHighlights(imageToTextData.text));
+    console.log(`ScanPage.scan: imageToTextData: ${JSON.stringify(imageToTextData)}`);
   }
 
-  async requestPermissions(): Promise<boolean> {
-    const { camera } = await BarcodeScanner.requestPermissions();
-    return camera === 'granted' || camera === 'limited';
+  resetSection() {
+    this.imageCaptured = false;
+    this.ingredientsTextHTML = "";
+    this.imageSrc = "";
   }
 
-  async presentAlert(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Permission denied',
-      message: 'Please grant camera permission to use the barcode scanner.',
-      buttons: ['OK'],
-    });
-    await alert.present();
-  }
-
-  private async getByBarcode(barcode: string): Promise<void> {
+  async imageToText(): Promise<ImageToTextData> {
+    console.log(`ScanPage.imageToText: image to text selected`);
     try {
-      const loading = await this.loadingController.create({
-        // cssClass: 'my-custom-class',
-        message: `Loading product with barcode: ${barcode}`,
-        // duration: 2000
-      });
-      await loading.present();
-      const spoonacularResult: SpoonacularProduct = await this.service.getSpoonacularProductByBarcode(barcode) || JSON.parse(JSON.stringify(AppConfig.emptySpoonacularProduct));
-      console.log(`ScanPage.getByBarcode: result from spoonacular: ${JSON.stringify(spoonacularResult)}`);
-      if (spoonacularResult.id > 0) {
-        this.pushToProductPage(spoonacularResult);
-        await loading.dismiss();
-      } else {
-        console.log(`ScanPage.getByBarcode: get from our db instead`);
-        this.pushToProductPage({
-          message: AppConfig.controlMessages.noProduct,
-          barcode
-        });
-        // const wuzinitResult: model.WuzinitProduct = await this.service.getWuzinitProductByBarcode(barcode);
-        // console.log(`ScanPage.getByBarcode: result from wuzinit: ${JSON.stringify(wuzinitResult)}`);
-        // if (Boolean(wuzinitResult) && wuzinitResult.hasOwnProperty('code') && wuzinitResult.code.length > 0 && wuzinitResult.code != '-1') {
-        //   this.pushToProductPage(wuzinitResult);
-        // } else {
-        //   this.pushToProductPage({
-        //     message: AppConfig.controlMessages.noProduct,
-        //     barcode
-        //   });
-        // }
-      }
-    } catch (error) {
-      console.error(`ScanPage.getByBarcode: Error retrieving data by barcode ${barcode}:\n${JSON.stringify(error)}`);
-      this.navigateBackward();
-    }
-  }
-
-  private pushToProductPage(product: model.WuzinitProductBase | { message: string, barcode: string }): void {
-    try {
-      // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
-      console.log(`ScanPage.pushToProductPage: pushing the product to product page: ${JSON.stringify(product)}`);
-      const navExtras: NavigationExtras = {
-        state: {
-          product
-        }
+      console.log(`ScanPage.imageToText: running imageToText function`);
+      const imageData = await this.imageService.captureImageDataURL();
+      this.presentLoading('Loading Image Cropper');
+      const croppedImageData = await this.openCropperModal(imageData);
+      this.presentLoading('Getting Text From Image');
+      const rawImageData = croppedImageData.replace('data:image/jpeg;base64,', '');
+      const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData);
+      const imageText = await this.imageService.imageToText(imageKeyInS3);
+      this.dismissLoading();
+      console.log(`ScanPage.imageToText: text from service: ${imageText}.`);
+      return {
+        text: imageText,
+        image: croppedImageData || ''
       };
-      this.navCtrl.navigateForward('product', navExtras);
     } catch (error) {
-      console.error(`ScanPage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);
+      console.error(`ScanPage.imageToText: error capturing image and converting to text: ${JSON.stringify(error)}`);
+      return this.imageToText();
     }
   }
 
-  private navigateBackward(): void {
-    this.navCtrl.back();
+  async openCropperModal(imageData: string): Promise<string> {
+    const modal: HTMLIonModalElement = await this.modalCtrl.create({
+      component: ScanCropperModalPage,
+      componentProps: {
+        imageInput: imageData
+      }
+    });
+    this.dismissLoading();
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log(`ProductPage.openCropperModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`ProductPage.openCropperModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    return data as string;
   }
+
+  addAlertHighlights(ingredientsText: string): string {
+    const ingredientsTextHTML: string = ingredientsText.split(/\.\s+|\.$/).map((sentence) => {
+      console.log(`ProductPage.addAlertHighlights: sentence to check: ${sentence}`);
+      return sentence.split(/,\s+/).map((phrase) => {
+        console.log(`ProductPage.addAlertHighlights: phrase to check: ${phrase}`);
+        return phrase.split(' ').map((word) => {
+          console.log(`ProductPage.addAlertHighlights: word to check: ${word}`);
+          return this.matchWarnings(word) ? `<span style="background-color: red">${word}</span>` : word;
+        }).join(' ');
+      }).join(', ');
+    }).join('. ');
+    console.log(`ProductPage.addAlertHighlights: new text for ingredients with highlights: ${ingredientsTextHTML}`);
+    return ingredientsTextHTML;
+  }
+
+  matchWarnings(phraseOrWord: string): boolean {
+    const warnings = ['wheat', 'gluten', 'milk', 'egg', 'peanut'];
+    return warnings.reduce((prevResult, currWarning) => {
+      console.log(`ProductPage.addAlertHighlights: currWarning to check: ${currWarning}`);
+      return prevResult || phraseOrWord.toLowerCase().includes(currWarning.toLowerCase());
+    }, false);
+  }
+
+  async presentLoading(loadingMessage: string) {
+    if (this.loading) {
+      this.dismissLoading();
+    }
+    const loadingOpts: LoadingOptions = {
+      message: loadingMessage,
+      showBackdrop: true,
+      spinner: 'circular'
+    };
+    this.loading = await this.loadingCtrl.create(loadingOpts);
+
+    this.loading.present();
+  }
+
+  async dismissLoading() {
+    this.loading?.dismiss();
+  }
+}
+
+interface ImageToTextData {
+  image: string;
+  text: string;
 }

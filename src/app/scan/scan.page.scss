@@ -1,20 +1,3 @@
-ion-card.info {
-  color: blue;
-}
-
-ion-card.warn {
-  color: orange;
-}
-
-ion-card.error {
-  color: red;
-}
-
-ion-card.raiseAlarm {
-  background-color: red;
-  color: yellow;
-  size: 1.5em
-}
 
 div.scan-div {
   display: flex;
@@ -31,21 +14,14 @@ button.start-scan {
   font-size: 4em;
 }
 
-// Hide all elements
-body.barcode-scanner-active {
-  visibility: hidden;
-  --background: transparent;
-  --ion-background-color: transparent;
+button.start-scan p {
+  font-size: 1em !important;
 }
 
-// Show only the barcode scanner modal
-.barcode-scanner-modal {
-  visibility: visible;
+div.alert-div {
+  text-align: center !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  .barcode-scanner-modal {
-    --background: transparent;
-    --ion-background-color: transparent;
-  }
+div.alert-div button {
+  width: 10%;
 }
