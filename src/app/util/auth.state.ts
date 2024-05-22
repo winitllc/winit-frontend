@@ -72,8 +72,8 @@ export class AuthState {
       return this.iamCredentials;
     }
     return {
-      accessKeyId: '',
-      secretAccessKey: ''
+      accessKeyId: 'AKIATPFW657WWZN2JI4K',
+      secretAccessKey: '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'
     };
   }
   
