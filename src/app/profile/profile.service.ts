@@ -113,7 +113,7 @@ export class ProfileService {
           profile
         )}`
       );
-      this.state.setProfile(profile);
+      // this.state.setProfile(profile);
       return profile;
     } catch (error) {
       console.error(

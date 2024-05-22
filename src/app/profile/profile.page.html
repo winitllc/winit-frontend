@@ -48,98 +48,88 @@
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Symptoms:</ion-label>
-      <ul *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.symptoms && healthProfileData.medical.symptoms.length > 0">
-        <li *ngFor="let symptom of healthProfileData.medical.symptoms">{{symptom.name}}</li>
-      </ul>
-      <ul *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.symptoms || healthProfileData.medical.symptoms.length === 0">
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.symptoms && healthProfileData.medical.symptoms.length > 0">
+        <ion-row *ngFor="let symptom of healthProfileData.medical.symptoms">{{symptom.name}}</ion-row>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.symptoms || healthProfileData.medical.symptoms.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Medical Conditions:</ion-label>
-      <ul
-        *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.medicalConditions && healthProfileData.medical.medicalConditions.length > 0">
-        <li *ngFor="let condition of healthProfileData.medical.medicalConditions">{{condition.name}}</li>
-      </ul>
-      <ul
-        *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.medicalConditions || healthProfileData.medical.medicalConditions.length === 0">
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.medicalConditions && healthProfileData.medical.medicalConditions.length > 0">
+        <ion-row *ngFor="let condition of healthProfileData.medical.medicalConditions">{{condition.name}}</ion-row>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.medicalConditions || healthProfileData.medical.medicalConditions.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Auto-Immune Diseases:</ion-label>
-      <ul
-        *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.autoImmuneDiseases && healthProfileData.medical.autoImmuneDiseases.length > 0">
-        <li *ngFor="let condition of healthProfileData.medical.autoImmuneDiseases">{{condition.name}}</li>
-      </ul>
-      <ul
-        *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.autoImmuneDiseases || healthProfileData.medical.autoImmuneDiseases.length === 0">
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.autoImmuneDiseases && healthProfileData.medical.autoImmuneDiseases.length > 0">
+        <ion-row *ngFor="let condition of healthProfileData.medical.autoImmuneDiseases">{{condition.name}}</ion-row>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.autoImmuneDiseases || healthProfileData.medical.autoImmuneDiseases.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Lifestyle Diet:</ion-label>
-      <ul *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.lifestyleDiet && healthProfileData.medical.lifestyleDiet.length > 0">
-        <li *ngFor="let condition of healthProfileData.medical.lifestyleDiet">{{condition.name}}</li>
-      </ul>
-      <ul
-        *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.lifestyleDiet || healthProfileData.medical.lifestyleDiet.length === 0">
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.lifestyleDiet && healthProfileData.medical.lifestyleDiet.length > 0">
+        <ion-row *ngFor="let condition of healthProfileData.medical.lifestyleDiet">{{condition.name}}</ion-row>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.lifestyleDiet || healthProfileData.medical.lifestyleDiet.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Allergies:</ion-label>
-      <ul *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.allergies && healthProfileData.medical.allergies.length > 0">
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.allergies && healthProfileData.medical.allergies.length > 0">
         <!-- *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.allergies.length > 0 && healthProfileData.medical.allergiesCategory.length > 0"> -->
-        <li *ngFor="let allergy of healthProfileData.medical.allergies">{{allergy.name}}</li>
+        <ion-row *ngFor="let allergy of healthProfileData.medical.allergies">{{allergy.name}}</ion-row>
         <!-- <li *ngFor="let allergy of healthProfileData.medical.allergiesCategory">{{allergy.name}}</li> -->
-      </ul>
-      <ul
-        *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.allergies || healthProfileData.medical.allergies.length === 0">
-        <li>N/A</li>
-      </ul>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.allergies || healthProfileData.medical.allergies.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Food Intolerances:</ion-label>
-      <ul *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.foodIntolerances && healthProfileData.medical.foodIntolerances.length > 0">
-      <!-- <ul *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.foodIntolerances.length > 0 && healthProfileData.medical.foodIntolerancesCategory.length > 0"> -->
-        <li *ngFor="let allergy of healthProfileData.medical.foodIntolerances">{{allergy.name}}</li>
-        <li *ngFor="let allergy of healthProfileData.medical.foodIntolerancesCategory">{{allergy.name}}</li>
-      </ul>
-      <ul *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.foodIntolerances || healthProfileData.medical.foodIntolerances.length === 0">
-      <!-- <ul *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.foodIntolerances.length === 0 || healthProfileData.medical.foodIntolerancesCategory.length === 0"> -->
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.foodIntolerances && healthProfileData.medical.foodIntolerances.length > 0">
+      <!-- <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.foodIntolerances.length > 0 && healthProfileData.medical.foodIntolerancesCategory.length > 0"> -->
+        <ion-row *ngFor="let allergy of healthProfileData.medical.foodIntolerances">{{allergy.name}}</ion-row>
+        <!-- <li *ngFor="let allergy of healthProfileData.medical.foodIntolerancesCategory">{{allergy.name}}</li> -->
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.foodIntolerances || healthProfileData.medical.foodIntolerances.length === 0">
+      <!-- <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.foodIntolerances.length === 0 || healthProfileData.medical.foodIntolerancesCategory.length === 0"> -->
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Current Medications:</ion-label>
-      <ul
-        *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.currentMedications && healthProfileData.medical.currentMedications.length > 0">
-        <li *ngFor="let condition of healthProfileData.medical.currentMedications">{{condition.text}}</li>
-      </ul>
-      <ul
-        *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.currentMedications || healthProfileData.medical.currentMedications.length === 0">
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.currentMedications && healthProfileData.medical.currentMedications.length > 0">
+        <ion-row *ngFor="let condition of healthProfileData.medical.currentMedications">{{condition.text}}</ion-row>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.currentMedications || healthProfileData.medical.currentMedications.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
 
     <ion-item *ngIf="healthProfileData != undefined" class="list-content">
       <ion-label position="stacked">Other Products:</ion-label>
-      <ul
-        *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.medicalConditions && healthProfileData.medical.medicalConditions.length > 0">
-        <li *ngFor="let condition of healthProfileData.medical.medicalConditions">{{condition.name}}</li>
-      </ul>
-      <ul
-        *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.medicalConditions || healthProfileData.medical.medicalConditions.length === 0">
-        <li>N/A</li>
-      </ul>
+      <ion-grid *ngIf="healthProfileData && healthProfileData.medical && healthProfileData.medical.medicalConditions && healthProfileData.medical.medicalConditions.length > 0">
+        <ion-row *ngFor="let condition of healthProfileData.medical.medicalConditions">{{condition.name}}</ion-row>
+      </ion-grid>
+      <ion-grid *ngIf="!healthProfileData || !healthProfileData.medical || !healthProfileData.medical.medicalConditions || healthProfileData.medical.medicalConditions.length === 0">
+        <ion-row>N/A</ion-row>
+      </ion-grid>
     </ion-item>
 
 

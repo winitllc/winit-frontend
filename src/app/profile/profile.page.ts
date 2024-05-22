@@ -8,11 +8,6 @@ import { model, view } from 'wuzinit-common';
 import { AuthService } from '../util/auth.service';
 import { AllergiesService } from '../util/allergies.service';
 import { ProfileService } from './profile.service';
-import {
-  ProfileFactory,
-  EditModeProfile,
-  EditModeUser,
-} from './profile.factory';
 import { ProfileState } from './profile.state';
 import { MedicalConditionsService } from '../util/medicalConditions.service';
 import { DietsService } from '../util/diets.service';
@@ -150,6 +145,7 @@ export class ProfilePage {
           console.log('ProfilePage.getHealthProfileData: data fetched from health profile api');
           console.log(`ProfilePage.getHealthProfileData: ${JSON.stringify(data)}`);
           this.healthProfileData = data['data'];
+          this.state.setProfile(data['data']);
           console.log(`ProfilePage.getHealthProfileData: health profile data ${JSON.stringify(this.healthProfileData)}`);
         },
         (error) => {

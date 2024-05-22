@@ -6,7 +6,7 @@ import { model, view } from 'wuzinit-common';
 })
 export class ProfileState {
 
-  public profile: view.Profile = JSON.parse(JSON.stringify(emptyProfile));
+  public profile: any = JSON.parse(JSON.stringify(emptyProfile));
 
   private dangerousIngredients: string[] = [];
   private poisonousIngredients: string[] = [];
@@ -19,11 +19,11 @@ export class ProfileState {
     this.poisonousIngredients = [];
   }
 
-  getProfile(): view.Profile {
+  getProfile(): any {
     return this.profile;
   }
 
-  setProfile(profile: view.Profile): void {
+  setProfile(profile: any): void {
     this.profile = profile;
   }
 

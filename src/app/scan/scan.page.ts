@@ -3,6 +3,7 @@ import { LoadingController, LoadingOptions, ModalController } from '@ionic/angul
 import ImageService from '../util/image.service';
 import { ScanCropperModalPage } from './scan-cropperModal.page';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ProfileState } from '../profile/profile.state';
 
 @Component({
   selector: 'app-scan',
@@ -15,12 +16,15 @@ export class ScanPage implements OnInit {
   ingredientsTextHTML: any = '';
   imageSrc: string = '';
   loading: HTMLIonLoadingElement | null = null;
+  profile: any;
+  warnings: string[] = [];
 
   constructor(
     private imageService: ImageService,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private profileState: ProfileState
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -34,6 +38,9 @@ export class ScanPage implements OnInit {
 
   ionViewWillEnter(): void {
     console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
+    this.profile = this.profileState.getProfile();
+    console.log(`ScanPage.ngOnInit: profile from state: ${JSON.stringify(this.profile)}`);
+    this.warnings = this.profile.medical.allergies.map((allergy: any) => {allergy.name as string});
     this.imageCaptured = false;
     this.ingredientsTextHTML = "";
     this.imageSrc = "";
@@ -108,9 +115,10 @@ export class ScanPage implements OnInit {
   }
 
   matchWarnings(phraseOrWord: string): boolean {
-    const warnings = ['wheat', 'gluten', 'milk', 'egg', 'peanut'];
+    const warnings = this.warnings;
+    console.log(`ProductPage.matchWarnings: warnings: ${JSON.stringify(warnings)}`);
     return warnings.reduce((prevResult, currWarning) => {
-      console.log(`ProductPage.addAlertHighlights: currWarning to check: ${currWarning}`);
+      console.log(`ProductPage.matchWarnings: currWarning to check: ${currWarning}`);
       return prevResult || phraseOrWord.toLowerCase().includes(currWarning.toLowerCase());
     }, false);
   }
