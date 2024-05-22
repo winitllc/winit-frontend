@@ -122,11 +122,11 @@ export class ProfilePage {
     this.service.getUserProfileData().subscribe(
       (data: any) => {
         // Handle the response data
-        console.log('data fetched from api/accounts/me');
-        console.log(data);
+        console.log('ProfilePage.fetchProfileData: data fetched from api/accounts/me');
+        console.log(`ProfilePage.fetchProfileData: ${JSON.stringify(data)}`);
         this.profileData = data['data'];
-        console.log(this.profileData);
-        console.log(this.profileData.profile.showName);
+        console.log(`ProfilePage.fetchProfileData: profile data: ${JSON.stringify(this.profileData)}`);
+        console.log(`ProfilePage.fetchProfileData: profile name: ${this.profileData.profile.showName}`);
         // console.log(this.profileData['healthProfiles'][0]['id'] != undefined);
         if (this.profileData['healthProfiles'] != undefined) {
           if (this.profileData['healthProfiles'].length > 0) {
@@ -136,7 +136,7 @@ export class ProfilePage {
       },
       (error) => {
         // Handle errors
-        console.error(error);
+        console.error(`ProfilePage.fetchProfileData: [ERROR] ${JSON.stringify(error)}`);
       }
     );
   }
@@ -147,14 +147,14 @@ export class ProfilePage {
       .subscribe(
         (data: any) => {
           // Handle the response data
-          console.log('data fetched from health profile api');
-          console.log(data);
+          console.log('ProfilePage.getHealthProfileData: data fetched from health profile api');
+          console.log(`ProfilePage.getHealthProfileData: ${JSON.stringify(data)}`);
           this.healthProfileData = data['data'];
-          console.log(this.healthProfileData);
+          console.log(`ProfilePage.getHealthProfileData: health profile data ${JSON.stringify(this.healthProfileData)}`);
         },
         (error) => {
           // Handle errors
-          console.error(error);
+          console.error(`ProfilePage.getHealthProfileData: [ERROR] ${JSON.stringify(error)}`);
         }
       );
   }
