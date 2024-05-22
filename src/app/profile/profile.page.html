@@ -1,18 +1,12 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <button (click)="confirmLogout()" class="logout" color="danger">Logout</button>
-    </ion-buttons>
-    <ion-title>
-      Profile
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-header [translucent]="true">
     <ion-toolbar>
-      <ion-title size="large">Profile</ion-title>
+      <ion-buttons slot="start">
+        <ion-button (click)="confirmLogout()" class="logout">Logout</ion-button>
+      </ion-buttons>
+      <ion-title>
+        Profile
+      </ion-title>
     </ion-toolbar>
   </ion-header>
   <!-- <ion-list *ngIf="!editMode"> -->

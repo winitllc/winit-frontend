@@ -2,3 +2,12 @@ ion-list {
   padding-bottom: 20%;
   padding-top: 5%;
 }
+
+ion-button.logout {
+  border-color: black;
+  background-color: white;
+  border-radius: 1em;
+  border-style: solid;
+  width: 6em;
+  min-height: 2.2em;
+}
