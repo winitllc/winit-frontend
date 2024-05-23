@@ -38,9 +38,9 @@ export class ScanPage implements OnInit {
 
   ionViewWillEnter(): void {
     console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
-    this.profile = this.profileState.getProfile();
+    this.profile = this.profileState.getHealthProfile();
     console.log(`ScanPage.ngOnInit: profile from state: ${JSON.stringify(this.profile)}`);
-    this.warnings = this.profile.medical.allergies.map((allergy: any) => {allergy.name as string});
+    this.warnings = this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;});
     this.imageCaptured = false;
     this.ingredientsTextHTML = "";
     this.imageSrc = "";
@@ -67,7 +67,7 @@ export class ScanPage implements OnInit {
       const imageData = await this.imageService.captureImageDataURL();
       this.presentLoading('Loading Image Cropper');
       const croppedImageData = await this.openCropperModal(imageData);
-      this.presentLoading('Getting Text From Image');
+      this.presentLoading('Getting Text From Image', 5000);
       const rawImageData = croppedImageData.replace('data:image/jpeg;base64,', '');
       const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData);
       const imageText = await this.imageService.imageToText(imageKeyInS3);
@@ -90,7 +90,7 @@ export class ScanPage implements OnInit {
         imageInput: imageData
       }
     });
-    this.dismissLoading();
+    await this.dismissLoading();
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
@@ -123,14 +123,14 @@ export class ScanPage implements OnInit {
     }, false);
   }
 
-  async presentLoading(loadingMessage: string) {
-    if (this.loading) {
-      this.dismissLoading();
-    }
+  async presentLoading(loadingMessage: string, duration?: number) {
+    this.dismissLoading();
     const loadingOpts: LoadingOptions = {
       message: loadingMessage,
       showBackdrop: true,
-      spinner: 'circular'
+      spinner: 'circular',
+      duration: duration || 2000,
+      cssClass: 'loading-modal'
     };
     this.loading = await this.loadingCtrl.create(loadingOpts);
 
@@ -138,7 +138,7 @@ export class ScanPage implements OnInit {
   }
 
   async dismissLoading() {
-    this.loading?.dismiss();
+    await this.loading?.dismiss();
   }
 }
 

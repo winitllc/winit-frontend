@@ -19,110 +19,48 @@ export class ProfileService {
     private http: HttpClient
   ) {}
 
-  /**
-   * @name setProfile
-   * @param profile The profile view object to set
-   * @returns void
-   */
-  public async setProfile(profile: view.Profile): Promise<void> {
-    this.state.setProfile(profile);
-    console.log(
-      `ProfileService.setProfile: [DEBUG] profile to cache: ${JSON.stringify(
-        profile
-      )}`
+  async fetchProfileData() {
+
+    this.getUserProfileData().subscribe(
+      (data: any) => {
+        // Handle the response data
+        console.log('ProfilePage.fetchProfileData: data fetched from api/accounts/me');
+        console.log(`ProfilePage.fetchProfileData: ${JSON.stringify(data)}`);
+        const profileData = data['data'];
+        console.log(`ProfilePage.fetchProfileData: profile data: ${JSON.stringify(profileData)}`);
+        console.log(`ProfilePage.fetchProfileData: profile name: ${profileData.profile.showName}`);
+        // console.log(profileData['healthProfiles'][0]['id'] != undefined);
+        this.state.setProfile(profileData);
+        if (profileData['healthProfiles'] != undefined) {
+          if (profileData['healthProfiles'].length > 0) {
+            this.getHealthProfileData(profileData);
+          }
+        }
+      },
+      (error) => {
+        // Handle errors
+        console.error(`ProfilePage.fetchProfileData: [ERROR] ${JSON.stringify(error)}`);
+      }
     );
-    await this.cache.putItem('profile', profile);
-    const dangerousIngredients: string[] =
-      this.gatherDangerousIngredients(profile);
-    this.state.setDangerousIngredients(dangerousIngredients);
-    console.log(
-      `ProfileService.setProfile: [DEBUG] dangerous ingredients to cache: ${JSON.stringify(
-        dangerousIngredients
-      )}`
-    );
-    await this.cache.putItem('dangerousIngredients', dangerousIngredients);
-    const poisonousIngredients: string[] =
-      this.gatherPoisonousIngredients(profile);
-    this.state.setPoisonousIngredients(poisonousIngredients);
-    console.log(
-      `ProfileService.setProfile: [DEBUG] poisonous ingredients to cache: ${JSON.stringify(
-        poisonousIngredients
-      )}`
-    );
-    await this.cache.putItem('poisonousIngredients', poisonousIngredients);
   }
 
-  /**
-   * @name fetchProfile
-   * @param email the email to use as the search key
-   * @returns profile fetched from back end
-   */
-  public async fetchProfile(email: string): Promise<view.Profile> {
-    try {
-      let profile: view.Profile | null;
-      profile = await this.getProfileByEmail(email);
-      console.log(
-        `ProfileService.fetchProfile: [DEBUG] newly fetched profile: ${JSON.stringify(
-          profile
-        )}`
+  getHealthProfileData(profileData: any) {
+    this
+      .getUserHealthProfile(profileData['healthProfiles'][0]['id'])
+      .subscribe(
+        (data: any) => {
+          // Handle the response data
+          console.log('ProfilePage.getHealthProfileData: data fetched from health profile api');
+          console.log(`ProfilePage.getHealthProfileData: ${JSON.stringify(data)}`);
+          const healthProfileData = data['data'];
+          this.state.setHealthProfile(data['data']);
+          console.log(`ProfilePage.getHealthProfileData: health profile data ${JSON.stringify(healthProfileData)}`);
+        },
+        (error) => {
+          // Handle errors
+          console.error(`ProfilePage.getHealthProfileData: [ERROR] ${JSON.stringify(error)}`);
+        }
       );
-      if (!profile || !profile.id) {
-        return JSON.parse(JSON.stringify(UNKNOWN_USER));
-      }
-      await this.setProfile(profile);
-      console.log(
-        `ProfileService.fetchProfile: [DEBUG] set the profile on the state and in the cache`
-      );
-      return profile;
-    } catch (error) {
-      console.error(
-        `ProfileService.fetchProfile: [ERROR] Error getting profile by email ${email}: ${JSON.stringify(
-          error
-        )}`
-      );
-      throw error;
-    }
-  }
-
-  /**
-   * @name getProfile
-   * @returns profile that was stored in state or cache
-   */
-  public async getProfile(): Promise<view.Profile> {
-    try {
-      let profile: view.Profile;
-      profile = this.state.getProfile();
-      console.log(
-        `ProfileService.getProfile: [DEBUG] checking the profile stored in memory: ${JSON.stringify(
-          profile
-        )}`
-      );
-      if (!profile || !profile.id || profile.id === '-1') {
-        profile = await this.cache.getItem('profile');
-        console.log(
-          `ProfileService.getProfile: [DEBUG] checking the cached profile: ${JSON.stringify(
-            profile
-          )}`
-        );
-      }
-      if (!profile || !profile.id) {
-        return JSON.parse(JSON.stringify(UNKNOWN_USER));
-      }
-      console.log(
-        `ProfileService.getProfile: [DEBUG] setting the profile in the state, in case it was only in the cache: ${JSON.stringify(
-          profile
-        )}`
-      );
-      // this.state.setProfile(profile);
-      return profile;
-    } catch (error) {
-      console.error(
-        `ProfileService.getProfile: [ERROR] Error getting profile: ${JSON.stringify(
-          error
-        )}`
-      );
-      throw error;
-    }
   }
 
   getUserProfileData(): Observable<any[]> {

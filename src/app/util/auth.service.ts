@@ -73,9 +73,10 @@ export class AuthService {
 
   public async setup(): Promise<void> {
     try {
-      await this.setupOAuth();
-      await this.setupIAM();
+      // await this.setupOAuth();
+      // await this.setupIAM();
       await this.setupSpoonacular();
+      await this.profileService.fetchProfileData();
     } catch (error) {
       console.error(
         `AuthService.setup: [ERROR] Auth Setup error!\nError object: ${JSON.stringify(
@@ -142,141 +143,6 @@ export class AuthService {
     return throwError('Something bad happened; please try again later.');
   }
 
-  // Private Functions
-
-  private async setupOAuth(): Promise<void> {
-    try {
-      const goodOauthTokens = await this.goodOAuthTokens();
-      if (!goodOauthTokens) {
-        console.log(
-          `AuthService.setupOAuth: [DEBUG] the OAuth tokens were bad, gotta log in`
-        );
-        // await this.oauthService.login();
-        await this.setupProfileState();
-      } else {
-        await this.refreshOAuthState();
-        await this.refreshProfileState();
-      }
-    } catch (error) {
-      console.error(
-        `AuthService.setupOAuth: [ERROR] error setting up OAuth stuff: ${JSON.stringify(
-          error
-        )}`
-      );
-      // await this.oauthService.login();
-    }
-  }
-
-  private async setupProfileState(): Promise<void> {
-    try {
-      let email = this.authState.getEmail();
-      console.log(
-        `AuthService.setupProfileState: [DEBUG] fetching profile using email: ${email}`
-      );
-      const profile = await this.profileService.fetchProfile(email);
-      console.log(
-        `AuthService.setupProfileState: [DEBUG] recieved new profile: ${JSON.stringify(
-          profile
-        )}`
-      );
-      await this.profileService.setProfile(profile);
-      const storedProfile: Profile = await this.profileService.getProfile();
-      console.log(
-        `AuthService.setupProfileState: [DEBUG] stored profile: ${JSON.stringify(
-          storedProfile
-        )}`
-      );
-    } catch (error) {
-      console.error(
-        `AuthService.setupProfileState: [ERROR] error setting up profile stuff: ${JSON.stringify(
-          error
-        )}`
-      );
-      // TODO: figure out what to do
-    }
-  }
-
-  private async refreshOAuthState(): Promise<void> {
-    try {
-      const tokens: model.CognitoTokens = await this.cache.getItem(
-        'oauthTokens'
-      );
-      const email: string = await this.cache.getItem('email');
-      const username: string = await this.cache.getItem('username');
-      this.authState.setTokens(tokens);
-      this.authState.setIdData(email, username);
-      console.log(
-        `AuthService.refreshOAuthState: [DEBUG] finished refreshing the oauth state`
-      );
-    } catch (error) {
-      console.error(
-        `AuthService.refreshOAuthState: [ERROR] error refreshing the oauth state: ${JSON.stringify(
-          error
-        )}`
-      );
-    }
-  }
-
-  private async refreshProfileState(): Promise<void> {
-    try {
-      await this.profileService.getProfile();
-      console.error(
-        `AuthService.refreshProfileState: [DEBUG] finished refreshing the profile in the profile state`
-      );
-    } catch (error) {
-      console.error(
-        `AuthService.refreshProfileState: [ERROR] error refreshing the profile in the profile state: ${JSON.stringify(
-          error
-        )}`
-      );
-    }
-  }
-
-  private async setupIAM(): Promise<void> {
-    try {
-      const goodIAMCredentials = await this.goodIAMCredentials();
-      if (!goodIAMCredentials) {
-        console.log('AuthService.setup: [INFO] fetching credentials');
-        const newIAMCredentials: util.AWSCredentials =
-          await this.fetchIAMCredentials();
-        console.log(
-          `AuthService.setup: [DEBUG] recieved new credentials: ${JSON.stringify(
-            newIAMCredentials
-          )}`
-        );
-        this.authState.setIAMCredentials(newIAMCredentials);
-        this.cache.putItem('iamCredentials', newIAMCredentials);
-      } else {
-        await this.refreshIAMState();
-      }
-    } catch (error) {
-      console.error(
-        `AuthService.setupIAM: [ERROR] error setting up IAM: ${JSON.stringify(
-          error
-        )}`
-      );
-      throw error;
-    }
-  }
-
-  private async refreshIAMState(): Promise<void> {
-    try {
-      const iamCredentials: util.AWSCredentials = await this.cache.getItem(
-        'iamCredentials'
-      );
-      this.authState.setIAMCredentials(iamCredentials);
-      console.log(
-        `AuthService.refreshIAMState: [DEBUG] finished refreshing the iam state`
-      );
-    } catch (error) {
-      console.error(
-        `AuthService.refreshIAMState: [ERROR] error refreshing the iam state: ${JSON.stringify(
-          error
-        )}`
-      );
-    }
-  }
-
   private async setupSpoonacular(): Promise<void> {
     try {
       const goodSpoonacularKey = await this.goodSpoonacularAPIKey();
@@ -331,40 +197,6 @@ export class AuthService {
     } catch (error) {
       console.error(
         `AuthService.goodOAuthTokens: [ERROR] something went wrong: ${JSON.stringify(
-          error
-        )}`
-      );
-      return false;
-    }
-  }
-
-  private async goodIAMCredentials(): Promise<boolean> {
-    try {
-      const authStateCredentials: util.AWSCredentials =
-        this.authState.getIAMCredentials();
-      if (
-        authStateCredentials &&
-        authStateCredentials.accessKeyId.length > 0 &&
-        authStateCredentials.secretAccessKey.length > 0
-      ) {
-        return true;
-      }
-      const storedIAMCredentials: util.AWSCredentials =
-        await this.cache.getItem('iamCredentials');
-      console.log(
-        `AuthService.goodIAMCredentials: [DEBUG] storedIAMCredentials: ${JSON.stringify(
-          storedIAMCredentials
-        )}`
-      );
-      if (storedIAMCredentials && storedIAMCredentials.accessKeyId) {
-        return true;
-      } else {
-        // no credentials
-        return false;
-      }
-    } catch (error) {
-      console.error(
-        `AuthService.goodIAMCredentials: [ERROR] error checking IAM credentials: ${JSON.stringify(
           error
         )}`
       );
@@ -432,45 +264,6 @@ export class AuthService {
         )}`
       );
       return '';
-    }
-  }
-
-  private async fetchIAMCredentials(): Promise<util.AWSCredentials> {
-    try {
-      const fetchIAMCredentialsURL = `${EnvironmentConfig.api.utilService.baseUrl}${EnvironmentConfig.api.utilService.awsCredentials}`;
-      console.log(
-        `AuthService.fetchIAMCredentials: [DEBUG] fetching IAM credentials: ${fetchIAMCredentialsURL}`
-      );
-      // const iamCredentialsResult: any = await this.http.get(fetchIAMCredentialsURL).toPromise();
-      const parameters = {}; // don't think we need
-      const headers = this.authState.getAuthHeaders();
-      const requestOptions = {
-        url: fetchIAMCredentialsURL,
-        headers,
-        parameters,
-      };
-      const iamCredentialsResult: HttpResponse = await CapacitorHttp.get(
-        requestOptions
-      );
-      if (iamCredentialsResult.hasOwnProperty('data')) {
-        return JSON.parse(iamCredentialsResult.data) as util.AWSCredentials;
-      } else {
-        throw new Error(
-          `Error fetching IAM Credentials. HTTP Response: ${JSON.stringify(
-            iamCredentialsResult
-          )}`
-        );
-      }
-    } catch (error) {
-      console.error(
-        `AuthService.fetchIAMCredentials: [ERROR] error fetching IAM credentials: ${JSON.stringify(
-          error
-        )}`
-      );
-      return {
-        accessKeyId: '',
-        secretAccessKey: '',
-      };
     }
   }
 }

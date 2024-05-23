@@ -6,7 +6,8 @@ import { model, view } from 'wuzinit-common';
 })
 export class ProfileState {
 
-  public profile: any = JSON.parse(JSON.stringify(emptyProfile));
+  public profile: any = {};
+  private healthProfile: any = JSON.parse(JSON.stringify(emptyProfile));
 
   private dangerousIngredients: string[] = [];
   private poisonousIngredients: string[] = [];
@@ -14,24 +15,39 @@ export class ProfileState {
   constructor() { }
 
   reset(): void {
+    console.log(`ProfileState.reset: reseting profile, etc.`);
     this.profile = JSON.parse(JSON.stringify(emptyProfile));
     this.dangerousIngredients = [];
     this.poisonousIngredients = [];
   }
 
   getProfile(): any {
+    console.log(`ProfileState.getProfile: getting profile: ${JSON.stringify(this.profile)}`);
     return this.profile;
   }
 
   setProfile(profile: any): void {
+    console.log(`ProfileState.setProfile: setting profile: ${JSON.stringify(profile)}`);
     this.profile = profile;
   }
 
+  getHealthProfile(): any {
+    console.log(`ProfileState.getHealthProfile: getting profile: ${JSON.stringify(this.healthProfile)}`);
+    return this.healthProfile;
+  }
+
+  setHealthProfile(healthProfile: any): void {
+    console.log(`ProfileState.setHealthProfile: setting profile: ${JSON.stringify(healthProfile)}`);
+    this.healthProfile = healthProfile;
+  }
+
   getProfilePoints(): model.WuzinitPoints {
+    console.log(`ProfileState.getProfilePoints: getting profile points: ${JSON.stringify(this.profile.points)}`);
     return Object.assign({}, this.profile.points);
   }
 
   setProfilePoints(profilePoints: model.WuzinitPoints): void {
+    console.log(`ProfileState.setProfilePoints: setting profile points: ${JSON.stringify(profilePoints)}`);
     this.profile.points = profilePoints;
   }
 

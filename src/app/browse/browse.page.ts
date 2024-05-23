@@ -30,24 +30,7 @@ export class BrowsePage implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      const loading = await this.loadingController.create({
-        message: `Loading...`
-      });
-      await loading.present();
-      await this.auth.setup();
-      let profile = await this.profileService.getProfile();
-      await loading.dismiss();
-      if (profile) {
-        console.log(`BrowsePage.ngOnInit: already have a cached profile: ${JSON.stringify(profile)}`);
-        // this.navCtrl.pop();
-      } else {
-        console.log(`BrowsePage.ngOnInit: calling signup page`);
-        // await this.navCtrl.push(SignupPage);
-        console.log(`BrowsePage.ngOnInit: signup page complete`);
-      }
-      // await this.checkAndroidPermissions();
-      // await this.auth.setup();
-      // await this.auth.fetchSpoonacularAPIKey();
+
     } catch (error) {
       console.error(`BrowsePage.ngOnInit Error: ${JSON.stringify(error)}`);
       throw error;

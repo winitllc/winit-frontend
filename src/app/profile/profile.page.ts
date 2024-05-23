@@ -50,28 +50,19 @@ export class ProfilePage {
     private medicalConditionsService: MedicalConditionsService,
     private dietsService: DietsService,
     private symptomsService: SymptomsService,
-    private storage: Storage,
-    private authService: AuthService
+    private storage: Storage
   ) { }
 
   async ngOnInit(): Promise<void> {
     try {
-      this.fetchProfileData();
+      this.profileData = this.state.getProfile();
+      this.healthProfileData = this.state.getHealthProfile();
 
       const loading = await this.loadingController.create({
         message: `Loading...`,
       });
       await loading.present();
       this.zone.run(async () => {
-        const profile = await this.service.getProfile();
-        console.log(
-          `ProfilePage.ngOnInit: [DEBUG] profile from profile service: ${JSON.stringify(
-            profile
-          )}`
-        );
-        if (!profile) {
-          throw new Error(`No profile found: ${profile}`);
-        }
         this.allPossibleAllergies =
           await this.allergiesService.getAllAllergies();
         console.log(
@@ -107,52 +98,6 @@ export class ProfilePage {
       );
       throw error;
     }
-  }
-
-  async fetchProfileData() {
-    const loading = await this.loadingController.create({
-      message: `Loading...`,
-    });
-
-    this.service.getUserProfileData().subscribe(
-      (data: any) => {
-        // Handle the response data
-        console.log('ProfilePage.fetchProfileData: data fetched from api/accounts/me');
-        console.log(`ProfilePage.fetchProfileData: ${JSON.stringify(data)}`);
-        this.profileData = data['data'];
-        console.log(`ProfilePage.fetchProfileData: profile data: ${JSON.stringify(this.profileData)}`);
-        console.log(`ProfilePage.fetchProfileData: profile name: ${this.profileData.profile.showName}`);
-        // console.log(this.profileData['healthProfiles'][0]['id'] != undefined);
-        if (this.profileData['healthProfiles'] != undefined) {
-          if (this.profileData['healthProfiles'].length > 0) {
-            this.getHealthProfileData();
-          }
-        }
-      },
-      (error) => {
-        // Handle errors
-        console.error(`ProfilePage.fetchProfileData: [ERROR] ${JSON.stringify(error)}`);
-      }
-    );
-  }
-
-  getHealthProfileData() {
-    this.service
-      .getUserHealthProfile(this.profileData['healthProfiles'][0]['id'])
-      .subscribe(
-        (data: any) => {
-          // Handle the response data
-          console.log('ProfilePage.getHealthProfileData: data fetched from health profile api');
-          console.log(`ProfilePage.getHealthProfileData: ${JSON.stringify(data)}`);
-          this.healthProfileData = data['data'];
-          this.state.setProfile(data['data']);
-          console.log(`ProfilePage.getHealthProfileData: health profile data ${JSON.stringify(this.healthProfileData)}`);
-        },
-        (error) => {
-          // Handle errors
-          console.error(`ProfilePage.getHealthProfileData: [ERROR] ${JSON.stringify(error)}`);
-        }
-      );
   }
 
   async confirmLogout(): Promise<void> {

@@ -32,4 +32,9 @@
      */
     min-height: 1px !important;
   }
+
+  ion-loading.loading-modal {
+    font-size: larger;
+    --backdrop-opacity: 80%;
+  }
 }
