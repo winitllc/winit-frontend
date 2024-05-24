@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CapacitorHttp, HttpResponse } from '@capacitor/core';
+import { CapacitorHttp, HttpOptions, HttpResponse } from '@capacitor/core';
 import { model, view } from 'wuzinit-common';
 import { EnvironmentConfig } from '../environment.config';
 import { ProfileState } from './profile.state';
@@ -22,7 +22,7 @@ export class ProfileService {
   async fetchProfileData() {
 
     this.getUserProfileData().subscribe(
-      (data: any) => {
+      async (data: any) => {
         // Handle the response data
         console.log('ProfilePage.fetchProfileData: data fetched from api/accounts/me');
         console.log(`ProfilePage.fetchProfileData: ${JSON.stringify(data)}`);
@@ -36,6 +36,11 @@ export class ProfileService {
             this.getHealthProfileData(profileData);
           }
         }
+        const profileID = profileData['id'];
+        console.log(`ProfilePage.fetchProfileData: profile ID to fetch: ${profileID}`);
+        const profilePoints: model.WuzinitPoints = await this.getProfilePoints(`${profileID}`);
+        console.log(`ProfilePage.fetchProfileData: profile points: ${JSON.stringify(profilePoints)}`);
+        this.state.setProfilePoints(profilePoints);
       },
       (error) => {
         // Handle errors
@@ -178,6 +183,54 @@ export class ProfileService {
   //     console.error(`ProfileService.updateProfile: [ERROR] Error: ${JSON.stringify(error)}`);
   //   }
   // }
+
+  public async getProfilePoints(profileId: string): Promise<model.WuzinitPoints> {
+    const getProfilePoints: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.getProfilePoints;
+    try {
+      const requestOptions: HttpOptions = {
+        url: getProfilePoints,
+        headers: {
+          'Accept': '*/*',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Connection': 'keep-alive',
+          'Content-Type': 'application/json',
+        },
+        params: {
+          profileId
+        }
+      };
+      const response: any = await CapacitorHttp.get(requestOptions);
+      console.log(`ProfileService.getProfilePoints: [DEBUG] response from backend: ${JSON.stringify(response)}`);
+      return response.hasOwnProperty('data') && JSON.parse(response.data).hasOwnProperty('profileId') ? JSON.parse(response.data) as model.WuzinitPoints : {
+        profileId: '0',
+        pointsBalance: 0,
+        pointsPending: 0,
+        pointsAllTime: 0,
+        pointsUsedAllTime: 0,
+        scansAllTime: 0,
+        searchesAllTime: 0,
+        sectionsAddedAllTime: 0,
+        sectionsPending: 0,
+        productsPending: 0,
+        productsAddedAllTime: 0
+      } as model.WuzinitPoints;
+    } catch (error) {
+      console.error(`ProfileService.getProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
+      return {
+        profileId: '0',
+        pointsBalance: 0,
+        pointsPending: 0,
+        pointsAllTime: 0,
+        pointsUsedAllTime: 0,
+        scansAllTime: 0,
+        searchesAllTime: 0,
+        sectionsAddedAllTime: 0,
+        sectionsPending: 0,
+        productsPending: 0,
+        productsAddedAllTime: 0
+      } as model.WuzinitPoints;
+    }
+  }
 
   public async addToProfilePoints(pointsToAdd: number): Promise<void> {
     const profilePoints: model.WuzinitPoints = this.state.getProfilePoints();
