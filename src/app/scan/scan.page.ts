@@ -4,6 +4,7 @@ import ImageService from '../util/image.service';
 import { ScanCropperModalPage } from './scan-cropperModal.page';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ProfileState } from '../profile/profile.state';
+import { ProfileService } from '../profile/profile.service';
 
 @Component({
   selector: 'app-scan',
@@ -24,7 +25,8 @@ export class ScanPage implements OnInit {
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
     private sanitizer: DomSanitizer,
-    private profileState: ProfileState
+    private profileState: ProfileState,
+    private profileService: ProfileService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -52,6 +54,7 @@ export class ScanPage implements OnInit {
     this.imageSrc = imageToTextData.image;
     this.ingredientsTextHTML = this.sanitizer.bypassSecurityTrustHtml(this.addAlertHighlights(imageToTextData.text));
     console.log(`ScanPage.scan: imageToTextData: ${JSON.stringify(imageToTextData)}`);
+    this.profileService.addToProfilePoints(1);
   }
 
   resetSection() {
