@@ -72,13 +72,15 @@ export class ScanPage implements OnInit {
       const croppedImageData = await this.openCropperModal(imageData);
       this.presentLoading('Getting Text From Image', 5000);
       const rawImageData = croppedImageData.replace('data:image/jpeg;base64,', '');
-      const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData);
-      const imageText = await this.imageService.imageToText(imageKeyInS3);
+      const imageToTextData = await this.imageService.callImageToText(rawImageData);
+      const imageKeyInS3 = imageToTextData.imageKey;
+      const imageText = imageToTextData.imageText;
       this.dismissLoading();
       console.log(`ScanPage.imageToText: text from service: ${imageText}.`);
       return {
         text: imageText,
-        image: croppedImageData || ''
+        image: croppedImageData || '',
+        s3ImageKey: imageKeyInS3
       };
     } catch (error) {
       console.error(`ScanPage.imageToText: error capturing image and converting to text: ${JSON.stringify(error)}`);
@@ -148,4 +150,5 @@ export class ScanPage implements OnInit {
 interface ImageToTextData {
   image: string;
   text: string;
+  s3ImageKey: string;
 }

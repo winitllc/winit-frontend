@@ -3,7 +3,8 @@ const Dev = {
   api: {
     imageService: {
       baseUrl: 'https://pj4pduykha.execute-api.us-west-2.amazonaws.com/dev/',
-      uploadToS3: 'uploadToS3'
+      uploadToS3: 'uploadToS3',
+      imageToText: 'imageToText'
     },
     wuzinitProducts: {
       baseUrl: 'https://zik33f1e36.execute-api.us-west-2.amazonaws.com/dev/',

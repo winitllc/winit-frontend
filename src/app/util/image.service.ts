@@ -29,15 +29,15 @@ export default class ImageService {
     });
   }
 
-  async callUploadToS3(imageToUpload: string): Promise<string> {
-    console.log(`ImageService.callUploadToS3: image to upload ${imageToUpload}`);
+  async callImageToText(imageToUpload: string): Promise<any> {
+    console.log(`ImageService.callImageToText: image to upload ${imageToUpload}`);
     const hashName = `testName`;
     const filename = `${Date.now()}-${hashName}.jpg`;
     const imageKey = `imageToText/${filename}`;
     console.log(`ImageService.uploadImageToS3: imageKey: ${imageKey}`);
-    const callUploadToS3URL = EnvironmentConfig.api.imageService.baseUrl + EnvironmentConfig.api.imageService.uploadToS3;
+    const callImageToTextURL = EnvironmentConfig.api.imageService.baseUrl + EnvironmentConfig.api.imageService.imageToText;
     const requestOptions: HttpOptions = {
-      url: callUploadToS3URL,
+      url: callImageToTextURL,
       headers: {
         'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate, br',
@@ -49,53 +49,20 @@ export default class ImageService {
         imageToUpload
       }
     };
-    console.log(`ImageService.uploadImageToS3: uploadBody prepared: ${JSON.stringify(requestOptions)}`);
+    console.log(`ImageService.callImageToText: uploadBody prepared: ${JSON.stringify(requestOptions)}`);
     try {
-      const uploadToS3Response: any = await CapacitorHttp.post(requestOptions);
-      if (uploadToS3Response.status == 200) {
-        console.log(`ImageService.callUploadToS3:  ${JSON.stringify(uploadToS3Response)}`);
-        return imageKey;
+      const imageToTextResponse: any = await CapacitorHttp.post(requestOptions);
+      if (imageToTextResponse.status == 200) {
+        console.log(`ImageService.callImageToText:  ${JSON.stringify(imageToTextResponse)}`);
+        return {
+          imageKey: imageToTextResponse.data.imageKey,
+          imageText: imageToTextResponse.data.imageText
+        };
       } else {
-        throw new Error(`ImageService.callUploadToS3 - call to backend: ${JSON.stringify(uploadToS3Response)}`);
+        throw new Error(`ImageService.callImageToText - call to backend: ${JSON.stringify(imageToTextResponse)}`);
       }
     } catch (error) {
-      console.error(`ImageService.callUploadToS3: error ${error}`);
-      throw error;
-    }
-  }
-
-  public async imageToText(imageKeyInS3: string) {
-    console.log(`ImageService.imageToText: image to convert to text: ${imageKeyInS3}`);
-    try {
-      console.log(`ImageService.imageToText: rekognition client set up`);
-      const detectTextOptions: DetectTextCommandInput = {
-        Image: {
-          S3Object: {
-            Bucket: 'wuzinit-product-images-bucket',
-            Name: imageKeyInS3
-          }
-        }
-      };
-      console.log(`ImageService.imageToText: detect text options: ${JSON.stringify(detectTextOptions)}`);
-      const rekognitionCommand = new DetectTextCommand(detectTextOptions);
-      const rekognitionResponse = await this.rekognitionClient.send(rekognitionCommand);
-      // console.log(`ImageService.imageToText: response from rekognition: ${JSON.stringify(rekognitionResponse)}`);
-      const rekognitionTextDetected: string[] = rekognitionResponse.TextDetections?.filter((detection: TextDetection) => {
-        if ((detection.Confidence || 0) < 95) {
-          console.log(`ImageService.imageToText: confidence: ${detection.Confidence}`);
-          console.log(`ImageService.imageToText: detected text: ${detection.DetectedText}`);
-        }
-        return detection.Confidence && detection.Confidence >= 95;
-      }).map((detection: TextDetection) => {
-        return detection.DetectedText || '';
-      }) || [];
-      const fullText: string = rekognitionTextDetected.join(' ').split('.').join('.\n');
-      console.log(`ImageService.imageToText: detected text from rekognition: ${fullText}`);
-      const halfText: string = fullText.substring(0, (fullText.length / 2));
-      console.log(`ImageService.imageToText: text to return: ${halfText}`);
-      return halfText;
-    } catch (error) {
-      console.error(`ImageService.imageToText: error using rekognition: ${JSON.stringify(error)}`);
+      console.error(`ImageService.callImageToText: error ${error}`);
       throw error;
     }
   }
