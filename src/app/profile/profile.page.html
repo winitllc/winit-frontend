@@ -1,15 +1,15 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="confirmLogout()" class="logout">Logout</ion-button>
+    </ion-buttons>
+    <ion-title>
+      Profile
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
 <ion-content [fullscreen]="true">
-  <ion-header [translucent]="true">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-button (click)="confirmLogout()" class="logout">Logout</ion-button>
-      </ion-buttons>
-      <ion-title>
-        Profile
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <!-- <ion-list *ngIf="!editMode"> -->
+  <h2><img class="header-icon" src="assets/icon/favicon.png">Profile</h2>
   <ion-list>
     <ion-list-header class="list-header">
       <ion-label>{{profileData.profile.firstName}} {{profileData.profile.lastName}}</ion-label>

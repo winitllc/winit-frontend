@@ -1,25 +1,10 @@
 
-div.search-area {
-  input {
-    margin-left: 15px;
-    margin-right: 5px;
-    width: 50%;
-    font-size: 1em;
-    vertical-align: middle;
-  }
-  button {
-    top: -5px;
-  }
+a.home-link {
+  text-decoration: unset;
 }
-div.categories-area {
-  .browse-category {
-    height: 5em;
-    line-height: 5em;
-    white-space: nowrap;
-    font-size: 1.7em;
-    background-color: var(--ion-color-secondary);
-    color: var(--ion-color-darker);
-    margin: 3px;
-    text-align: center;
-  }
+
+img.header-icon {
+  height: 1em;
+  padding-left: 0.15em;
+  padding-right: 0.15em;
 }

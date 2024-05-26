@@ -8,14 +8,11 @@ div.scan-div {
 }
 
 button.start-scan {
-  height: 5em;
-  width: 5em;
+  height: 1.5em;
+  width: 1.5em;
   border-radius: 2.5em;
-  font-size: 4em;
-}
-
-button.start-scan p {
-  font-size: 1em !important;
+  font-size: 16em;
+  color: slategray;
 }
 
 div.alert-div {
@@ -24,4 +21,10 @@ div.alert-div {
 
 div.alert-div button {
   width: 10%;
+}
+
+img.header-icon {
+  height: 1em;
+  padding-left: 0.15em;
+  padding-right: 0.15em;
 }

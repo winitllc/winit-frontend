@@ -7,24 +7,62 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- <wuzinit-store-ad-banner></wuzinit-store-ad-banner> -->
-  <!-- <div class="search-area">
-    <input type="text" [(ngModel)]="searchBox">
-    <button class="submit" ion-button (click)="searchByText()">Search</button>
-  </div> -->
-  <div class="categories-area">
-    <h2>About Us</h2>
-    <!-- <ion-grid>
-      <ion-row *ngFor="let category of categories">
-        <ion-col class="browse-category" (click)="searchCategory(category.left.searchName, category.left.displayName)">
-          <b *ngIf="category.left.displayName.search(' ') === -1">{{category.left.displayName}}</b>
-          <b *ngIf="category.left.displayName.search(' ') > -1">{{category.left.displayName.split(' ')[0]}}</b>
-        </ion-col>
-        <ion-col class="browse-category" (click)="searchCategory(category.right.searchName, category.right.displayName)">
-          <b *ngIf="category.right.displayName.search(' ') === -1">{{category.right.displayName}}</b>
-          <b *ngIf="category.right.displayName.search(' ') > -1">{{category.right.displayName.split(' ')[0]}}</b>
-        </ion-col>
-      </ion-row>
-    </ion-grid> -->
+  <div class="home-area">
+    <h2><img class="header-icon" src="assets/icon/favicon.png">What's In It Clinic</h2>
+    <a class="home-link" href="https://winitclinic.com/">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>What's In It Clinic</ion-card-subtitle>
+          <ion-card-title>Website Home</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Finish setting up your profile.
+        </ion-card-content>
+      </ion-card>
+    </a>
+    <a class="home-link" href="https://winitclinic.com/products/">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Search a Curated List of Health Tests</ion-card-subtitle>
+          <ion-card-title>Our Products</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+           Comprehensive tests to help you identify biomarkers
+        </ion-card-content>
+      </ion-card>
+    </a>
+    <a class="home-link" href="https://winitclinic.com/patients/">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Search for a Specialty</ion-card-subtitle>
+          <ion-card-title>Patient Portal</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Prevent, alleviate, or heal disease–naturally
+        </ion-card-content>
+      </ion-card>
+    </a>
+    <a class="home-link" href="https://winitclinic.com/health-pros/">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Search for a Health Professional</ion-card-subtitle>
+          <ion-card-title>Health Professionals</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Book a consultation with a health professional today!
+        </ion-card-content>
+      </ion-card>
+    </a>
+    <a class="home-link" href="https://winitclinic.com/about-us/">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Our Mission</ion-card-subtitle>
+          <ion-card-title>About Us</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Learn about What's In It founders and mission
+        </ion-card-content>
+      </ion-card>
+    </a>
   </div>
 </ion-content>
