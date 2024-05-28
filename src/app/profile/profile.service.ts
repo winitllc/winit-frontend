@@ -199,9 +199,11 @@ export class ProfileService {
           profileId
         }
       };
-      const response: any = await CapacitorHttp.get(requestOptions);
+      const response: HttpResponse = await CapacitorHttp.get(requestOptions);
       console.log(`ProfileService.getProfilePoints: [DEBUG] response from backend: ${JSON.stringify(response)}`);
-      return response.hasOwnProperty('data') && JSON.parse(response.data).hasOwnProperty('profileId') ? JSON.parse(response.data) as model.WuzinitPoints : {
+      const rawResponseData: any = response.data;
+      console.log(`ProfileService.getProfilePoints: [DEBUG] rawResponseData response from backend: ${JSON.stringify(rawResponseData)}`);
+      const responseData: model.WuzinitPoints = rawResponseData.data as model.WuzinitPoints || {
         profileId: '0',
         pointsBalance: 0,
         pointsPending: 0,
@@ -214,6 +216,8 @@ export class ProfileService {
         productsPending: 0,
         productsAddedAllTime: 0
       } as model.WuzinitPoints;
+      console.log(`ProfileService.getProfilePoints: [DEBUG] data from backend: ${JSON.stringify(responseData)}`);
+      return responseData;
     } catch (error) {
       console.error(`ProfileService.getProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
       return {
@@ -234,6 +238,7 @@ export class ProfileService {
 
   public async addToProfilePoints(pointsToAdd: number): Promise<void> {
     const profilePoints: model.WuzinitPoints = this.state.getProfilePoints();
+    console.log(`ProfileService.addToProfilePoints: [DEBUG] Profile Points from state: ${JSON.stringify(profilePoints)}`);
     try {
       profilePoints.pointsBalance = profilePoints.pointsBalance + Math.max(0, pointsToAdd);
       profilePoints.pointsAllTime = profilePoints.pointsAllTime + Math.max(0, pointsToAdd);
