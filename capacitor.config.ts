@@ -1,11 +1,14 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.whatsinit.app',
-  appName: 'WINIT',
+  appId: 'com.whatsinitlabs.whatsinit',
+  appName: 'Whats In It',
   webDir: 'www',
   server: {
     androidScheme: 'https'
+  },
+  ios: {
+    scheme: 'Whats In It'
   }
 };
 
