@@ -7,9 +7,13 @@ const routes: Routes = [
     path: 'tabs',
     component: TabsPage,
     children: [
+      // {
+      //   path: 'scan',
+      //   loadChildren: () => import('../scan/scan.module').then(m => m.ScanPageModule)
+      // },
       {
-        path: 'scan',
-        loadChildren: () => import('../scan/scan.module').then(m => m.ScanPageModule)
+        path: 'barcode',
+        loadChildren: () => import('../barcode/barcode.module').then(m => m.BarcodePageModule)
       },
       {
         path: 'browse',

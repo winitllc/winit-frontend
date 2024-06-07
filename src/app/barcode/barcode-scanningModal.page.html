@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Scanning</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="medium" (click)="cancel()">Cancel <ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div #square class="square"></div>
+  <div class="zoom-ratio-wrapper">
+    <ion-range
+      [min]="minZoomRatio"
+      [max]="maxZoomRatio"
+      [disabled]="minZoomRatio === undefined || maxZoomRatio === undefined"
+      (ionChange)="setZoomRatio($any($event))"
+    ></ion-range>
+  </div>
+</ion-content>
