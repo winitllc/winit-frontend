@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { BarcodePage } from './barcode.page';
 
 import { BarcodePageRoutingModule } from './barcode-routing.module';
+import { BarcodeScanningModalComponent } from './barcode-scanningModal.page';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    BarcodePageRoutingModule
+    BarcodePageRoutingModule,
+    BarcodeScanningModalComponent
   ],
   declarations: [BarcodePage]
 })

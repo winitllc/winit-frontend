@@ -1,17 +1,14 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
-import ImageService from '../util/image.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ProfileState } from '../profile/profile.state';
-import { ProfileService } from '../profile/profile.service';
 import { Barcode, BarcodeFormat, BarcodeScanner, LensFacing } from '@capacitor-mlkit/barcode-scanning';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BarcodeScanningModalComponent } from './barcode-scanningModal.page';
 
 @Component({
-  selector: 'app-scan',
-  templateUrl: 'scan.page.html',
-  styleUrls: ['scan.page.scss']
+  selector: 'barcode-scan',
+  templateUrl: 'barcode.page.html',
+  styleUrls: ['barcode.page.scss']
 })
 export class BarcodePage implements OnInit {
 
@@ -28,25 +25,23 @@ export class BarcodePage implements OnInit {
   });
 
   constructor(
-    private imageService: ImageService,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
-    private sanitizer: DomSanitizer,
     private profileState: ProfileState,
-    private profileService: ProfileService,
     private readonly ngZone: NgZone,
   ) { }
 
   async ngOnInit(): Promise<void> {
     try {
-      console.log(`BarcodePage.ngOnInit setting up scan page`);
-      BarcodeScanner.isSupported().then((result) => {
-        this.isSupported = result.supported;
-      });
-      BarcodeScanner.checkPermissions().then((result) => {
-        this.isPermissionGranted = result.camera === 'granted';
-      });
+      console.log(`BarcodePage.ngOnInit: setting up barcode scan page`);
+      const supportedResult = await BarcodeScanner.isSupported();
+      this.isSupported = supportedResult.supported;
+      console.log(`BarcodePage.ngOnInit: barcode is supported: ${supportedResult.supported}`);
+      const permissionsResult = await BarcodeScanner.checkPermissions();
+      this.isPermissionGranted = permissionsResult.camera === 'granted';
+      console.log(`BarcodePage.ngOnInit: permissions checked: ${permissionsResult.camera}`);
       BarcodeScanner.removeAllListeners().then(() => {
+        console.log(`BarcodePage.ngOnInit: permissions checked`);
         BarcodeScanner.addListener(
           'googleBarcodeScannerModuleInstallProgress',
           (event) => {
@@ -62,7 +57,7 @@ export class BarcodePage implements OnInit {
         );
       });
     } catch (error) {
-      console.error(`BarcodePage.ngOnInit Error: ${JSON.stringify(error)}`);
+      console.error(`BarcodePage.ngOnInit: Error: ${JSON.stringify(error)}`);
     }
   }
 
@@ -74,6 +69,7 @@ export class BarcodePage implements OnInit {
   }
 
   async scan() {
+    console.log(`BarcodePage.scan: scan called`);
     const lensFacing = LensFacing.Back;
     const modal: HTMLIonModalElement = await this.modalCtrl.create({
       component: BarcodeScanningModalComponent,
@@ -84,6 +80,7 @@ export class BarcodePage implements OnInit {
         lensFacing: lensFacing,
       }
     });
+    console.log(`BarcodePage.scan: modal set up`);
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
@@ -96,7 +93,7 @@ export class BarcodePage implements OnInit {
   }
 
   resetSection() {
-    
+    console.log(`BarcodePage.scan: reset section`);
   }
 
   async presentLoading(loadingMessage: string, duration?: number) {
