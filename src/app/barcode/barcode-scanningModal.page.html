@@ -9,12 +9,4 @@
 
 <ion-content>
   <div #square class="square"></div>
-  <div class="zoom-ratio-wrapper">
-    <ion-range
-      [min]="minZoomRatio"
-      [max]="maxZoomRatio"
-      [disabled]="minZoomRatio === undefined || maxZoomRatio === undefined"
-      (ionChange)="setZoomRatio($any($event))"
-    ></ion-range>
-  </div>
 </ion-content>

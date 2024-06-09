@@ -10,7 +10,9 @@ import { Barcode, BarcodeFormat, BarcodeScanner, LensFacing, StartScanOptions } 
   imports: [
     IonicModule,
     CommonModule,
-  ]
+  ],
+  selector: 'barcode-scanning',
+  styleUrls: ['barcode-scanningModal.page.scss']
 })
 export class BarcodeScanningModalComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -80,6 +82,7 @@ export class BarcodeScanningModalComponent implements OnInit, AfterViewInit, OnD
             squareElementBoundingClientRect.height * window.devicePixelRatio,
         }
       : undefined;
+    console.log(`BarcodeScanningModalComponent.startScan: scaled rect: ${JSON.stringify(scaledRect)}`);
 
     const detectionCornerPoints = scaledRect
       ? [
@@ -92,6 +95,7 @@ export class BarcodeScanningModalComponent implements OnInit, AfterViewInit, OnD
           [scaledRect.left, scaledRect.top + scaledRect.height],
         ]
       : undefined;
+    console.log(`BarcodeScanningModalComponent.startScan: detection corner points: ${JSON.stringify(detectionCornerPoints)}`);
 
     const listener = await BarcodeScanner.addListener('barcodeScanned', async (event) => {
       this.ngZone.run(() => {
@@ -114,7 +118,9 @@ export class BarcodeScanningModalComponent implements OnInit, AfterViewInit, OnD
         this.closeModal(event.barcode);
       });
     });
+    console.log(`BarcodeScanningModalComponent.startScan: listener: ${JSON.stringify(listener)}`);
 
+    console.log(`BarcodeScanningModalComponent.startScan: class list for body: ${document.querySelector('body')?.classList}`);
     await BarcodeScanner.startScan(options);
     void BarcodeScanner.getMinZoomRatio().then((result) => {
       this.minZoomRatio = result.zoomRatio;
@@ -129,14 +135,5 @@ export class BarcodeScanningModalComponent implements OnInit, AfterViewInit, OnD
     document.querySelector('body')?.classList.remove('barcode-scanning-active');
 
     await BarcodeScanner.stopScan();
-  }
-
-  public setZoomRatio(event: InputCustomEvent): void {
-    if (!event.detail.value) {
-      return;
-    }
-    BarcodeScanner.setZoomRatio({
-      zoomRatio: parseInt(event.detail.value as any, 10),
-    });
   }
 }
