@@ -111,7 +111,7 @@ export class ScanPage implements OnInit {
         console.log(`ProductPage.addAlertHighlights: phrase to check: ${phrase}`);
         return phrase.split(' ').map((word) => {
           console.log(`ProductPage.addAlertHighlights: word to check: ${word}`);
-          return this.matchWarnings(word) ? `<span style="background-color: red">${word}</span>` : word;
+          return this.matchWarnings(word) ? `<span background="danger">${word}</span>` : word;
         }).join(' ');
       }).join(', ');
     }).join('. ');
