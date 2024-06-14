@@ -1,9 +1,12 @@
 import { Component, NgZone, OnInit } from '@angular/core';
-import { LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
+import { LoadingController, LoadingOptions, ModalController, NavController } from '@ionic/angular';
 import { ProfileState } from '../profile/profile.state';
 import { Barcode, BarcodeFormat, BarcodeScanner, LensFacing } from '@capacitor-mlkit/barcode-scanning';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BarcodeScanningModalComponent } from './barcode-scanningModal.page';
+import { AppConfig } from '../app.config';
+import { model } from 'wuzinit-common';
+import { NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'barcode-scan',
@@ -28,6 +31,7 @@ export class BarcodePage implements OnInit {
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
     private profileState: ProfileState,
+    private navCtrl: NavController,
     private readonly ngZone: NgZone,
   ) { }
 
@@ -86,9 +90,27 @@ export class BarcodePage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
     console.log(`BarcodePage.scan: data from modal: ${JSON.stringify(data)}`);
     console.log(`BarcodePage.scan: role from modal: ${JSON.stringify(role)}`);
-    const barcode: Barcode | undefined = data.barcode;
-    if (barcode) {
-      this.barcode = barcode;
+    const barcode: Barcode = data as Barcode;
+    this.barcode = barcode;
+    console.log(`BarcodePage.scan: the barcode: ${JSON.stringify(this.barcode)}`);
+    this.pushToProductPage({
+      message: AppConfig.controlMessages.noProduct,
+      barcode
+    });
+  }
+
+  private pushToProductPage(product: model.WuzinitProductBase | { message: string, barcode: Barcode }): void {
+    try {
+      // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
+      console.log(`BarcodePage.pushToProductPage: pushing the product to product page: ${JSON.stringify(product)}`);
+      const navExtras: NavigationExtras = {
+        state: {
+          product
+        }
+      };
+      this.navCtrl.navigateForward('product', navExtras);
+    } catch (error) {
+      console.error(`BarcodePage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);
     }
   }
 

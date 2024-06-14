@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar background="primary">
+    <!-- <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+      <ion-button menuToggle (click)="addMenu()"><ion-icon name="menu"></ion-icon></ion-button>
+    </ion-buttons> -->
+    <ion-title>Product</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="!noProduct">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="productBadge">
+            <ion-badge class="productBadge" *ngIf="insufficientData" color="blank"><ion-icon name="help"></ion-icon></ion-badge>
+            <ion-badge class="productBadge" *ngIf="!insufficientData && !poisonWarning && !dangerWarning" color="primary"><ion-icon name="checkmark"></ion-icon></ion-badge>
+            <ion-badge class="productBadge" *ngIf="!insufficientData && !poisonWarning && dangerWarning" color="secondary"><ion-icon name="close"></ion-icon></ion-badge>
+            <ion-badge class="productBadge" *ngIf="!insufficientData && poisonWarning" color="secondary"><ion-icon name="close"></ion-icon></ion-badge>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="productImage">
+            <img class="productImage" src="{{product && product.images && product.images.front && product.images.front.length > 0 ? product.images.front : 'assets/imgs/noProduct.png'}}">
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="confirmProductMode" class="confirm-product-mode">
+        <ion-col>
+          <ion-buttons>
+            <button ion-button color="secondary" (click)="dismissConfirmProductMode()"><p>Go Back</p><ion-icon name="checkmark-circle"></ion-icon></button>
+          </ion-buttons>
+        </ion-col>
+        <ion-col>
+          <ion-buttons>
+            <button ion-button color="primary" (click)="confirmProduct()"><p>Confirm</p><ion-icon name="checkmark-circle"></ion-icon></button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <h2>Ingredients</h2>
+          <div [innerHtml]="ingredientsTextHTML"></div>
+          <br>
+        </ion-col>
+      </ion-row>
+      <!-- <ion-row>
+        <ion-col>
+          <h4>Categories</h4>
+          <p>
+            <span *ngFor="let keyword of productKeywords"><span class="categoryLink" [ngClass]="keyword" (click)="searchKeyword(keyword)">{{keyword}}</span>, </span>
+          </p>
+          <br>
+        </ion-col>
+      </ion-row> -->
+    </ion-grid>
+  </div>
+  <div *ngIf="noProduct">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <div class="productBadge">
+            <ion-badge class="productBadge" color="blank"><ion-icon name="help"></ion-icon></ion-badge>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <div class="productImage">
+            <img src="assets/imgs/noProduct.png">
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <p color="secondary">No product info</p>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <p>Add Product Info & Earn Points!</p>
+          <br>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-buttons>
+            <button ion-button color="primary" (click)="presentAddProductModal()"><p>Add product info</p></button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
