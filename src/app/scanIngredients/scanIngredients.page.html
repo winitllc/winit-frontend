@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Add product info
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!imageCaptured">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <p>Please photograph the list of ingredients</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div class="ingredientsImage">
+          <img class="ingredientsImage" src="assets/imgs/productIngredients.png">
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button color="primary" (click)="scanIngredients()"><ion-icon color="primary-contrast" name="camera"></ion-icon></ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-content *ngIf="imageCaptured">
+  <div class="alert-div">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-img  src="{{imageSrc}}"  alt="Image containing product ingredients"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-textarea label="Ingredients text" placeholder="[enter ingredients here]" value="{{ingredientsText}}"></ion-textarea>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button color="primary" class="submit continue-scan" (click)="scanIngredients()"><ion-icon color="primary-contrast" name="camera"></ion-icon></ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button color="secondary" (click)="resetSection()"><ion-icon color="secondary-contrast" name="close-circle"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button color="primary" (click)="continue()">Continue <ion-icon color="primary-contrast" name="arrow-round-forward"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

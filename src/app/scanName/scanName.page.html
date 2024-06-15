@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Add product info
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!imageCaptured">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <p>Please photograph or enter the name of the product</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-textarea label="Product name" placeholder="[enter product name here]" value="{{nameText}}"></ion-textarea>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div class="ingredientsImage">
+          <img class="ingredientsImage" src="assets/imgs/productName.png">
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-button color="primary" (click)="scanName()"><ion-icon color="primary-contrast" name="camera"></ion-icon></ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-content *ngIf="imageCaptured">
+  <div class="alert-div">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-img  src="{{imageSrc}}"  alt="Image containing product name"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-textarea label="Product name" placeholder="[enter product name here]" value="{{nameText}}"></ion-textarea>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button color="primary" class="submit continue-scan" (click)="scanName()"><ion-icon color="primary-contrast" name="camera-circle"></ion-icon></ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button color="secondary" (click)="resetSection()"><ion-icon color="secondary-contrast" name="close-circle"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button color="primary" (click)="continue()">Continue <ion-icon color="primary-contrast" name="arrow-round-forward"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

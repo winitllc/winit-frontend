@@ -93,54 +93,14 @@ export class ProductPage implements OnInit {
     }
   }
 
-  public presentAddProductModal(): void {
-    // console.log(`ProductPage.presentAddProductModal: presenting add product modal with barcode: ${this.noProductBarcode}`);
-    // const addProductModal: Modal = this.modalController.create(AddProductModalComponent, {
-    //   barcode: this.noProductBarcode
-    // });
-    // addProductModal.onDidDismiss(async (data) => {
-    //   console.log(`ProductPage.presentAddProductModal: modal dismissed`);
-    //   if (data.hasOwnProperty('product')) {
-    //     console.log(`ProductPage.presentAddProductModal: product from modal: ${JSON.stringify(data.product)}`);
-    //     this.updateWithNewProduct(data.product);
-    //     this.noProduct = false;
-    //     await this.setAlerts();
-    //     this.displaySuccessToast();
-    //   }
-    // });
-    // addProductModal.present();
-    console.log(`ProductPage.presentAddProductModal: modal presented`);
+  public addNewProductInfo() {
+    const navExtras: NavigationExtras = {
+      state: {
+        noProductBarcode: this.noProductBarcode
+      }
+    };
+    this.navCtrl.navigateForward('tabs/product/scanName', navExtras);
   }
-
-  public dismissConfirmProductMode(): void {
-    // if (this.confirmProductMode) {
-    //   this.viewCtrl.dismiss();
-    // }
-  }
-
-  public confirmProduct(): void {
-    // if (this.confirmProductMode) {
-    //   this.viewCtrl.dismiss({
-    //     confirmed: true
-    //   });
-    // }
-  }
-
-  // private displaySuccessToast(): void {
-  //   const toastOptions: ToastOptions = {
-  //     duration: 2000,
-  //     position: 'top'
-  //   };
-  //   toastOptions.message = 'Success!';
-  //   toastOptions.styling = {
-  //     backgroundColor: '#2e8b57',
-  //     textColor: '#FFFFFF'
-  //   };
-  //   this.toaster.showWithOptions(toastOptions).subscribe((toast): void => {
-  //   }, (error: any): void => {
-  //     console.error(`ProductPage.addFeedback Error: ${JSON.stringify(error)}`);
-  //   });
-  // }
 
   // private reset(): void {
   //   this.allergensText = [];

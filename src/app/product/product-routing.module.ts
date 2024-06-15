@@ -5,8 +5,20 @@ import { ProductPage } from './product.page';
 
 const routes: Routes = [
   {
-    path: 'scan',
-    loadChildren: () => import('../scan/scan.module').then(m => m.ScanPageModule)
+    path: 'scanName',
+    loadChildren: () => import('../scanName/scanName.module').then(m => m.ScanNamePageModule)
+  },
+  {
+    path: 'scanFront',
+    loadChildren: () => import('../scanFront/scanFront.module').then(m => m.ScanFrontPageModule)
+  },
+  {
+    path: 'scanBack',
+    loadChildren: () => import('../scanBack/scanBack.module').then(m => m.ScanBackPageModule)
+  },
+  {
+    path: 'scanIngredients',
+    loadChildren: () => import('../scanIngredients/scanIngredients.module').then(m => m.ScanIngredientsPageModule)
   },
   {
     path: '',

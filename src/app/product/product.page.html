@@ -28,18 +28,6 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-row *ngIf="confirmProductMode" class="confirm-product-mode">
-        <ion-col>
-          <ion-buttons>
-            <button ion-button color="secondary" (click)="dismissConfirmProductMode()"><p>Go Back</p><ion-icon name="checkmark-circle"></ion-icon></button>
-          </ion-buttons>
-        </ion-col>
-        <ion-col>
-          <ion-buttons>
-            <button ion-button color="primary" (click)="confirmProduct()"><p>Confirm</p><ion-icon name="checkmark-circle"></ion-icon></button>
-          </ion-buttons>
-        </ion-col>
-      </ion-row>
       <ion-row>
         <ion-col>
           <h2>Ingredients</h2>
@@ -87,9 +75,7 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-buttons>
-            <button ion-button color="primary" (click)="presentAddProductModal()"><p>Add product info</p></button>
-          </ion-buttons>
+          <ion-button color="primary" (click)="addNewProductInfo()">Add product info</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
