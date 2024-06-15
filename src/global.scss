@@ -37,6 +37,11 @@
     font-size: larger;
     --backdrop-opacity: 80%;
   }
+
+  ion-button {
+    --border-radius: 2rem;
+    min-height: 25px;
+  }
 }
 
 /**

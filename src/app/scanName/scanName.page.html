@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>
+    <ion-title class="ion-text-center">
       Add product info
     </ion-title>
   </ion-toolbar>
@@ -9,16 +9,16 @@
 <ion-content *ngIf="!imageCaptured">
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col class="ion-text-center">
         <p>Please photograph or enter the name of the product</p>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="ion-justify-content-center">
       <ion-col>
-        <ion-textarea label="Product name" placeholder="[enter product name here]" value="{{nameText}}"></ion-textarea>
+        <ion-textarea label="Product name" labelPlacement="stacked" placeholder="[enter product name here]" value="{{nameText}}"></ion-textarea>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="ion-justify-content-center">
       <ion-col>
         <div class="ingredientsImage">
           <img class="ingredientsImage" src="assets/imgs/productName.png">
@@ -26,8 +26,8 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
-        <ion-button color="primary" (click)="scanName()"><ion-icon color="primary-contrast" name="camera"></ion-icon></ion-button>
+      <ion-col class="ion-text-center">
+        <ion-button color="primary" (click)="scanName()"><ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -36,26 +36,28 @@
   <div class="alert-div">
     <ion-grid>
       <ion-row>
+        <ion-col class="ion-text-center">
+          <p>Does the name look correct? Feel free to edit.</p>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
         <ion-col>
           <ion-img  src="{{imageSrc}}"  alt="Image containing product name"></ion-img>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row class="ion-justify-content-center">
         <ion-col>
-          <ion-textarea label="Product name" placeholder="[enter product name here]" value="{{nameText}}"></ion-textarea>
+          <ion-textarea label="Product name" labelPlacement="stacked" placeholder="[enter product name here]" value="{{nameText}}"></ion-textarea>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <ion-button color="primary" class="submit continue-scan" (click)="scanName()"><ion-icon color="primary-contrast" name="camera-circle"></ion-icon></ion-button>
-        </ion-col>
-        <ion-col>
-          <ion-button color="secondary" (click)="resetSection()"><ion-icon color="secondary-contrast" name="close-circle"></ion-icon></ion-button>
+        <ion-col class="ion-text-center">
+          <ion-button color="secondary" class="submit continue-scan" (click)="scanName()">Rescan Name <ion-icon class="buttonIcon" name="camera-circle"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <ion-button color="primary" (click)="continue()">Continue <ion-icon color="primary-contrast" name="arrow-round-forward"></ion-icon></ion-button>
+        <ion-col class="ion-text-center">
+          <ion-button color="primary" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

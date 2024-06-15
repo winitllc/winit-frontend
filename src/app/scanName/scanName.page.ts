@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController, LoadingOptions, ModalController, NavController } from '@ionic/angular';
 import ImageService from '../util/image.service';
 import { ScanNameCropperModalPage } from './scanName-cropperModal.page';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ProfileState } from '../profile/profile.state';
 import { ProfileService } from '../profile/profile.service';
 import { NavigationExtras, Router } from '@angular/router';
@@ -28,7 +27,6 @@ export class ScanNamePage implements OnInit {
     private loadingCtrl: LoadingController,
     private router: Router,
     private navCtrl: NavController,
-    private sanitizer: DomSanitizer,
     private profileState: ProfileState,
     private profileService: ProfileService
   ) { }
@@ -58,7 +56,7 @@ export class ScanNamePage implements OnInit {
     const imageToTextData = await this.imageToText();
     this.imageCaptured = true;
     this.imageSrc = imageToTextData.image;
-    this.nameText = this.sanitizer.bypassSecurityTrustHtml(imageToTextData.text);
+    this.nameText = imageToTextData.text;
     this.nameS3ImageKey = imageToTextData.s3ImageKey;
     console.log(`ScanNamePage.scan: imageToTextData: ${JSON.stringify(imageToTextData)}`);
     this.profileService.addToProfilePoints(1);

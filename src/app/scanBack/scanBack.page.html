@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>
+    <ion-title class="ion-text-center">
       Add product info
     </ion-title>
   </ion-toolbar>
@@ -9,11 +9,11 @@
 <ion-content *ngIf="!imageCaptured">
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col class="ion-text-center">
         <p>Please photograph the back of the product</p>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="ion-justify-content-center">
       <ion-col>
         <div class="ingredientsImage">
           <img class="ingredientsImage" src="assets/imgs/productBack.png">
@@ -21,8 +21,8 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
-        <ion-button color="primary" (click)="scanBack()"><ion-icon color="primary-contrast" name="camera"></ion-icon></ion-button>
+      <ion-col class="ion-text-center">
+        <ion-button color="primary" (click)="scanBack()"><ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -31,18 +31,23 @@
   <div class="alert-div">
     <ion-grid>
       <ion-row>
-        <ion-col>
-          <p>Please photograph the back of the product</p>
+        <ion-col class="ion-text-center">
+          <p>How does it look?</p>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row class="ion-justify-content-center">
         <ion-col>
           <ion-img  src="{{imageSrc}}"  alt="Image containing back of product"></ion-img>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col>
-          <ion-button color="primary" (click)="continue()">Continue <ion-icon color="primary-contrast" name="arrow-round-forward"></ion-icon></ion-button>
+        <ion-col class="ion-text-center">
+          <ion-button color="secondary" (click)="scanBack()">Rescan Back <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <ion-button color="primary" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
