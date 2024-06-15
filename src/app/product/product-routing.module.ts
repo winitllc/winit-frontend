@@ -5,6 +5,10 @@ import { ProductPage } from './product.page';
 
 const routes: Routes = [
   {
+    path: 'scan',
+    loadChildren: () => import('../scan/scan.module').then(m => m.ScanPageModule)
+  },
+  {
     path: '',
     component: ProductPage
   }

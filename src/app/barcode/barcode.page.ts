@@ -108,7 +108,7 @@ export class BarcodePage implements OnInit {
           product
         }
       };
-      this.navCtrl.navigateForward('product', navExtras);
+      this.navCtrl.navigateForward('tabs/product', navExtras);
     } catch (error) {
       console.error(`BarcodePage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);
     }
