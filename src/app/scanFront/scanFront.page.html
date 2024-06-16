@@ -10,7 +10,7 @@
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
-        <p>Please photograph the front of the product</p>
+        <h3>Please photograph the front of the product</h3>
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center">
@@ -32,7 +32,7 @@
     <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
-          <p>How does it look?</p>
+          <h3>How does it look?</h3>
         </ion-col>
       </ion-row>
       <ion-row class="ion-justify-content-center">
@@ -42,12 +42,12 @@
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button color="secondary" (click)="scanFront()">Rescan Front <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
+          <ion-button color="secondary" expand="block" (click)="scanFront()">Rescan Front <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button color="primary" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
+          <ion-button color="primary" expand="block" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

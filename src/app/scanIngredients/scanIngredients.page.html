@@ -10,7 +10,7 @@
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
-        <p>Please photograph the list of ingredients</p>
+        <h3>Please photograph the list of ingredients</h3>
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center">
@@ -32,7 +32,7 @@
     <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
-          <p>Does the ingredients text match the image? Feel free to edit.</p>
+          <h3>Does the ingredients text match the image? Feel free to edit.</h3>
         </ion-col>
       </ion-row>
       <ion-row class="ion-justify-content-center">
@@ -47,12 +47,12 @@
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button color="secondary" class="submit continue-scan" (click)="scanIngredients()">Rescan Ingredients <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
+          <ion-button color="secondary" expand="block" class="submit continue-scan" (click)="scanIngredients()">Rescan Ingredients <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button color="primary" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
+          <ion-button color="primary" expand="block" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
