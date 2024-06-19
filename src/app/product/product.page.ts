@@ -33,6 +33,7 @@ export class ProductPage implements OnInit {
   public productKeywords: string[] = [];
   public iPhone: boolean = false;
 
+  private profile: any;
   public warnings: string[] = [];
 
   public insufficientData: boolean = true;
@@ -54,19 +55,26 @@ export class ProductPage implements OnInit {
   ) { }
 
   async ngOnInit() {
+    console.log(`ProductPage.ngOnInit: beginning of ngOnInit`);
+  }
+
+  async ionViewWillEnter(): Promise<void> {
     try {
-      // await this.platform.ready();
-      // await this.auth.setup();
+      console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
+      this.profile = this.profileState.getHealthProfile();
+      console.log(`ScanPage.ngOnInit: profile from state: ${JSON.stringify(this.profile)}`);
+      this.warnings = this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;});
       this.noProduct = true;
-      console.log(`ProductPage.ngOnInit: beginning of OnInit`);
-      const currNavigation = this.router.getCurrentNavigation();
+      console.log(`ProductPage.ionViewWillEnter: beginning of ionViewWillEnter`);
+      const currNavigation = this.router.lastSuccessfulNavigation;
+      console.log(`ProductPage.ionViewWillEnter: curr navigation properties: ${Object.keys(currNavigation || {})}`);
       if (currNavigation) {
         const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));
-        console.log(`ProductPage.ngOnInit: routerState: ${JSON.stringify(routerState)}`);
+        console.log(`ProductPage.ionViewWillEnter: routerState: ${JSON.stringify(routerState)}`);
         const confirmProductMode: boolean = Boolean(routerState['confirmProductMode']);
         this.confirmProductMode = confirmProductMode;
         const product = routerState['product'];
-        console.log(`ProductPage.ngOnInit: product from navParams: ${JSON.stringify(product)}`);
+        console.log(`ProductPage.ionViewWillEnter: product from navParams: ${JSON.stringify(product)}`);
         this.productType = product.type;
         this.noProduct = false;
         if (product && product.hasOwnProperty('message') && product.message === AppConfig.controlMessages.noProduct) {
@@ -74,11 +82,11 @@ export class ProductPage implements OnInit {
           this.product = JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
           this.noProductBarcode = product.barcode;
         } else if (product && product.hasOwnProperty('code')) {
-          console.log(`ProductPage.ngOnInit: using wuzinit product from navParams`);
+          console.log(`ProductPage.ionViewWillEnter: using wuzinit product from navParams`);
           this.product = JSON.parse(JSON.stringify(product));
           await this.setAlerts();
         } else if (this.product && this.product.hasOwnProperty('id')) {
-          console.log(`ProductPage.ngOnInit: using local product`);
+          console.log(`ProductPage.ionViewWillEnter: using local product`);
           await this.setAlerts();
           return;
         } else {
@@ -88,7 +96,7 @@ export class ProductPage implements OnInit {
         }
       }
     } catch (error) {
-      console.error(`ProductPage.ngOnInit Error: ${JSON.stringify(error)}`);
+      console.error(`ProductPage.ionViewWillEnter Error: ${JSON.stringify(error)}`);
       throw error;
     }
   }
@@ -122,10 +130,11 @@ export class ProductPage implements OnInit {
 
   private async setAlerts(): Promise<void> {
     console.log(`ProductPage.setAlerts: setting the alerts for dangerous and poisonous ingredients`);
-    const dangerousIngredients: string[] = this.profileState.getDangerousIngredients();
-    const poisonousIngredients: string[] = this.profileState.getPoisonousIngredients();
+    // const dangerousIngredients: string[] = this.profileState.getDangerousIngredients();
+    // const poisonousIngredients: string[] = this.profileState.getPoisonousIngredients();
     // this.allergensText = this.addWarnings(Object.values(this.product.details.allergens), dangerousIngredients, poisonousIngredients, 'allergens');
     // this.tracesText = this.addWarnings(Object.values(this.product.details.traces_tags), dangerousIngredients, poisonousIngredients, 'traces');
+    console.log(`ProductPage.setAlerts: ingredients from product: ${this.product?.ingredientsText}`);
     this.ingredientsTextHTML = this.sanitizer.bypassSecurityTrustHtml(this.addAlertHighlights(this.product?.ingredientsText || ''));
     
     this.addFeedback();
@@ -138,7 +147,7 @@ export class ProductPage implements OnInit {
         console.log(`ProductPage.addAlertHighlights: phrase to check: ${phrase}`);
         return phrase.split(' ').map((word) => {
           console.log(`ProductPage.addAlertHighlights: word to check: ${word}`);
-          return this.matchWarnings(word) ? `<span background="danger">${word}</span>` : word;
+          return this.matchWarnings(word) ? `<span style="background-color: var(--ion-color-primary); color: var(--ion-color-primary-contrast); border-radius: 0.2em;">${word}</span>` : word;
         }).join(' ');
       }).join(', ');
     }).join('. ');

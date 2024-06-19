@@ -26,6 +26,7 @@ export class ScanIngredientsPage implements OnInit {
   frontS3ImageKey: string = '';
   frontImage: string = '';
   backS3ImageKey: string = '';
+  ingredientsS3ImageKey: string = '';
 
   constructor(
     private imageService: ImageService,
@@ -83,11 +84,14 @@ export class ScanIngredientsPage implements OnInit {
     product.code = this.noProductBarcode;
     product.productName = this.nameText;
     product.images.front = this.frontImage;
+    product.ingredientsText = this.ingredientsText;
+    console.log(`ScanIngredientsPage.continue: product to push to product page: ${JSON.stringify(product)}`);
     const navExtras: NavigationExtras = {
       state: {
         product
       }
     };
+    console.log(`ScanIngredientsPage.continue: navExtras: ${JSON.stringify(navExtras)}`);
     this.navCtrl.navigateForward('tabs/product', navExtras);
   }
 
