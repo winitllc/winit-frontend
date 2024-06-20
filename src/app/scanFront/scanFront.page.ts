@@ -67,10 +67,10 @@ export class ScanFrontPage implements OnInit {
       this.imageCaptured = true;
       this.imageSrc = croppedImageData;
       const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData);
+      console.log(`ScanFrontPage.scanFront: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
       this.frontS3ImageKey = imageKeyInS3;
-      console.log(`ScanFrontPage.scan: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
     } catch (error) {
-      console.error(`ScanFrontPage.imageToText: error capturing image and converting to text: ${JSON.stringify(error)}`);
+      console.error(`ScanFrontPage.scanFront: error capturing image and converting to text: ${JSON.stringify(error)}`);
     }
   }
 

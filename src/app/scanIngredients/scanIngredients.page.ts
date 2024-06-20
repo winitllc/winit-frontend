@@ -4,6 +4,7 @@ import ImageService from '../util/image.service';
 import { ScanIngredientsCropperModalPage } from './scanIngredients-cropperModal.page';
 import { ProfileState } from '../profile/profile.state';
 import { ProfileService } from '../profile/profile.service';
+import { ProductService } from '../product/product.service';
 import { NavigationExtras, Router } from '@angular/router';
 import { model } from 'wuzinit-common';
 import { AppConfig } from '../app.config';
@@ -35,7 +36,8 @@ export class ScanIngredientsPage implements OnInit {
     private router: Router,
     private navCtrl: NavController,
     private profileState: ProfileState,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private productService: ProductService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -50,6 +52,12 @@ export class ScanIngredientsPage implements OnInit {
       this.frontS3ImageKey = routerState['frontS3ImageKey'];
       this.frontImage = routerState['frontImage'];
       this.backS3ImageKey = routerState['backS3ImageKey'];
+      console.log(`ScanBackPage.ngOnInit: noProductBarcode ${this.noProductBarcode}`);
+      console.log(`ScanBackPage.ngOnInit: nameText ${this.nameText}`);
+      console.log(`ScanBackPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
+      console.log(`ScanBackPage.ngOnInit: frontS3ImageKey ${this.frontS3ImageKey}`);
+      console.log(`ScanBackPage.ngOnInit: frontImage ${this.frontImage}`);
+      console.log(`ScanBackPage.ngOnInit: backS3ImageKey ${this.backS3ImageKey}`);
     } catch (error) {
       console.error(`ScanIngredientsPage.ngOnInit Error: ${JSON.stringify(error)}`);
     }
@@ -79,12 +87,16 @@ export class ScanIngredientsPage implements OnInit {
     this.imageSrc = "";
   }
 
-  continue() {
+  async continue() {
     const product: model.WuzinitProduct = JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     product.code = this.noProductBarcode;
     product.productName = this.nameText;
-    product.images.front = this.frontImage;
+    product.images.front = `https://wuzinit-product-images-bucket.s3.us-west-2.amazonaws.com/${this.frontS3ImageKey}`;
     product.ingredientsText = this.ingredientsText;
+    this.presentLoading('Sending new product to product update service for review.');
+    await this.productService.addNewProductUpdate(product);
+    this.dismissLoading();
+    product.images.front = this.frontImage;
     console.log(`ScanIngredientsPage.continue: product to push to product page: ${JSON.stringify(product)}`);
     const navExtras: NavigationExtras = {
       state: {

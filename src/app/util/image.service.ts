@@ -71,7 +71,7 @@ export default class ImageService {
     console.log(`ImageService.callUploadToS3: image to upload ${imageToUpload}`);
     const hashName = `testName`;
     const filename = `${Date.now()}-${hashName}.jpg`;
-    const imageKey = `imageToText/${filename}`;
+    const imageKey = `productUpdateImage/${filename}`;
     console.log(`ImageService.uploadImageToS3: imageKey: ${imageKey}`);
     const callUploadToS3URL = EnvironmentConfig.api.imageService.baseUrl + EnvironmentConfig.api.imageService.uploadToS3;
     const requestOptions: HttpOptions = {
@@ -91,7 +91,8 @@ export default class ImageService {
     try {
       const uploadToS3Response: any = await CapacitorHttp.post(requestOptions);
       if (uploadToS3Response.status == 200) {
-        console.log(`ImageService.callUploadToS3:  ${JSON.stringify(uploadToS3Response)}`);
+        console.log(`ImageService.callUploadToS3: response  ${JSON.stringify(uploadToS3Response)}`);
+        console.log(`ImageService.uploadImageToS3: imageKey: ${imageKey}`);
         return imageKey;
       } else {
         throw new Error(`ImageService.callUploadToS3 - call to backend: ${JSON.stringify(uploadToS3Response)}`);
