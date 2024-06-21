@@ -35,7 +35,7 @@ export class ScanNamePage implements OnInit {
     try {
       console.log(`ScanNamePage.ngOnInit setting up scan name page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.getCurrentNavigation();
+      const currNavigation = this.router.lastSuccessfulNavigation;
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
       this.noProductBarcode = routerState['noProductBarcode'];
     } catch (error) {

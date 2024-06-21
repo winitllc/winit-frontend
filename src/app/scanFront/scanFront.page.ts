@@ -38,12 +38,13 @@ export class ScanFrontPage implements OnInit {
     try {
       console.log(`ScanFrontPage.ngOnInit setting up scan page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.getCurrentNavigation();
+      const currNavigation = this.router.lastSuccessfulNavigation;
+      console.log(`ScanBackPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
       this.noProductBarcode = routerState['noProductBarcode'];
       this.nameText = routerState['nameText'];
       this.nameS3ImageKey = routerState['nameS3ImageKey'];
-      console.log(`ScanFrontPage.ngOnInit: noProductBarcode ${this.noProductBarcode}`);
+      console.log(`ScanFrontPage.ngOnInit: noProductBarcode ${JSON.stringify(this.noProductBarcode)}`);
       console.log(`ScanFrontPage.ngOnInit: nameText ${this.nameText}`);
       console.log(`ScanFrontPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
     } catch (error) {
@@ -66,7 +67,7 @@ export class ScanFrontPage implements OnInit {
       const croppedImageData = await this.openCropperModal(imageData);
       this.imageCaptured = true;
       this.imageSrc = croppedImageData;
-      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData);
+      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData, `front-${this.noProductBarcode}`);
       console.log(`ScanFrontPage.scanFront: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
       this.frontS3ImageKey = imageKeyInS3;
     } catch (error) {
@@ -81,7 +82,7 @@ export class ScanFrontPage implements OnInit {
   }
 
   continue() {
-    console.log(`ScanBackPage.continue: calling continue with the frontS3ImageKey ${this.frontS3ImageKey}`);
+    console.log(`ScanFrontPage.continue: calling continue with the frontS3ImageKey ${this.frontS3ImageKey}`);
     const navExtras: NavigationExtras = {
       state: {
         noProductBarcode: this.noProductBarcode,
@@ -91,6 +92,7 @@ export class ScanFrontPage implements OnInit {
         frontImage: this.imageSrc
       }
     };
+    console.log(`ScanFrontPage.continue: navExtras  ${JSON.stringify(navExtras)}`);
     this.navCtrl.navigateForward('tabs/product/scanBack', navExtras);
   }
 
@@ -105,8 +107,8 @@ export class ScanFrontPage implements OnInit {
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
-    console.log(`ScanBackPage.openCropperModal: modal dismissed, data: ${JSON.stringify(data)}`);
-    console.log(`ScanBackPage.openCropperModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    console.log(`ScanFrontPage.openCropperModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`ScanFrontPage.openCropperModal: modal dismissed, role: ${JSON.stringify(role)}`);
     return data as string;
   }
 

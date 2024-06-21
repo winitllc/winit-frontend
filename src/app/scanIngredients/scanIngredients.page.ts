@@ -44,7 +44,8 @@ export class ScanIngredientsPage implements OnInit {
     try {
       console.log(`ScanIngredientsPage.ngOnInit setting up scan page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.getCurrentNavigation();
+      const currNavigation = this.router.lastSuccessfulNavigation;
+      console.log(`ScanIngredientsPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
       this.noProductBarcode = routerState['noProductBarcode'];
       this.nameText = routerState['nameText'];
@@ -52,12 +53,12 @@ export class ScanIngredientsPage implements OnInit {
       this.frontS3ImageKey = routerState['frontS3ImageKey'];
       this.frontImage = routerState['frontImage'];
       this.backS3ImageKey = routerState['backS3ImageKey'];
-      console.log(`ScanBackPage.ngOnInit: noProductBarcode ${this.noProductBarcode}`);
-      console.log(`ScanBackPage.ngOnInit: nameText ${this.nameText}`);
-      console.log(`ScanBackPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
-      console.log(`ScanBackPage.ngOnInit: frontS3ImageKey ${this.frontS3ImageKey}`);
-      console.log(`ScanBackPage.ngOnInit: frontImage ${this.frontImage}`);
-      console.log(`ScanBackPage.ngOnInit: backS3ImageKey ${this.backS3ImageKey}`);
+      console.log(`ScanIngredientsPage.ngOnInit: noProductBarcode ${this.noProductBarcode}`);
+      console.log(`ScanIngredientsPage.ngOnInit: nameText ${this.nameText}`);
+      console.log(`ScanIngredientsPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
+      console.log(`ScanIngredientsPage.ngOnInit: frontS3ImageKey ${this.frontS3ImageKey}`);
+      console.log(`ScanIngredientsPage.ngOnInit: frontImage ${this.frontImage}`);
+      console.log(`ScanIngredientsPage.ngOnInit: backS3ImageKey ${this.backS3ImageKey}`);
     } catch (error) {
       console.error(`ScanIngredientsPage.ngOnInit Error: ${JSON.stringify(error)}`);
     }

@@ -40,14 +40,15 @@ export class ScanBackPage implements OnInit {
     try {
       console.log(`ScanBackPage.ngOnInit setting up scan page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.getCurrentNavigation();
+      const currNavigation = this.router.lastSuccessfulNavigation;
+      console.log(`ScanBackPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
       this.noProductBarcode = routerState['noProductBarcode'];
       this.nameText = routerState['nameText'];
       this.nameS3ImageKey = routerState['nameS3ImageKey'];
       this.frontS3ImageKey = routerState['frontS3ImageKey'];
       this.frontImage = routerState['frontImage'];
-      console.log(`ScanBackPage.ngOnInit: noProductBarcode ${this.noProductBarcode}`);
+      console.log(`ScanBackPage.ngOnInit: noProductBarcode ${JSON.stringify(this.noProductBarcode)}`);
       console.log(`ScanBackPage.ngOnInit: nameText ${this.nameText}`);
       console.log(`ScanBackPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
       console.log(`ScanBackPage.ngOnInit: frontS3ImageKey ${this.frontS3ImageKey}`);
@@ -72,7 +73,7 @@ export class ScanBackPage implements OnInit {
       const croppedImageData = await this.openCropperModal(imageData);
       this.imageCaptured = true;
       this.imageSrc = croppedImageData;
-      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData);
+      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData, `back-${this.noProductBarcode}`);
       this.backS3ImageKey = imageKeyInS3;
       console.log(`ScanBackPage.scanBack: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
     } catch (error) {
@@ -98,6 +99,7 @@ export class ScanBackPage implements OnInit {
         backS3ImageKey: this.backS3ImageKey
       }
     };
+    console.log(`ScanBackPage.continue: navExtras  ${JSON.stringify(navExtras)}`);
     this.navCtrl.navigateForward('tabs/product/scanIngredients', navExtras);
   }
 

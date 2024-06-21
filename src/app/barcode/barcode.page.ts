@@ -95,11 +95,11 @@ export class BarcodePage implements OnInit {
     console.log(`BarcodePage.scan: the barcode: ${JSON.stringify(this.barcode)}`);
     this.pushToProductPage({
       message: AppConfig.controlMessages.noProduct,
-      barcode
+      barcode: barcode.displayValue
     });
   }
 
-  private pushToProductPage(product: model.WuzinitProductBase | { message: string, barcode: Barcode }): void {
+  private pushToProductPage(product: model.WuzinitProductBase | { message: string, barcode: string }): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
       console.log(`BarcodePage.pushToProductPage: pushing the product to product page: ${JSON.stringify(product)}`);
