@@ -18,7 +18,7 @@ export class ScanFrontPage implements OnInit {
   imageSrc: string = '';
   loading: HTMLIonLoadingElement | null = null;
   profile: any;
-  noProductBarcode: string = '';
+  barcode: string = '';
   nameText: string = '';
   nameS3ImageKey:string = '';
   frontS3ImageKey: string = '';
@@ -38,13 +38,16 @@ export class ScanFrontPage implements OnInit {
     try {
       console.log(`ScanFrontPage.ngOnInit setting up scan page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.lastSuccessfulNavigation;
-      console.log(`ScanBackPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);
+      let currNavigation = this.router.getCurrentNavigation();
+      if (!currNavigation) {
+        currNavigation = this.router.lastSuccessfulNavigation;
+      }
+      console.log(`ScanFrontPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
-      this.noProductBarcode = routerState['noProductBarcode'];
+      this.barcode = routerState['barcode'];
       this.nameText = routerState['nameText'];
       this.nameS3ImageKey = routerState['nameS3ImageKey'];
-      console.log(`ScanFrontPage.ngOnInit: noProductBarcode ${JSON.stringify(this.noProductBarcode)}`);
+      console.log(`ScanFrontPage.ngOnInit: barcode ${JSON.stringify(this.barcode)}`);
       console.log(`ScanFrontPage.ngOnInit: nameText ${this.nameText}`);
       console.log(`ScanFrontPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
     } catch (error) {
@@ -67,7 +70,7 @@ export class ScanFrontPage implements OnInit {
       const croppedImageData = await this.openCropperModal(imageData);
       this.imageCaptured = true;
       this.imageSrc = croppedImageData;
-      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData, `front-${this.noProductBarcode}`);
+      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData, `front-${this.barcode}`);
       console.log(`ScanFrontPage.scanFront: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
       this.frontS3ImageKey = imageKeyInS3;
     } catch (error) {
@@ -85,7 +88,7 @@ export class ScanFrontPage implements OnInit {
     console.log(`ScanFrontPage.continue: calling continue with the frontS3ImageKey ${this.frontS3ImageKey}`);
     const navExtras: NavigationExtras = {
       state: {
-        noProductBarcode: this.noProductBarcode,
+        barcode: this.barcode,
         nameText: this.nameText,
         nameS3ImageKey: this.nameS3ImageKey,
         frontS3ImageKey: this.frontS3ImageKey,

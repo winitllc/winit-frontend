@@ -66,7 +66,10 @@ export class ProductPage implements OnInit {
       this.warnings = this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;});
       this.noProduct = true;
       console.log(`ProductPage.ionViewWillEnter: beginning of ionViewWillEnter`);
-      const currNavigation = this.router.lastSuccessfulNavigation;
+      let currNavigation = this.router.getCurrentNavigation();
+      if (!currNavigation) {
+        currNavigation = this.router.lastSuccessfulNavigation;
+      }
       console.log(`ProductPage.ionViewWillEnter: curr navigation properties: ${Object.keys(currNavigation || {})}`);
       if (currNavigation) {
         const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));

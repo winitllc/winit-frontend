@@ -18,7 +18,7 @@ export class ScanNamePage implements OnInit {
   imageSrc: string = '';
   loading: HTMLIonLoadingElement | null = null;
   profile: any;
-  noProductBarcode: string = '';
+  barcode: string = '';
   nameS3ImageKey: string = '';
 
   constructor(
@@ -35,9 +35,17 @@ export class ScanNamePage implements OnInit {
     try {
       console.log(`ScanNamePage.ngOnInit setting up scan name page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.lastSuccessfulNavigation;
+      let currNavigation = this.router.getCurrentNavigation();
+      if (!currNavigation) {
+        currNavigation = this.router.lastSuccessfulNavigation;
+      }
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
-      this.noProductBarcode = routerState['noProductBarcode'];
+      console.log(`ScanNamePage.ngOnInit: router state: ${JSON.stringify(routerState)}`);
+      console.log(`ScanNamePage.ngOnInit: router state keys: ${Object.keys(routerState)}`);
+      const barcode = routerState['noProductBarcode'];
+      console.log(`ScanNamePage.ngOnInit: no product barcode: ${barcode}`);
+      this.barcode = barcode;
+      console.log(`ScanNamePage.ngOnInit: this.barcode: ${this.barcode}`);
     } catch (error) {
       console.error(`ScanNamePage.ngOnInit Error: ${JSON.stringify(error)}`);
     }
@@ -46,7 +54,7 @@ export class ScanNamePage implements OnInit {
   ionViewWillEnter(): void {
     console.log(`ScanNamePage.ionViewWillEnter - beginning of ionViewWillEnter`);
     this.profile = this.profileState.getHealthProfile();
-    console.log(`ScanNamePage.ngOnInit: profile from state: ${JSON.stringify(this.profile)}`);
+    console.log(`ScanNamePage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
     this.imageCaptured = false;
     this.nameText = "";
     this.imageSrc = "";
@@ -71,11 +79,12 @@ export class ScanNamePage implements OnInit {
   continue() {
     const navExtras: NavigationExtras = {
       state: {
-        noProductBarcode: this.noProductBarcode,
+        barcode: this.barcode,
         nameText: this.nameText,
         nameS3ImageKey: this.nameS3ImageKey
       }
     };
+    console.log(`ScanNamePage.continue: navExtras: ${JSON.stringify(navExtras)}`);
     this.navCtrl.navigateForward('tabs/product/scanFront', navExtras);
   }
 

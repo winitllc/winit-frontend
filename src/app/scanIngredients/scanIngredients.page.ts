@@ -21,7 +21,7 @@ export class ScanIngredientsPage implements OnInit {
   imageSrc: string = '';
   loading: HTMLIonLoadingElement | null = null;
   profile: any;
-  noProductBarcode: string = '';
+  barcode: string = '';
   nameText: string = '';
   nameS3ImageKey:string = '';
   frontS3ImageKey: string = '';
@@ -44,16 +44,19 @@ export class ScanIngredientsPage implements OnInit {
     try {
       console.log(`ScanIngredientsPage.ngOnInit setting up scan page`);
       this.imageCaptured = false;
-      const currNavigation = this.router.lastSuccessfulNavigation;
+      let currNavigation = this.router.getCurrentNavigation();
+      if (!currNavigation) {
+        currNavigation = this.router.lastSuccessfulNavigation;
+      }
       console.log(`ScanIngredientsPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
-      this.noProductBarcode = routerState['noProductBarcode'];
+      this.barcode = routerState['barcode'];
       this.nameText = routerState['nameText'];
       this.nameS3ImageKey = routerState['nameS3ImageKey'];
       this.frontS3ImageKey = routerState['frontS3ImageKey'];
       this.frontImage = routerState['frontImage'];
       this.backS3ImageKey = routerState['backS3ImageKey'];
-      console.log(`ScanIngredientsPage.ngOnInit: noProductBarcode ${this.noProductBarcode}`);
+      console.log(`ScanIngredientsPage.ngOnInit: barcode ${this.barcode}`);
       console.log(`ScanIngredientsPage.ngOnInit: nameText ${this.nameText}`);
       console.log(`ScanIngredientsPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
       console.log(`ScanIngredientsPage.ngOnInit: frontS3ImageKey ${this.frontS3ImageKey}`);
@@ -90,7 +93,7 @@ export class ScanIngredientsPage implements OnInit {
 
   async continue() {
     const product: model.WuzinitProduct = JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
-    product.code = this.noProductBarcode;
+    product.code = this.barcode;
     product.productName = this.nameText;
     product.images.front = `https://wuzinit-product-images-bucket.s3.us-west-2.amazonaws.com/${this.frontS3ImageKey}`;
     product.ingredientsText = this.ingredientsText;
