@@ -95,7 +95,7 @@ export class ScanIngredientsPage implements OnInit {
     const product: model.WuzinitProduct = JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     product.code = this.barcode;
     product.productName = this.nameText;
-    product.images.front = `https://wuzinit-product-images-bucket.s3.us-west-2.amazonaws.com/${this.frontS3ImageKey}`;
+    product.images.front = `https://d37c5yx0fg82pb.cloudfront.net/${this.frontS3ImageKey}`;
     product.ingredientsText = this.ingredientsText;
     this.presentLoading('Sending new product to product update service for review.');
     await this.productService.addNewProductUpdate(product);

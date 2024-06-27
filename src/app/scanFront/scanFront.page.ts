@@ -70,7 +70,8 @@ export class ScanFrontPage implements OnInit {
       const croppedImageData = await this.openCropperModal(imageData);
       this.imageCaptured = true;
       this.imageSrc = croppedImageData;
-      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData, `front-${this.barcode}`);
+      const rawImageData = croppedImageData.replace('data:image/jpeg;base64,', '');
+      const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData, `front-${this.barcode}`);
       console.log(`ScanFrontPage.scanFront: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
       this.frontS3ImageKey = imageKeyInS3;
     } catch (error) {

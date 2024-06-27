@@ -76,7 +76,8 @@ export class ScanBackPage implements OnInit {
       const croppedImageData = await this.openCropperModal(imageData);
       this.imageCaptured = true;
       this.imageSrc = croppedImageData;
-      const imageKeyInS3 = await this.imageService.callUploadToS3(croppedImageData, `back-${this.barcode}`);
+      const rawImageData = croppedImageData.replace('data:image/jpeg;base64,', '');
+      const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData, `back-${this.barcode}`);
       this.backS3ImageKey = imageKeyInS3;
       console.log(`ScanBackPage.scanBack: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
     } catch (error) {
