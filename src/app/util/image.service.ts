@@ -67,6 +67,41 @@ export default class ImageService {
     }
   }
 
+  async callUploadToS3(imageToUpload: string, hashName?: string): Promise<string> {
+    console.log(`ImageService.callUploadToS3: image to upload ${imageToUpload}`);
+    const filename = `${Date.now()}-${hashName || `testName`}.jpg`;
+    const imageKey = `imageToReview/${filename}`;
+    console.log(`ImageService.uploadImageToS3: imageKey: ${imageKey}`);
+    const callUploadToS3URL = EnvironmentConfig.api.imageService.baseUrl + EnvironmentConfig.api.imageService.uploadToS3;
+    const requestOptions: HttpOptions = {
+      url: callUploadToS3URL,
+      headers: {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json'
+      },
+      data: {
+        imageKey,
+        imageToUpload
+      }
+    };
+    console.log(`ImageService.uploadImageToS3: uploadBody prepared: ${JSON.stringify(requestOptions)}`);
+    try {
+      const uploadToS3Response: any = await CapacitorHttp.post(requestOptions);
+      console.log(`ImageService.callUploadToS3: response  ${JSON.stringify(uploadToS3Response)}`);
+      console.log(`ImageService.uploadImageToS3: imageKey: ${imageKey}`);
+      if (uploadToS3Response.status == 200) {
+        return imageKey;
+      } else {
+        throw new Error(`ImageService.callUploadToS3 - call to backend: ${JSON.stringify(uploadToS3Response)}`);
+      }
+    } catch (error) {
+      console.error(`ImageService.callUploadToS3: error ${error}`);
+      throw error;
+    }
+  }
+
   async captureImagePhoto(): Promise<Photo> {
     console.log(`AddProductModalPage.captureImagePhoto: capture image selected`);
     try {

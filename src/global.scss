@@ -37,4 +37,32 @@
     font-size: larger;
     --backdrop-opacity: 80%;
   }
+
+  ion-button {
+    --border-radius: 2rem;
+    min-height: 25px;
+  }
 }
+
+/**
+* Barcode Scanning
+* -------------------------------------------
+*/
+body.barcode-scanning-active {
+  visibility: hidden;
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+.barcode-scanning-modal {
+  visibility: visible;
+  --background: transparent;
+  --ion-background-color: transparent;
+}
+
+// @media (prefers-color-scheme: dark) {
+//   .barcode-scanning-modal {
+//     --background: transparent;
+//     --ion-background-color: transparent;
+//   }
+// }
