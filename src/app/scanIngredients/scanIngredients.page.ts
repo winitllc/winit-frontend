@@ -46,6 +46,7 @@ export class ScanIngredientsPage implements OnInit {
       this.imageCaptured = false;
       let currNavigation = this.router.getCurrentNavigation();
       if (!currNavigation) {
+        console.log(`ProductPage.ngOnInit: no currNavigation found, using last successful`);
         currNavigation = this.router.lastSuccessfulNavigation;
       }
       console.log(`ScanIngredientsPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);

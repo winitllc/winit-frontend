@@ -37,6 +37,7 @@ export class ScanNamePage implements OnInit {
       this.imageCaptured = false;
       let currNavigation = this.router.getCurrentNavigation();
       if (!currNavigation) {
+        console.log(`ScanNamePage.ngOnInit: no currNavigation found, using last successful`);
         currNavigation = this.router.lastSuccessfulNavigation;
       }
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));

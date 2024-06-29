@@ -11,6 +11,12 @@ const Dev = {
       addProductUpdate: 'addProductUpdate',
       getByCode: 'getByCode'
     },
+    openFoodFactsProducts: {
+      baseUrl: 'https://us.openfoodfacts.org/api/v0/',
+      addProductUpdate: 'addProductUpdate',
+      getByCode: 'product/',
+      headerUserAgent: 'What\'s In It - Android - Version 1.0 - winitclinic.com'
+    },
     spoonacularProducts: {
       baseUrl: 'https://api.spoonacular.com/',
       getByCode: 'food/products/upc/',

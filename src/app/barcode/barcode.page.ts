@@ -1,12 +1,13 @@
 import { Component, NgZone, OnInit } from '@angular/core';
 import { LoadingController, LoadingOptions, ModalController, NavController } from '@ionic/angular';
-import { ProfileState } from '../profile/profile.state';
 import { Barcode, BarcodeFormat, BarcodeScanner, LensFacing } from '@capacitor-mlkit/barcode-scanning';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { BarcodeScanningModalComponent } from './barcode-scanningModal.page';
-import { AppConfig } from '../app.config';
 import { model } from 'wuzinit-common';
 import { NavigationExtras } from '@angular/router';
+import { ProfileState } from '../profile/profile.state';
+import { AppConfig } from '../app.config';
+import { ProductService, OpenFoodFactsProduct } from '../product/product.service';
 
 @Component({
   selector: 'barcode-scan',
@@ -32,6 +33,7 @@ export class BarcodePage implements OnInit {
     private loadingCtrl: LoadingController,
     private profileState: ProfileState,
     private navCtrl: NavController,
+    private productService: ProductService,
     private readonly ngZone: NgZone,
   ) { }
 
@@ -93,13 +95,22 @@ export class BarcodePage implements OnInit {
     const barcode: Barcode = data as Barcode;
     this.barcode = barcode;
     console.log(`BarcodePage.scan: the barcode: ${JSON.stringify(this.barcode)}`);
-    this.pushToProductPage({
-      message: AppConfig.controlMessages.noProduct,
-      barcode: barcode.displayValue
-    });
+    const productFromOpenFoodFacts: OpenFoodFactsProduct = await this.productService.getProductByBarcode(barcode.displayValue);
+    console.log(`BarcodePage.scan: productFromOpenFoodFacts: ${JSON.stringify(productFromOpenFoodFacts)}`);
+    console.log(`BarcodePage.scan: has code?: ${JSON.stringify(productFromOpenFoodFacts.hasOwnProperty('code'))}`);
+    if (productFromOpenFoodFacts.hasOwnProperty('code')) {
+      console.log(`BarcodePage.scan: pushing OFF product to page`);
+      this.pushToProductPage(productFromOpenFoodFacts);
+    } else {
+      console.log(`BarcodePage.scan: pushing 'no product' to page`);
+      this.pushToProductPage({
+        message: AppConfig.controlMessages.noProduct,
+        barcode: barcode.displayValue
+      });
+    }
   }
 
-  private pushToProductPage(product: model.WuzinitProductBase | { message: string, barcode: string }): void {
+  private pushToProductPage(product: OpenFoodFactsProduct | { message: string, barcode: string }): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
       console.log(`BarcodePage.pushToProductPage: pushing the product to product page: ${JSON.stringify(product)}`);
@@ -108,6 +119,7 @@ export class BarcodePage implements OnInit {
           product
         }
       };
+      console.log(`BarcodePage.pushToProductPage: nav extras for product page: ${JSON.stringify(navExtras)}`);
       this.navCtrl.navigateForward('tabs/product', navExtras);
     } catch (error) {
       console.error(`BarcodePage.pushToProductPage: Error pushing to the product page: ${JSON.stringify(error)}`);
