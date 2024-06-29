@@ -40,6 +40,7 @@ export class ScanFrontPage implements OnInit {
       this.imageCaptured = false;
       let currNavigation = this.router.getCurrentNavigation();
       if (!currNavigation) {
+        console.log(`ScanFrontPage.ngOnInit: no currNavigation found, using last successful`);
         currNavigation = this.router.lastSuccessfulNavigation;
       }
       console.log(`ScanFrontPage.ngOnInit: currNavigation.extras.state ${JSON.stringify(currNavigation?.extras.state)}`);

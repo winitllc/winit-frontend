@@ -5,7 +5,7 @@ import { Share } from '@capacitor/share';
 import { AppConfig } from '../app.config';
 import { model } from 'wuzinit-common';
 import { ProfileState } from '../profile/profile.state';
-import { ProductService } from './product.service';
+import { OpenFoodFactsProduct, ProductService } from './product.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -28,7 +28,7 @@ export class ProductPage implements OnInit {
   public ingredientsTextHTML: any = '';
   public ingredientsPoisonWarning: boolean = false;
   public ingredientsDangerWarning: boolean = false;
-  public product?: model.WuzinitProduct;
+  public product?: OpenFoodFactsProduct;
   public productType: string = 'spoonacular';
   public productKeywords: string[] = [];
   public iPhone: boolean = false;
@@ -62,12 +62,13 @@ export class ProductPage implements OnInit {
     try {
       console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
       this.profile = this.profileState.getHealthProfile();
-      console.log(`ScanPage.ngOnInit: profile from state: ${JSON.stringify(this.profile)}`);
+      console.log(`ScanPage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
       this.warnings = this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;});
       this.noProduct = true;
       console.log(`ProductPage.ionViewWillEnter: beginning of ionViewWillEnter`);
       let currNavigation = this.router.getCurrentNavigation();
       if (!currNavigation) {
+        console.log(`ProductPage.ionViewWillEnter: no currNavigation found, using last successful`);
         currNavigation = this.router.lastSuccessfulNavigation;
       }
       console.log(`ProductPage.ionViewWillEnter: curr navigation properties: ${Object.keys(currNavigation || {})}`);
@@ -85,7 +86,8 @@ export class ProductPage implements OnInit {
           this.product = JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
           this.noProductBarcode = product.barcode;
         } else if (product && product.hasOwnProperty('code')) {
-          console.log(`ProductPage.ionViewWillEnter: using wuzinit product from navParams`);
+          console.log(`ProductPage.ionViewWillEnter: using OpenFoodFacts product from navParams`);
+          console.log(`ProductPage.ionViewWillEnter: front images: ${JSON.stringify(product.selected_images.front)}`);
           this.product = JSON.parse(JSON.stringify(product));
           await this.setAlerts();
         } else if (this.product && this.product.hasOwnProperty('id')) {
@@ -137,8 +139,8 @@ export class ProductPage implements OnInit {
     // const poisonousIngredients: string[] = this.profileState.getPoisonousIngredients();
     // this.allergensText = this.addWarnings(Object.values(this.product.details.allergens), dangerousIngredients, poisonousIngredients, 'allergens');
     // this.tracesText = this.addWarnings(Object.values(this.product.details.traces_tags), dangerousIngredients, poisonousIngredients, 'traces');
-    console.log(`ProductPage.setAlerts: ingredients from product: ${this.product?.ingredientsText}`);
-    this.ingredientsTextHTML = this.sanitizer.bypassSecurityTrustHtml(this.addAlertHighlights(this.product?.ingredientsText || ''));
+    console.log(`ProductPage.setAlerts: ingredients from product: ${this.product?.ingredients_text}`);
+    this.ingredientsTextHTML = this.sanitizer.bypassSecurityTrustHtml(this.addAlertHighlights(this.product?.ingredients_text || ''));
     
     this.addFeedback();
   }
