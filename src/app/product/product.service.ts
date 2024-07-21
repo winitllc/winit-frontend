@@ -74,6 +74,39 @@ export class ProductService {
       return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     }
   }
+
+  public async searchProductByCategory(category: string): Promise<OpenFoodFactsProduct[]> {
+    const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.searchByTag}`;
+    console.log(`ProductService.searchProductByCategory: searching by category: ${category}`);
+    console.log(`ProductService.searchProductByCategory: url: ${getProductByBarcodeURL}`);
+    try {
+      // const apiKey: string = this.authState.getSpoonacularAPIKey();
+      const requestOptions = {
+        url: getProductByBarcodeURL,
+        headers: {
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
+          'Access-Control-Allow-Origin': '*'
+        },
+        params: {
+          action: 'process',
+          json: 'true',
+          tagtype_0: 'categories',
+          tag_contains_0: 'contains',
+          tag_0: category
+        }
+      };
+      console.log(`ProductService.searchProductByCategory: request options: ${JSON.stringify(requestOptions)}`);
+      const result: HttpResponse = await CapacitorHttp.get(requestOptions);
+      console.log(`ProductService.searchProductByCategory: result from OpenFoodFacts: ${JSON.stringify(result)}`);
+      const products: OpenFoodFactsProduct[] = result.data?.products;
+      console.log(`ProductService.searchProductByCategory: product object: ${JSON.stringify(products)}`);
+      return products;
+    } catch (error) {
+      console.error(`ProductService.searchProductByCategory: Error getting by category ${category}`);
+      console.error(`ProductService.searchProductByCategory: Error: ${JSON.stringify(error)}`);
+      return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
+    }
+  }
 }
 
 export interface OpenFoodFactsProduct {

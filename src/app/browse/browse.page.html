@@ -1,14 +1,108 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title class="ion-text-center">
-      Home
+      Browse
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="home-area">
-    <h2 class="ion-text-center"><img class="header-icon" src="assets/icon/favicon.png"> What's In It Clinic</h2>
+    <ion-grid>
+      <ion-row>
+        <ion-col></ion-col>
+        <ion-col size="8">
+          <h2 class="ion-text-center"><img class="header-icon" src="assets/icon/favicon.png"> Explore Products</h2>
+        </ion-col>
+        <ion-col class="centered-content">
+          <ion-button fill="clear">
+            <ion-icon slot="icon-only" name="search"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('cheese')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/cheeses.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('chicken')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/chicken.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('pizza')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/pizza.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('pasta')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/pasta.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('breakfast_cereals')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/cereal.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('bread')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/bread.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('yogurt')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/yogurt.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear" (click)="browseProducts('plant_based_foods')">
+            <ion-card>
+              <ion-card-content>
+                <img src="assets/browse/plant.png"/>
+              </ion-card-content>
+            </ion-card>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <a class="home-link" href="https://winitclinic.com/">
       <ion-card>
         <ion-card-header>
