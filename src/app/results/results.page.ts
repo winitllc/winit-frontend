@@ -6,7 +6,7 @@ import { AppConfig } from '../app.config';
 import { model } from 'wuzinit-common';
 import { ProfileState } from '../profile/profile.state';
 import { DomSanitizer } from '@angular/platform-browser';
-import { OpenFoodFactsProduct } from '../product/product.service';
+import { OpenFoodFactsIngredient, OpenFoodFactsProduct } from '../product/product.service';
 
 @Component({
   selector: 'app-results',
@@ -35,7 +35,7 @@ export class ResultsPage implements OnInit {
     console.log(`ResultsPage.ngOnInit: beginning of ngOnInit`);
   }
 
-  async ionViewWillEnter(): Promise<void> {
+  async ngAfterContentChecked(): Promise<void> {
     try {
       console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
       this.profile = this.profileState.getHealthProfile();
@@ -50,10 +50,25 @@ export class ResultsPage implements OnInit {
       }
       console.log(`ResultsPage.ionViewWillEnter: curr navigation properties: ${Object.keys(currNavigation || {})}`);
       if (currNavigation) {
+        this.noResults = false;
         const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));
         console.log(`ResultsPage.ionViewWillEnter: routerState: ${JSON.stringify(routerState)}`);
         const products = routerState['products'];
         console.log(`ResultsPage.ionViewWillEnter: products from navParams: ${JSON.stringify(products)}`);
+        // let ingredients_text_en_list: string[] = [];
+        // let ingredients_list: OpenFoodFactsIngredient[][] = [];
+        // let ingredients_text_list: string[] = [];
+        // let allergens_from_ingredients_list: string[] = [];
+        // products.forEach((product: OpenFoodFactsProduct) => {
+        //   ingredients_text_en_list.push(product.ingredients_text_en);
+        //   ingredients_list.push(product.ingredients);
+        //   ingredients_text_list.push(product.ingredients_text);
+        //   allergens_from_ingredients_list.push(product.allergens_from_ingredients);
+        // });
+        // console.log(`ResultsPage.ionViewWillEnter: ingredients_text_en_list list from navParams: ${JSON.stringify(ingredients_text_en_list)}`);
+        // console.log(`ResultsPage.ionViewWillEnter: ingredients_list list from navParams: ${JSON.stringify(ingredients_list)}`);
+        // console.log(`ResultsPage.ionViewWillEnter: ingredients_text_list list from navParams: ${JSON.stringify(ingredients_text_list)}`);
+        // console.log(`ResultsPage.ionViewWillEnter: allergens_from_ingredients_list list from navParams: ${JSON.stringify(allergens_from_ingredients_list)}`);
         this.productResults = products;
       } else {
         console.log(`ResultsPage.ionViewWillEnter: still no currNavigation: ${JSON.stringify(currNavigation)}`);

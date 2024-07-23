@@ -42,7 +42,7 @@ export class BrowsePage implements OnInit {
   async browseProducts(category: string) {
     console.log(`BrowsePage.browseProducts: category to search: ${category}`);
     try {
-      await this.presentLoading(`searching for ${category}`, 10);
+      await this.presentLoading(`searching for ${category}`, 10000);
       const productResults: OpenFoodFactsProduct[] = await this.productService.searchProductByCategory(category);
       console.log(`BrowsePage.browseProducts: results from the category search: ${JSON.stringify(productResults)}`);
       await this.dismissLoading();
