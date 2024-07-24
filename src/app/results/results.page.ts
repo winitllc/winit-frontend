@@ -55,20 +55,14 @@ export class ResultsPage implements OnInit {
         console.log(`ResultsPage.ionViewWillEnter: routerState: ${JSON.stringify(routerState)}`);
         const products = routerState['products'];
         console.log(`ResultsPage.ionViewWillEnter: products from navParams: ${JSON.stringify(products)}`);
-        // let ingredients_text_en_list: string[] = [];
-        // let ingredients_list: OpenFoodFactsIngredient[][] = [];
-        // let ingredients_text_list: string[] = [];
-        // let allergens_from_ingredients_list: string[] = [];
-        // products.forEach((product: OpenFoodFactsProduct) => {
-        //   ingredients_text_en_list.push(product.ingredients_text_en);
-        //   ingredients_list.push(product.ingredients);
-        //   ingredients_text_list.push(product.ingredients_text);
-        //   allergens_from_ingredients_list.push(product.allergens_from_ingredients);
-        // });
-        // console.log(`ResultsPage.ionViewWillEnter: ingredients_text_en_list list from navParams: ${JSON.stringify(ingredients_text_en_list)}`);
-        // console.log(`ResultsPage.ionViewWillEnter: ingredients_list list from navParams: ${JSON.stringify(ingredients_list)}`);
-        // console.log(`ResultsPage.ionViewWillEnter: ingredients_text_list list from navParams: ${JSON.stringify(ingredients_text_list)}`);
-        // console.log(`ResultsPage.ionViewWillEnter: allergens_from_ingredients_list list from navParams: ${JSON.stringify(allergens_from_ingredients_list)}`);
+        let code_list: string[] = [];
+        let id_list: string[] = [];
+        products.forEach((product: OpenFoodFactsProduct) => {
+          code_list.push(product.code);
+          id_list.push(product.id);
+        });
+        console.log(`ResultsPage.ionViewWillEnter: code_list list from navParams: ${JSON.stringify(code_list)}`);
+        console.log(`ResultsPage.ionViewWillEnter: id_list list from navParams: ${JSON.stringify(id_list)}`);
         this.productResults = products;
       } else {
         console.log(`ResultsPage.ionViewWillEnter: still no currNavigation: ${JSON.stringify(currNavigation)}`);
@@ -76,6 +70,29 @@ export class ResultsPage implements OnInit {
     } catch (error) {
       console.error(`ResultsPage.ionViewWillEnter Error: ${JSON.stringify(error)}`);
       throw error;
+    }
+  }
+
+  selectProduct(id: string): void {
+    console.log(`ResultsPage.selectProduct: id ${id}`);
+    try {
+      const product: OpenFoodFactsProduct | undefined = this.productResults.find((product: OpenFoodFactsProduct) => {
+        return product.id == id;
+      });
+      console.log(`ResultsPage.selectProduct: pushing the selected product to product page: ${JSON.stringify(product)}`);
+      if (product) {
+        const navExtras: NavigationExtras = {
+          state: {
+            product
+          }
+        };
+        console.log(`ResultsPage.selectProduct: nav extras for results page: ${JSON.stringify(navExtras)}`);
+        this.navCtrl.navigateForward('tabs/product', navExtras);
+      } else {
+        console.log(`ResultsPage.selectProduct: no product: ${JSON.stringify(id)}`);
+      }
+    } catch (error) {
+      console.error(`ResultsPage.selectProduct: Error pushing to the results page: ${JSON.stringify(error)}`);
     }
   }
 
