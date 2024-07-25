@@ -7,14 +7,14 @@
 <ion-content>
   <div *ngIf="!noResults">
     <ion-grid>
-      <ion-row *ngFor="let product of productResults">
+      <ion-row *ngFor="let product of productResults" class="product-row">
         <ion-col>
           <img src="{{product.image_thumb_url}}"/>
         </ion-col>
         <ion-col size="10">
           <ion-card (click)="selectProduct(product.code)">
-            <ion-card-title>{{product.product_name}}</ion-card-title>
-            <ion-card-subtitle>{{product.ingredients_text_en}}</ion-card-subtitle>
+            <ion-card-subtitle>{{product.product_name}}</ion-card-subtitle>
+            <ion-card-content>{{product.ingredients_text_en}}</ion-card-content>
           </ion-card>
         </ion-col>
       </ion-row>
