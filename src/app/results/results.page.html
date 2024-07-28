@@ -7,7 +7,7 @@
 <ion-content>
   <div *ngIf="!noResults">
     <ion-grid>
-      <ion-row *ngFor="let product of productResults" class="product-row">
+      <ion-row *ngFor="let product of products" class="product-row">
         <ion-col>
           <img src="{{product.image_thumb_url}}"/>
         </ion-col>
@@ -31,4 +31,8 @@
       </ion-row>
     </ion-grid>
   </div>
+
+  <ion-infinite-scroll (ionInfinite)="scrollEvent($event)" threshold="35%">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

@@ -19,11 +19,7 @@ export class BrowsePage implements OnInit {
   public searchBox: string = '';
 
   constructor(
-    // private platform: Platform,
     public navCtrl: NavController,
-    // public modalController: ModalController,
-    // private androidPermissions: AndroidPermissions,
-    // private auth: AuthService,
     private loadingCtrl: LoadingController,
     private productService: ProductService
   ) {
@@ -43,23 +39,23 @@ export class BrowsePage implements OnInit {
     console.log(`BrowsePage.browseProducts: category to search: ${category}`);
     try {
       await this.presentLoading(`searching for ${category}`, 10000);
-      const productResults: OpenFoodFactsProduct[] = await this.productService.searchProductByCategory(category);
-      console.log(`BrowsePage.browseProducts: results from the category search: ${JSON.stringify(productResults)}`);
+      const productSearchResults: any = await this.productService.searchProductByCategory(category);
+      console.log(`BrowsePage.browseProducts: results from the category search: ${JSON.stringify(productSearchResults)}`);
       await this.dismissLoading();
-      this.pushToResultsPage(productResults);
+      this.pushToResultsPage(productSearchResults);
     } catch (error) {
       console.error(`BrowsePage.browseProducts Error: ${JSON.stringify(error)}`);
       throw error;
     }
   }
 
-  private pushToResultsPage(products: OpenFoodFactsProduct[]): void {
+  private pushToResultsPage(productSearchResults: any): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
-      console.log(`BrowsePage.pushToResultsPage: pushing the product results to results page: ${JSON.stringify(products)}`);
+      console.log(`BrowsePage.pushToResultsPage: pushing the product results to results page: ${JSON.stringify(productSearchResults)}`);
       const navExtras: NavigationExtras = {
         state: {
-          products
+          productSearchResults
         }
       };
       console.log(`BrowsePage.pushToResultsPage: nav extras for results page: ${JSON.stringify(navExtras)}`);

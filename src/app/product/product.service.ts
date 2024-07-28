@@ -75,13 +75,13 @@ export class ProductService {
     }
   }
 
-  public async searchProductByCategory(category: string): Promise<OpenFoodFactsProduct[]> {
+  public async searchProductByCategory(category: string, nextPage?: string): Promise<any> {
     const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.searchByTag}`;
     console.log(`ProductService.searchProductByCategory: searching by category: ${category}`);
     console.log(`ProductService.searchProductByCategory: url: ${getProductByBarcodeURL}`);
     try {
       // const apiKey: string = this.authState.getSpoonacularAPIKey();
-      const requestOptions = {
+      const requestOptions: any = {
         url: getProductByBarcodeURL,
         headers: {
           'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
@@ -95,12 +95,26 @@ export class ProductService {
           tag_0: category
         }
       };
+      requestOptions.params.page = nextPage || undefined;
       console.log(`ProductService.searchProductByCategory: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
       console.log(`ProductService.searchProductByCategory: result from OpenFoodFacts: ${JSON.stringify(result)}`);
+      console.log(`ProductService.searchProductByCategory: result fields from OpenFoodFacts: ${Object.keys(result.data)}`);
+      console.log(`ProductService.searchProductByCategory: page field from OpenFoodFacts: ${result.data.page}`);
+      console.log(`ProductService.searchProductByCategory: result page_size from OpenFoodFacts: ${result.data.page_size}`);
+      console.log(`ProductService.searchProductByCategory: result page_count from OpenFoodFacts: ${result.data.page_count}`);
+      console.log(`ProductService.searchProductByCategory: result count from OpenFoodFacts: ${result.data.count}`);
+      console.log(`ProductService.searchProductByCategory: skip field from OpenFoodFacts: ${result.data.skip}`);
       const products: OpenFoodFactsProduct[] = result.data?.products;
       console.log(`ProductService.searchProductByCategory: product object: ${JSON.stringify(products)}`);
-      return products;
+      return {
+        products,
+        page: result.data.page,
+        page_size: result.data.page_size,
+        page_count: result.data.page_count,
+        count: result.data.count,
+        skip: result.data.skip
+      };
     } catch (error) {
       console.error(`ProductService.searchProductByCategory: Error getting by category ${category}`);
       console.error(`ProductService.searchProductByCategory: Error: ${JSON.stringify(error)}`);
