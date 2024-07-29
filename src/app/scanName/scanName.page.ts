@@ -15,6 +15,7 @@ export class ScanNamePage implements OnInit {
 
   imageCaptured: boolean = false;
   nameText: any = '';
+  brandsText: any = '';
   imageSrc: string = '';
   loading: HTMLIonLoadingElement | null = null;
   profile: any;
@@ -58,6 +59,7 @@ export class ScanNamePage implements OnInit {
     console.log(`ScanNamePage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
     this.imageCaptured = false;
     this.nameText = "";
+    this.brandsText = "";
     this.imageSrc = "";
   }
 
@@ -66,6 +68,7 @@ export class ScanNamePage implements OnInit {
     this.imageCaptured = true;
     this.imageSrc = imageToTextData.image;
     this.nameText = imageToTextData.text;
+    this.brandsText = imageToTextData.text;
     this.nameS3ImageKey = imageToTextData.s3ImageKey;
     console.log(`ScanNamePage.scan: imageToTextData: ${JSON.stringify(imageToTextData)}`);
     this.profileService.addToProfilePoints(1);
@@ -74,6 +77,7 @@ export class ScanNamePage implements OnInit {
   resetSection() {
     this.imageCaptured = false;
     this.nameText = "";
+    this.brandsText = "";
     this.imageSrc = "";
   }
 
@@ -82,6 +86,7 @@ export class ScanNamePage implements OnInit {
       state: {
         barcode: this.barcode,
         nameText: this.nameText,
+        brandsText: this.brandsText,
         nameS3ImageKey: this.nameS3ImageKey
       }
     };

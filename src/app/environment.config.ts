@@ -13,7 +13,8 @@ const Dev = {
     },
     openFoodFactsProducts: {
       baseUrl: 'https://us.openfoodfacts.org',
-      addProductUpdate: '/api/v0/addProductUpdate',
+      testUrl: 'https://world.openfoodfacts.net',
+      addProductUpdate: '/cgi/product_jqm2.pl',
       getByCode: '/api/v0/product/',
       searchByTag: '/cgi/search.pl',
       headerUserAgent: 'What\'s In It - Android - Version 1.0 - winitclinic.com'

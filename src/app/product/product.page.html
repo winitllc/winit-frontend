@@ -29,7 +29,7 @@
       <ion-row class="ion-justify-content-center">
         <ion-col>
           <div class="productImage">
-            <img class="productImage" src="{{product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0 ? product.selected_images.front.display.en : 'assets/imgs/noProduct.png'}}">
+            <img class="productImage" src="{{product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0 ? product.selected_images.front.display.en : product?.image_front_url || 'assets/imgs/noProduct.png'}}">
           </div>
         </ion-col>
       </ion-row>
@@ -38,6 +38,14 @@
           <h2>Ingredients</h2>
           <div [innerHtml]="ingredientsTextHTML"></div>
           <br>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-col>
+          <h2>Nutrition</h2>
+          <div class="productImage">
+            <img class="productImage" src="{{product && product.selected_images && product.selected_images.nutrition && product.selected_images.nutrition.display && product.selected_images.nutrition.display.en && product.selected_images.nutrition.display.en.length > 0 ? product.selected_images.nutrition.display.en : product?.image_nutrition_url || 'assets/imgs/noProduct.png'}}">
+          </div>
         </ion-col>
       </ion-row>
       <!-- <ion-row>

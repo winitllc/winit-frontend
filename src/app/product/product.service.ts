@@ -18,27 +18,31 @@ export class ProductService {
 
   // }
 
-  public async addNewProductUpdate(product: model.WuzinitProduct): Promise<model.WuzinitProduct> {
-    const postProductUpdate = `${EnvironmentConfig.api.wuzinitProducts.baseUrl}${EnvironmentConfig.api.wuzinitProducts.addProductUpdate}`;
+  public async addNewProductUpdate(product: OpenFoodFactsProductUpdate): Promise<OpenFoodFactsProductUpdate> {
+    const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
+    // const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
     console.log(`ProductService.addNewProductUpdate: requesting product by id: ${JSON.stringify(product)}`);
     console.log(`ProductService.addNewProductUpdate: url: ${postProductUpdate}`);
     try {
-      // const apiKey: string = this.authState.getSpoonacularAPIKey();
       const requestOptions: HttpOptions = {
         url: postProductUpdate,
         headers: {
-          'Accept': '*/*',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'Connection': 'keep-alive',
-          'Content-Type': 'application/json'
-          // 'X-API-Key': apiKey
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent
         },
-        data: {
-          product
+        params: {
+          code: product.code,
+          product_name_en: product.product_name_en,
+          ingredients_text: product.ingredients_text,
+          nutrition_data: product.nutrition_data,
+          image_url: product.image_url,
+          image_ingredients_url: product.image_ingredients_url,
+          image_front_url: product.image_front_url,
+          image_nutrition_url: product.image_nutrition_url,
+          brands: product.brands
         }
-      }
+      };
       const result: HttpResponse = await CapacitorHttp.post(requestOptions);
-      console.log(`ProductService.addNewProductUpdate: result from wuzinit: ${JSON.stringify(result)}`);
+      console.log(`ProductService.addNewProductUpdate: result from open food facts: ${JSON.stringify(result)}`);
       console.log(`ProductService.addNewProductUpdate: product object: ${JSON.stringify(product)}`);
       return product;
     } catch (error) {
@@ -106,7 +110,15 @@ export class ProductService {
       console.log(`ProductService.searchProductByCategory: result count from OpenFoodFacts: ${result.data.count}`);
       console.log(`ProductService.searchProductByCategory: skip field from OpenFoodFacts: ${result.data.skip}`);
       const products: OpenFoodFactsProduct[] = result.data?.products;
-      console.log(`ProductService.searchProductByCategory: product object: ${JSON.stringify(products)}`);
+
+      const product_name_en_list: string[] = [];
+      const brands_list: string[] = [];
+      products.forEach((product) => {
+        product_name_en_list.push(product.product_name_en);
+        brands_list.push(product.brands);
+      });
+      console.log(`ProductService.searchProductByCategory: product product_name_en_list: ${JSON.stringify(product_name_en_list)}`);
+      console.log(`ProductService.searchProductByCategory: product brands_list: ${JSON.stringify(brands_list)}`);
       return {
         products,
         page: result.data.page,
@@ -121,6 +133,19 @@ export class ProductService {
       return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     }
   }
+}
+
+export interface OpenFoodFactsProductUpdate {
+  code: string;
+  product_name_en: string;
+  ingredients_text: string;
+  nutrition_data: string;
+  image_url: string;
+  image_ingredients_url: string;
+  image_front_url: string;
+  image_nutrition_url: string;
+  brands: string;
+  labels?: string;
 }
 
 export interface OpenFoodFactsProduct {

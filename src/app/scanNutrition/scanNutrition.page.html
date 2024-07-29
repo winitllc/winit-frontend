@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title class="ion-text-center">
-      Add product info
+      Add Nutrition Information
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -10,7 +10,7 @@
   <ion-grid>
     <ion-row>
       <ion-col class="ion-text-center">
-        <h3>Please photograph the back of the product</h3>
+        <h3>Please photograph the nutrition of the product</h3>
       </ion-col>
     </ion-row>
     <ion-row class="ion-justify-content-center">
@@ -22,7 +22,7 @@
     </ion-row>
     <ion-row>
       <ion-col class="ion-text-center">
-        <ion-button color="primary" (click)="scanBack()"><ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
+        <ion-button color="primary" (click)="scanNutrition()"><ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -42,7 +42,7 @@
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button color="secondary" expand="block" (click)="scanBack()">Rescan Back <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
+          <ion-button color="secondary" expand="block" (click)="scanNutrition()">Rescan Nutrition <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
