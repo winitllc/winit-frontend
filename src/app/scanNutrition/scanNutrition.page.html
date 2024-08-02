@@ -37,17 +37,20 @@
       </ion-row>
       <ion-row class="ion-justify-content-center">
         <ion-col>
-          <ion-img  src="{{imageSrc}}"  alt="Image containing back of product"></ion-img>
+          <ion-img  src="{{imageSrc}}"  alt="Image containing nutrition information of product"></ion-img>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-col>
+          <ion-textarea label="Nutrition text" labelPlacement="stacked" [autoGrow]="true" placeholder="[enter nutrition here]" [(ngModel)]="nutritionDataText"></ion-textarea>
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center">
           <ion-button color="secondary" expand="block" (click)="scanNutrition()">Rescan Nutrition <ion-icon class="buttonIcon" name="camera"></ion-icon></ion-button>
         </ion-col>
-      </ion-row>
-      <ion-row>
         <ion-col class="ion-text-center">
-          <ion-button color="primary" expand="block" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-round-forward"></ion-icon></ion-button>
+          <ion-button color="primary" expand="block" (click)="continue()">Continue <ion-icon class="buttonIcon" name="arrow-forward"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

@@ -26,10 +26,10 @@
           <h2 class="ion-text-center">{{product?.product_name}}</h2>
         </ion-col>
       </ion-row>
-      <ion-row class="ion-justify-content-center">
-        <ion-col>
-          <div class="productImage">
-            <img class="productImage" src="{{product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0 ? product.selected_images.front.display.en : product?.image_front_url || 'assets/imgs/noProduct.png'}}">
+      <ion-row>
+        <ion-col class="ion-text-center ion-justify-content-center">
+          <div>
+            <img src="{{product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0 ? product.selected_images.front.display.en : product?.image_front_url || 'assets/imgs/noProduct.png'}}">
           </div>
         </ion-col>
       </ion-row>
@@ -40,11 +40,11 @@
           <br>
         </ion-col>
       </ion-row>
-      <ion-row class="ion-justify-content-center">
-        <ion-col>
+      <ion-row>
+        <ion-col class="ion-text-center ion-justify-content-center">
           <h2>Nutrition</h2>
-          <div class="productImage">
-            <img class="productImage" src="{{product && product.selected_images && product.selected_images.nutrition && product.selected_images.nutrition.display && product.selected_images.nutrition.display.en && product.selected_images.nutrition.display.en.length > 0 ? product.selected_images.nutrition.display.en : product?.image_nutrition_url || 'assets/imgs/noProduct.png'}}">
+          <div>
+            <img src="{{product && product.selected_images && product.selected_images.nutrition && product.selected_images.nutrition.display && product.selected_images.nutrition.display.en && product.selected_images.nutrition.display.en.length > 0 ? product.selected_images.nutrition.display.en : product?.image_nutrition_url || 'assets/imgs/noProduct.png'}}">
           </div>
         </ion-col>
       </ion-row>
@@ -70,7 +70,7 @@
       </ion-row> -->
       <ion-row class="ion-justify-content-center">
         <ion-col>
-          <div class="productImage">
+          <div>
             <img src="assets/imgs/noProduct.png">
           </div>
         </ion-col>

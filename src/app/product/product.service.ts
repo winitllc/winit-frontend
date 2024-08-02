@@ -21,7 +21,7 @@ export class ProductService {
   public async addNewProductUpdate(product: OpenFoodFactsProductUpdate): Promise<OpenFoodFactsProductUpdate> {
     const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
     // const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
-    console.log(`ProductService.addNewProductUpdate: requesting product by id: ${JSON.stringify(product)}`);
+    console.log(`ProductService.addNewProductUpdate: adding new product: ${JSON.stringify(product)}`);
     console.log(`ProductService.addNewProductUpdate: url: ${postProductUpdate}`);
     try {
       const requestOptions: HttpOptions = {

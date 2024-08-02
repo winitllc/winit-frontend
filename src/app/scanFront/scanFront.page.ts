@@ -78,15 +78,10 @@ export class ScanFrontPage implements OnInit {
       const imageKeyInS3 = await this.imageService.callUploadToS3(rawImageData, `front-${this.barcode}`);
       console.log(`ScanFrontPage.scanFront: uploadToS3 key: ${JSON.stringify(imageKeyInS3)}`);
       this.frontS3ImageKey = imageKeyInS3;
+      console.log(`ScanFrontPage.scanFront: new this.frontS3ImageKey: ${JSON.stringify(this.frontS3ImageKey)}`);
     } catch (error) {
       console.error(`ScanFrontPage.scanFront: error capturing image and converting to text: ${JSON.stringify(error)}`);
     }
-  }
-
-  resetSection() {
-    this.imageCaptured = false;
-    this.imageSrc = "";
-    this.frontS3ImageKey = '';
   }
 
   continue() {
