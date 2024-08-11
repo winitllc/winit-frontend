@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ProductPageRoutingModule } from './product-routing.module';
 
-import { ProductPage } from './product.page';
+import { ProductPage, GetKeywordValuesPipe } from './product.page';
 
 @NgModule({
   imports: [
@@ -15,6 +15,6 @@ import { ProductPage } from './product.page';
     IonicModule,
     ProductPageRoutingModule
   ],
-  declarations: [ProductPage]
+  declarations: [ProductPage, GetKeywordValuesPipe]
 })
 export class ProductPageModule {}

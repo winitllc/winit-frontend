@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { NavController, ActionSheetController, Platform, LoadingController } from '@ionic/angular';
+import { NavController, ActionSheetController, Platform, LoadingController, LoadingOptions } from '@ionic/angular';
 import { Share } from '@capacitor/share';
 import { AppConfig } from '../app.config';
 import { model } from 'wuzinit-common';
@@ -41,11 +41,13 @@ export class ProductPage implements OnInit {
   public poisonWarning: boolean = false;
 
   private sharingConfig: string[] = AppConfig.socialMediaSupport;
+  loading: HTMLIonLoadingElement | null = null;
 
   constructor(
     private actionSheetController: ActionSheetController,
     private loadingController: LoadingController,
     private navCtrl: NavController,
+    private loadingCtrl: LoadingController,
     private platform: Platform,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
@@ -169,6 +171,54 @@ export class ProductPage implements OnInit {
     }, false);
   }
 
+  async searchKeyword(category: string) {
+    console.log(`ProductPage.searchKeyword: category to search: ${category}`);
+    try {
+      await this.presentLoading(`searching for ${category}`, 10000);
+      const productSearchResults: any = await this.productService.searchProductByCategory(category);
+      console.log(`ProductPage.searchKeyword: results from the category search: ${JSON.stringify(productSearchResults)}`);
+      await this.dismissLoading();
+      this.pushToResultsPage(productSearchResults);
+    } catch (error) {
+      console.error(`ProductPage.searchKeyword Error: ${JSON.stringify(error)}`);
+      throw error;
+    }
+  }
+
+  private async presentLoading(loadingMessage: string, duration?: number) {
+    this.dismissLoading();
+    const loadingOpts: LoadingOptions = {
+      message: loadingMessage,
+      showBackdrop: true,
+      spinner: 'circular',
+      duration: duration || 2000,
+      cssClass: 'loading-modal'
+    };
+    this.loading = await this.loadingCtrl.create(loadingOpts);
+
+    this.loading.present();
+  }
+
+  private async dismissLoading() {
+    await this.loading?.dismiss();
+  }
+
+  private pushToResultsPage(productSearchResults: any): void {
+    try {
+      // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
+      console.log(`ProductPage.pushToResultsPage: pushing the product results to results page: ${JSON.stringify(productSearchResults)}`);
+      const navExtras: NavigationExtras = {
+        state: {
+          productSearchResults
+        }
+      };
+      console.log(`ProductPage.pushToResultsPage: nav extras for results page: ${JSON.stringify(navExtras)}`);
+      this.navCtrl.navigateForward('tabs/results', navExtras);
+    } catch (error) {
+      console.error(`ProductPage.pushToResultsPage: Error pushing to the results page: ${JSON.stringify(error)}`);
+    }
+  }
+
   private addFeedback(): void {
     if (this.ingredientsTextHTML.hasOwnProperty('length') && this.ingredientsTextHTML.length === 0) {
       this.insufficientData = true;
@@ -233,4 +283,17 @@ export class ProductPage implements OnInit {
     return prev || current;
   }
 
+}
+
+@Pipe({name: 'getKeywordValues'})
+export class GetKeywordValuesPipe implements PipeTransform {
+    transform(list: string[]): string[] {
+        let ret: string[] = [];
+
+        list.forEach((val) => {
+            ret.push(val.split(':')[1]);
+        });
+
+        return ret;
+    }
 }

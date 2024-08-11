@@ -113,19 +113,31 @@ export class ProductService {
 
       const product_name_en_list: string[] = [];
       const brands_list: string[] = [];
+      const labels_tags_list: string[][] = [];
+      const categories_tags_list: string[][] = [];
+      const categories_list: string[] = [];
       products.forEach((product) => {
         product_name_en_list.push(product.product_name_en);
         brands_list.push(product.brands);
+        labels_tags_list.push(product.labels_tags);
+        categories_tags_list.push(product.categories_tags);
+        categories_list.push(product.categories);
       });
       console.log(`ProductService.searchProductByCategory: product product_name_en_list: ${JSON.stringify(product_name_en_list)}`);
       console.log(`ProductService.searchProductByCategory: product brands_list: ${JSON.stringify(brands_list)}`);
+      console.log(`ProductService.searchProductByCategory: labels_tags field from OpenFoodFacts: ${JSON.stringify(labels_tags_list)}`);
+      console.log(`ProductService.searchProductByCategory: categories_tags field from OpenFoodFacts: ${JSON.stringify(categories_tags_list)}`);
+      console.log(`ProductService.searchProductByCategory: categories field from OpenFoodFacts: ${JSON.stringify(categories_list)}`);
       return {
         products,
         page: result.data.page,
         page_size: result.data.page_size,
         page_count: result.data.page_count,
         count: result.data.count,
-        skip: result.data.skip
+        skip: result.data.skip,
+        labels_tags: labels_tags_list,
+        categories_tags: categories_tags_list,
+        categories: categories_list
       };
     } catch (error) {
       console.error(`ProductService.searchProductByCategory: Error getting by category ${category}`);
