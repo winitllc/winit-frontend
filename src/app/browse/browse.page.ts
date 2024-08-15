@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '../app.config';
 
-import { NavController, LoadingController, LoadingOptions } from '@ionic/angular';
+import { NavController, LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
 import { NavigationExtras } from '@angular/router';
 import { AuthService } from '../util/auth.service';
 import { ProfileService } from '../profile/profile.service';
 import { OpenFoodFactsProduct, ProductService } from '../product/product.service';
+import { SearchProductModalComponent } from './search-productModal.page';
 
 @Component({
   selector: 'app-browse',
@@ -21,6 +22,7 @@ export class BrowsePage implements OnInit {
   constructor(
     public navCtrl: NavController,
     private loadingCtrl: LoadingController,
+    private modalCtrl: ModalController,
     private productService: ProductService
   ) {
     // this.resetSearchbox();
@@ -46,6 +48,28 @@ export class BrowsePage implements OnInit {
     } catch (error) {
       console.error(`BrowsePage.browseProducts Error: ${JSON.stringify(error)}`);
       throw error;
+    }
+  }
+
+  async searchProductModal() {
+
+    const modal: HTMLIonModalElement = await this.modalCtrl.create({
+      component: SearchProductModalComponent,
+      showBackdrop: false
+    });
+    console.log(`BrowsePage.searchProductModal: modal set up`);
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log(`BrowsePage.searchProductModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`BrowsePage.searchProductModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    if (role == 'cancel' || role != 'confirm') {
+      return;
+    }
+    if (data) {
+      const safeData: string = String(data).toLocaleLowerCase().replace(/[^a-z ]/g, '').replace(/[ ]/g, '-');
+      console.log(`BrowsePage.searchProductModal: search item: ${JSON.stringify(safeData)}`);
+      this.browseProducts(safeData);
     }
   }
 

@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Search Product</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="secondary" (click)="cancel()">Cancel <ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-input label="Product Search:" labelPlacement="stacked" [(ngModel)]="searchInput"></ion-input>
+      <ion-button color="primary" (click)="search()">Go</ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>
