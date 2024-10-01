@@ -109,6 +109,7 @@ export class ProductService {
       console.log(`ProductService.searchProductByCategory: result page_count from OpenFoodFacts: ${result.data.page_count}`);
       console.log(`ProductService.searchProductByCategory: result count from OpenFoodFacts: ${result.data.count}`);
       console.log(`ProductService.searchProductByCategory: skip field from OpenFoodFacts: ${result.data.skip}`);
+      console.log(`ProductService.searchProductByCategory: first product fields: ${Object.keys(result.data?.products[0])}`);
       const products: OpenFoodFactsProduct[] = result.data?.products;
 
       const product_name_en_list: string[] = [];

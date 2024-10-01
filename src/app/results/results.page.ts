@@ -46,11 +46,11 @@ export class ResultsPage implements OnInit {
   async ionViewWillEnter(): Promise<void> {
     try {
       this.content?.scrollToTop(1);
-      console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
+      console.log(`ResultsPage.ionViewWillEnter - beginning of ionViewWillEnter`);
       this.nextPageRequested = false;
       this.profile = this.profileState.getHealthProfile();
-      console.log(`ScanPage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
-      this.warnings = this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;});
+      console.log(`ResultsPage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
+      this.warnings = this.profile.medical && this.profile.medical.allergies ? this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;}) : [];
       this.noResults = true;
       console.log(`ResultsPage.ionViewWillEnter: beginning of ionViewWillEnter`);
       let currNavigation = this.router.getCurrentNavigation();
