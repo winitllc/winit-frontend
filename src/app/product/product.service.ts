@@ -92,11 +92,7 @@ export class ProductService {
           'Access-Control-Allow-Origin': '*'
         },
         params: {
-          action: 'process',
-          json: 'true',
-          tagtype_0: 'categories',
-          tag_contains_0: 'contains',
-          tag_0: category
+          categories_tags: category
         }
       };
       requestOptions.params.page = nextPage || undefined;
