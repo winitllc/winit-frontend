@@ -13,8 +13,8 @@ const routes: Routes = [
     loadChildren: () => import('../scanFront/scanFront.module').then(m => m.ScanFrontPageModule)
   },
   {
-    path: 'scanBack',
-    loadChildren: () => import('../scanBack/scanBack.module').then(m => m.ScanBackPageModule)
+    path: 'scanNutrition',
+    loadChildren: () => import('../scanNutrition/scanNutrition.module').then(m => m.ScanNutritionPageModule)
   },
   {
     path: 'scanIngredients',

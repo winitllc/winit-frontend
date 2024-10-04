@@ -12,10 +12,13 @@ const Dev = {
       getByCode: 'getByCode'
     },
     openFoodFactsProducts: {
-      baseUrl: 'https://us.openfoodfacts.org/api/v0/',
-      addProductUpdate: 'addProductUpdate',
-      getByCode: 'product/',
-      headerUserAgent: 'What\'s In It - Android - Version 1.0 - winitclinic.com'
+      baseUrl: 'https://us.openfoodfacts.org',
+      testUrl: 'https://world.openfoodfacts.net',
+      addProductUpdate: '/cgi/product_jqm2.pl',
+      getByCode: '/api/v2/product/',
+      searchByTag: '/api/v2/search',
+      // searchByTag: '/cgi/search.pl',
+      headerUserAgent: 'What\'s In It/1.0 - (info@winitclinic.com)'
     },
     spoonacularProducts: {
       baseUrl: 'https://api.spoonacular.com/',

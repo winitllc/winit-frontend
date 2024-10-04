@@ -4,7 +4,7 @@ import ImageService from '../util/image.service';
 import { ScanIngredientsCropperModalPage } from './scanIngredients-cropperModal.page';
 import { ProfileState } from '../profile/profile.state';
 import { ProfileService } from '../profile/profile.service';
-import { ProductService } from '../product/product.service';
+import { OpenFoodFactsProductUpdate, ProductService } from '../product/product.service';
 import { NavigationExtras, Router } from '@angular/router';
 import { model } from 'wuzinit-common';
 import { AppConfig } from '../app.config';
@@ -23,8 +23,11 @@ export class ScanIngredientsPage implements OnInit {
   profile: any;
   barcode: string = '';
   nameText: string = '';
+  brandsText: string = '';
   nameS3ImageKey:string = '';
   frontS3ImageKey: string = '';
+  nutritionS3ImageKey: string = '';
+  nutritionDataText: string = '';
   frontImage: string = '';
   backS3ImageKey: string = '';
   ingredientsS3ImageKey: string = '';
@@ -53,14 +56,20 @@ export class ScanIngredientsPage implements OnInit {
       const routerState = JSON.parse(JSON.stringify(currNavigation?.extras.state));
       this.barcode = routerState['barcode'];
       this.nameText = routerState['nameText'];
+      this.brandsText = routerState['brandsText'];
       this.nameS3ImageKey = routerState['nameS3ImageKey'];
       this.frontS3ImageKey = routerState['frontS3ImageKey'];
+      this.nutritionS3ImageKey = routerState['nutritionS3ImageKey'];
+      this.nutritionDataText = routerState['nutritionDataText'];
       this.frontImage = routerState['frontImage'];
       this.backS3ImageKey = routerState['backS3ImageKey'];
       console.log(`ScanIngredientsPage.ngOnInit: barcode ${this.barcode}`);
       console.log(`ScanIngredientsPage.ngOnInit: nameText ${this.nameText}`);
+      console.log(`ScanIngredientsPage.ngOnInit: brandsText ${this.brandsText}`);
       console.log(`ScanIngredientsPage.ngOnInit: nameS3ImageKey ${this.nameS3ImageKey}`);
       console.log(`ScanIngredientsPage.ngOnInit: frontS3ImageKey ${this.frontS3ImageKey}`);
+      console.log(`ScanIngredientsPage.ngOnInit: nutritionS3ImageKey ${this.nutritionS3ImageKey}`);
+      console.log(`ScanIngredientsPage.ngOnInit: nutritionDataText ${this.nutritionDataText}`);
       console.log(`ScanIngredientsPage.ngOnInit: frontImage ${this.frontImage}`);
       console.log(`ScanIngredientsPage.ngOnInit: backS3ImageKey ${this.backS3ImageKey}`);
     } catch (error) {
@@ -82,6 +91,7 @@ export class ScanIngredientsPage implements OnInit {
     this.imageCaptured = true;
     this.imageSrc = imageToTextData.image;
     this.ingredientsText = imageToTextData.text;
+    this.ingredientsS3ImageKey = imageToTextData.s3ImageKey;
     console.log(`ScanIngredientsPage.scan: imageToTextData: ${JSON.stringify(imageToTextData)}`);
     this.profileService.addToProfilePoints(1);
   }
@@ -93,19 +103,25 @@ export class ScanIngredientsPage implements OnInit {
   }
 
   async continue() {
-    const product: model.WuzinitProduct = JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
-    product.code = this.barcode;
-    product.productName = this.nameText;
-    product.images.front = `https://d37c5yx0fg82pb.cloudfront.net/${this.frontS3ImageKey}`;
-    product.ingredientsText = this.ingredientsText;
+    const productUpdate: OpenFoodFactsProductUpdate = {
+      code: this.barcode,
+      product_name_en: this.nameText,
+      brands: this.brandsText,
+      image_url: `https://d37c5yx0fg82pb.cloudfront.net/${this.frontS3ImageKey}`,
+      image_front_url: `https://d37c5yx0fg82pb.cloudfront.net/${this.frontS3ImageKey}`,
+      ingredients_text: this.ingredientsText,
+      nutrition_data: this.nutritionDataText,
+      image_ingredients_url: `https://d37c5yx0fg82pb.cloudfront.net/${this.ingredientsS3ImageKey}`,
+      image_nutrition_url: `https://d37c5yx0fg82pb.cloudfront.net/${this.nutritionS3ImageKey}`
+    };
     this.presentLoading('Sending new product to product update service for review.');
-    await this.productService.addNewProductUpdate(product);
+    await this.productService.addNewProductUpdate(productUpdate);
     this.dismissLoading();
-    product.images.front = this.frontImage;
-    console.log(`ScanIngredientsPage.continue: product to push to product page: ${JSON.stringify(product)}`);
+    productUpdate.image_front_url = this.frontImage;
+    console.log(`ScanIngredientsPage.continue: product to push to product page: ${JSON.stringify(productUpdate)}`);
     const navExtras: NavigationExtras = {
       state: {
-        product
+        product: productUpdate
       }
     };
     console.log(`ScanIngredientsPage.continue: navExtras: ${JSON.stringify(navExtras)}`);

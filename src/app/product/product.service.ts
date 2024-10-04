@@ -18,27 +18,31 @@ export class ProductService {
 
   // }
 
-  public async addNewProductUpdate(product: model.WuzinitProduct): Promise<model.WuzinitProduct> {
-    const postProductUpdate = `${EnvironmentConfig.api.wuzinitProducts.baseUrl}${EnvironmentConfig.api.wuzinitProducts.addProductUpdate}`;
-    console.log(`ProductService.addNewProductUpdate: requesting product by id: ${JSON.stringify(product)}`);
+  public async addNewProductUpdate(product: OpenFoodFactsProductUpdate): Promise<OpenFoodFactsProductUpdate> {
+    const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
+    // const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
+    console.log(`ProductService.addNewProductUpdate: adding new product: ${JSON.stringify(product)}`);
     console.log(`ProductService.addNewProductUpdate: url: ${postProductUpdate}`);
     try {
-      // const apiKey: string = this.authState.getSpoonacularAPIKey();
       const requestOptions: HttpOptions = {
         url: postProductUpdate,
         headers: {
-          'Accept': '*/*',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'Connection': 'keep-alive',
-          'Content-Type': 'application/json'
-          // 'X-API-Key': apiKey
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent
         },
-        data: {
-          product
+        params: {
+          code: product.code,
+          product_name_en: product.product_name_en,
+          ingredients_text: product.ingredients_text,
+          nutrition_data: product.nutrition_data,
+          image_url: product.image_url,
+          image_ingredients_url: product.image_ingredients_url,
+          image_front_url: product.image_front_url,
+          image_nutrition_url: product.image_nutrition_url,
+          brands: product.brands
         }
-      }
+      };
       const result: HttpResponse = await CapacitorHttp.post(requestOptions);
-      console.log(`ProductService.addNewProductUpdate: result from wuzinit: ${JSON.stringify(result)}`);
+      console.log(`ProductService.addNewProductUpdate: result from open food facts: ${JSON.stringify(result)}`);
       console.log(`ProductService.addNewProductUpdate: product object: ${JSON.stringify(product)}`);
       return product;
     } catch (error) {
@@ -74,208 +78,297 @@ export class ProductService {
       return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     }
   }
+
+  public async searchProductByCategory(category: string, nextPage?: string): Promise<any> {
+    const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.searchByTag}`;
+    console.log(`ProductService.searchProductByCategory: searching by category: ${category}`);
+    console.log(`ProductService.searchProductByCategory: url: ${getProductByBarcodeURL}`);
+    try {
+      // const apiKey: string = this.authState.getSpoonacularAPIKey();
+      const requestOptions: any = {
+        url: getProductByBarcodeURL,
+        headers: {
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
+          'Access-Control-Allow-Origin': '*'
+        },
+        params: {
+          countries_tags_en: 'united-states',
+          categories_tags: category
+        }
+      };
+      requestOptions.params.page = nextPage || undefined;
+      console.log(`ProductService.searchProductByCategory: request options: ${JSON.stringify(requestOptions)}`);
+      const result: HttpResponse = await CapacitorHttp.get(requestOptions);
+      console.log(`ProductService.searchProductByCategory: result from OpenFoodFacts: ${JSON.stringify(result)}`);
+      console.log(`ProductService.searchProductByCategory: result fields from OpenFoodFacts: ${Object.keys(result.data)}`);
+      console.log(`ProductService.searchProductByCategory: page field from OpenFoodFacts: ${result.data.page}`);
+      console.log(`ProductService.searchProductByCategory: result page_size from OpenFoodFacts: ${result.data.page_size}`);
+      console.log(`ProductService.searchProductByCategory: result page_count from OpenFoodFacts: ${result.data.page_count}`);
+      console.log(`ProductService.searchProductByCategory: result count from OpenFoodFacts: ${result.data.count}`);
+      console.log(`ProductService.searchProductByCategory: skip field from OpenFoodFacts: ${result.data.skip}`);
+      console.log(`ProductService.searchProductByCategory: first product fields: ${Object.keys(result.data?.products[0])}`);
+      console.log(`ProductService.searchProductByCategory: names of products: ${result.data?.products.map((product: OpenFoodFactsProduct)=>{return product.product_name || '';})}`);
+      const products: OpenFoodFactsProduct[] = result.data?.products;
+
+      const product_name_en_list: string[] = [];
+      const brands_list: string[] = [];
+      const labels_tags_list: string[][] = [];
+      const categories_tags_list: string[][] = [];
+      const categories_list: string[] = [];
+      products.forEach((product) => {
+        product_name_en_list.push(product.product_name_en);
+        brands_list.push(product.brands);
+        labels_tags_list.push(product.labels_tags);
+        categories_tags_list.push(product.categories_tags);
+        categories_list.push(product.categories);
+      });
+      console.log(`ProductService.searchProductByCategory: product product_name_en_list: ${JSON.stringify(product_name_en_list)}`);
+      console.log(`ProductService.searchProductByCategory: product brands_list: ${JSON.stringify(brands_list)}`);
+      console.log(`ProductService.searchProductByCategory: labels_tags field from OpenFoodFacts: ${JSON.stringify(labels_tags_list)}`);
+      console.log(`ProductService.searchProductByCategory: categories_tags field from OpenFoodFacts: ${JSON.stringify(categories_tags_list)}`);
+      console.log(`ProductService.searchProductByCategory: categories field from OpenFoodFacts: ${JSON.stringify(categories_list)}`);
+      return {
+        products,
+        page: result.data.page,
+        page_size: result.data.page_size,
+        page_count: result.data.page_count,
+        count: result.data.count,
+        skip: result.data.skip,
+        labels_tags: labels_tags_list,
+        categories_tags: categories_tags_list,
+        categories: categories_list
+      };
+    } catch (error) {
+      console.error(`ProductService.searchProductByCategory: Error getting by category ${category}`);
+      console.error(`ProductService.searchProductByCategory: Error: ${JSON.stringify(error)}`);
+      return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
+    }
+  }
+}
+
+export interface OpenFoodFactsProductUpdate {
+  code: string;
+  product_name_en: string;
+  ingredients_text: string;
+  nutrition_data: string;
+  image_url: string;
+  image_ingredients_url: string;
+  image_front_url: string;
+  image_nutrition_url: string;
+  brands: string;
+  labels?: string;
 }
 
 export interface OpenFoodFactsProduct {
-  last_edit_dates_tags: string[];
-  pnns_groups_1: string;
-  nova_group_debug: string;
-  ingredients_n: number;
-  completeness: number;
-  image_thumb_url: string;
-  additives_n: number;
-  packaging: string;
-  ingredients_from_palm_oil_n: number;
-  codes_tags: string[];
-  data_quality_errors_tags: string[];
-  ingredients_that_may_be_from_palm_oil_n: number;
-  categories_hierarchy: string[];
-  serving_quantity: string;
-  traces_from_ingredients: string;
-  selected_images: OpenFoodFactsImages;
-  image_ingredients_thumb_url: string;
-  image_nutrition_small_url: string;
-  vitamins_tags: string[];
-  labels_prev_hierarchy: string[];
-  ingredients_text_with_allergens_en: string;
-  serving_size_debug_tags: string[];
-  brands_tags: string[];
-  additives_old_n: number;
-  lang: string;
-  other_nutritional_substances_tags: string[];
-  editors: string[];
-  ingredients_text_en: string;
-  languages: any;
-  nutriscore_points: any;
-  traces_debug_tags: string[];
-  quantity_debug_tags: string[];
-  product_name_en_debug_tags: string[];
-  cities_tags: string[];
-  new_additives_n: number;
-  ingredients_original_tags: string[];
-  nutriments: any;
-  minerals_tags: string[];
-  purchase_places: string;
-  nutrition_data_prepared: string;
-  categories_lc: string;
-  countries_tags: string[];
-  nutrition_data_per: string;
-  expiration_date_debug_tags: string;
-  completed_t: number;
-  purchase_places_tags: string;
-  nutrition_data: string;
-  generic_name_en_debug_tags: string;
-  emb_codes_tags: string;
-  nucleotides_tags: string;
-  allergens_tags: string;
-  nutrition_grades_tags: string[];
-  labels_prev_tags: string;
-  pnns_groups_2_tags: string[];
-  complete: number;
-  image_url: string;
-  additives_old_tags: string[];
-  entry_dates_tags: string[];
-  informers_tags: string[];
-  countries_hierarchy: string[];
-  purchase_places_debug_tags: string;
-  manufacturing_places: string;
-  image_nutrition_url: string;
-  last_image_t: number;
-  nutrition_grade_fr: string;
-  nutriscore_grade: string;
-  nutrition_grades: string;
-  amino_acids_tags: string[];
-  ingredients_text_en_debug_tags: string[];
-  additives_original_tags: string[];
-  image_ingredients_small_url: string;
-  nutrition_data_prepared_per_debug_tags: string[];
-  ingredients_debug: string[];
-  link_debug_tags: string[];
-  emb_codes: string;
-  product_name_en: string;
-  ingredients_from_palm_oil_tags: string[];
-  allergens_debug_tags: string[];
-  additives_tags: string[];
-  ingredients_tags: string[];
-  origins_debug_tags: string[];
-  data_quality_info_tags: string[];
-  image_nutrition_thumb_url: string;
-  stores_debug_tags: string[];
-  ingredients_that_may_be_from_palm_oil_tags: string[];
-  product_quantity: string;
-  allergens: string;
-  additives_prev_original_tags: string[];
-  generic_name: string;
-  lc: string;
-  languages_tags: string[];
-  image_front_small_url: string;
-  labels: string;
-  nova_groups_tags: string[];
-  categories_tags: string[];
-  ingredients: OpenFoodFactsIngredient[];
-  scans_n: number;
-  ingredients_n_tags: string[];
-  languages_codes: any;
-  nova_group: string;
-  debug_param_sorted_langs: string[];
-  states_tags: string[];
-  popularity_tags: string[];
-  traces_from_user: string;
-  amino_acids_prev_tags: string[];
-  nova_groups: string;
-  brands_debug_tags: string[];
-  checkers_tags: string[];
-  vitamins_prev_tags: string[];
-  traces_tags: string[];
-  last_image_dates_tags: string[];
-  ingredients_text_debug: string;
-  _id: string;
-  additives_debug_tags: string[];
-  ingredients_text_with_allergens: string;
-  lang_debug_tags: string[];
-  _keywords: string[];
-  image_small_url: string;
-  interface_version_modified: string;
-  unknown_nutrients_tags: string[];
-  brands: string;
-  origins: string;
-  nutrition_data_prepared_per: string;
-  labels_tags: string[];
-  update_key: string;
-  "fruits-vegetables-nuts_100g_estimate": number;
-  data_quality_bugs_tags: string[];
-  data_quality_warnings_tags: string[];
-  countries_debug_tags: string[];
-  ingredients_analysis_tags: string[];
-  image_front_thumb_url: string;
-  last_modified_by: string;
-  nucleotides_prev_tags: string[];
-  traces: string;
-  nutriscore_score: number;
-  unique_scans_n: number;
-  pnns_groups_2: string;
-  countries_lc: string;
-  last_editor: string;
-  no_nutrition_data: string;
-  additives_tags_n: string;
-  categories: string;
-  ingredients_from_or_that_may_be_from_palm_oil_n: number;
-  ingredients_hierarchy: string[];
-  manufacturing_places_debug_tags: string[];
-  minerals_prev_tags: string[];
-  manufacturing_places_tags: string[];
-  expiration_date: string;
-  sortkey: number;
-  serving_size: string;
-  photographers_tags: string[];
-  countries: string;
-  nutrition_score_warning_no_fruits_vegetables_nuts: number;
-  image_ingredients_url: string;
-  interface_version_created: string;
-  emb_codes_debug_tags: string[];
-  last_modified_t: number;
-  states: string;
-  ingredients_text: string;
-  origins_tags: string[];
-  nutrient_levels_tags: string[];
+  abbreviated_product_name: string;
   code: string;
+  codes_tags: string[];
+  generic_name: string;
   id: string;
-  link: string;
-  traces_hierarchy: string[];
-  unknown_ingredients_n: number;
-  data_quality_tags: string[];
-  labels_lc: string;
-  ingredients_ids_debug: string[];
-  stores_tags: string[];
-  compared_to_category: string;
-  allergens_hierarchy: string[];
-  max_imgid: string;
-  emb_codes_20141016: string;
-  misc_tags: string[];
-  languages_hierarchy: string[];
-  images: any;
-  stores: string;
-  nutrient_levels: OpenFoodFactsNutrientLevels;
-  nutrition_score_beverage: number;
-  correctors_tags: string[];
-  rev: number;
-  pnns_groups_1_tags: string[];
-  labels_hierarchy: string[];
-  generic_name_en: string;
-  quantity: string;
-  packaging_debug_tags: string[];
-  image_front_url: string;
-  creator: string;
-  states_hierarchy: string[];
+  lc: string;
+  lang: string;
+  nova_group: number;
+  nova_groups: string;
+  obsolete: string;
+  obsolete_since_date: string;
   product_name: string;
+  product_name_en: string;
+  product_quantity: string;
+  product_quantity_unit: string;
+  quantity: string;
+  additives_n: number;
+  checked: string;
+  complete: number;
+  completeness: number;
+  ecoscore_grade: string;
+  ecoscore_score: number;
+  food_groups: string;
+  food_groups_tags: string[];
+  nutrient_levels: OpenFoodFactsNutrientLevels;
+  packaging_text: string;
+  packagings: any[];
+  packagings_complete: number;
+  pnns_groups_1: string;
+  pnns_groups_1_tags: string[];
+  pnns_groups_2: string;
+  pnns_groups_2_tags: string[];
+  popularity_key: number;
+  popularity_tags: string[];
+  scans_n: number;
+  unique_scans_n: number;
+  serving_quantity: string;
+  serving_quantity_unit: string;
+  serving_size: string;
+  brands: string;
+  brands_tags: string[];
+  categories: string;
+  categories_hierarchy: string[];
+  categories_lc: string;
+  categories_tags: string[];
+  checkers_tags: string[];
+  cities: string;
+  cities_tags: any[];
+  correctors_tags: string[];
+  countries: string;
+  countries_hierarchy: string[];
+  countries_lc: string;
+  countries_tags: string[];
+  ecoscore_tags: string[];
+  emb_codes: string;
   emb_codes_orig: string;
-  nutrition_data_per_debug_tags: string[];
-  nutrition_score_debug: string;
-  editors_tags: string[];
-  allergens_from_user: string;
-  packaging_tags: string[];
-  created_t: number;
+  emb_codes_tags: any[];
+  labels: string;
+  labels_hierarchy: string[];
+  labels_lc: string;
+  labels_tags: string[];
+  entry_dates_tags: string[];
+  manufacturing_places: string;
+  manufacturing_places_tags: any[];
+  nova_groups_tags: string[];
+  nutrient_levels_tags: string[];
+  image_front_small_url: string;
+  image_front_thumb_url: string;
+  image_front_url: string;
+  image_nutrition_small_url: string;
+  image_nutrition_thumb_url: string;
+  image_nutrition_url: string;
+  image_small_url: string;
+  image_thumb_url: string;
+  image_url: string;
+  images: any
+  last_image_dates_tags: string[];
+  last_image_t: number;
+  selected_images: OpenFoodFactsImages;
+  ecoscore_data: any;
+  ecoscore_extended_data_version: string;
+  environment_impact_level: string;
+  environment_impact_level_tags: any[];
+  additives_tags: string[];
+  allergens: string;
+  allergens_lc: string;
+  allergens_hierarchy: string[];
+  allergens_tags: string[];
+  ingredients: OpenFoodFactsIngredient[];
+  ingredients_analysis: any;
+  ingredients_analysis_tags: string[];
+  ingredients_from_or_that_may_be_from_palm_oil_n: number;
+  ingredients_from_palm_oil_n: number;
+  ingredients_from_palm_oil_tags: any[];
+  ingredients_hierarchy: string[];
+  ingredients_n: number;
+  ingredients_n_tags: string[];
+  ingredients_original_tags: string[];
+  ingredients_percent_analysis: number;
+  ingredients_sweeteners_n: number;
+  ingredients_non_nutritive_sweeteners_n: number;
+  ingredients_tags: string[];
+  ingredients_lc: string;
+  ingredients_text: string;
+  ingredients_text_with_allergens: string;
+  ingredients_that_may_be_from_palm_oil_n: number;
+  ingredients_that_may_be_from_palm_oil_tags: any[];
+  ingredients_with_specified_percent_n: number;
+  ingredients_with_specified_percent_sum: number;
+  ingredients_with_unspecified_percent_n: number;
+  ingredients_with_unspecified_percent_sum: number;
+  known_ingredients_n: number;
+  origins: string;
+  origins_hierarchy: any[];
+  origins_lc: string;
+  origins_tags: any[];
+  traces: string;
+  traces_hierarchy: any[];
+  traces_lc: string;
+  traces_tags: any[];
+  unknown_ingredients_n: number;
+  no_nutrition_data: string;
+  nutrition_data_per: string;
+  nutrition_data_prepared_per: string;
+  nutriments: any;
+  nutriscore_data: any;
+  nutriscore_grade: string;
+  nutriscore_score: number;
+  nutriscore_score_opposite: number;
+  nutrition_grade_fr: string;
+  nutrition_grades: string;
+  nutrition_grades_tags: string[];
+  nutrition_score_beverage: number;
+  nutrition_score_warning_fruits_vegetables_nuts_estimate_from_ingredients: number;
+  nutrition_score_warning_fruits_vegetables_nuts_estimate_from_ingredients_value: number;
+  nutrition_score_warning_no_fiber: number;
+  other_nutritional_substances_tags: any[];
+  unknown_nutrients_tags: any[];
+  vitamins_tags: any[];
+  data_quality_bugs_tags: any[];
+  data_quality_errors_tags: any[];
+  data_quality_info_tags: string[];
+  data_quality_tags: string[];
+  data_quality_warnings_tags: string[];
+  data_sources: string;
+  data_sources_tags: string[];
+  last_check_dates_tags: string[];
+  last_checked_t: number;
+  last_checker: string;
+  states: string;
+  states_hierarchy: string[];
+  states_tags: string[];
+  misc_tags: string[];
+  additives_original_tags: string[];
+  additives_prev_original_tags: string[];
+  added_countries_tags: any[];
   allergens_from_ingredients: string;
+  allergens_from_user: string;
+  amino_acids_prev_tags: any[];
+  amino_acids_tags: any[];
+  carbon_footprint_percent_of_known_ingredients: number;
+  categories_properties: any;
+  categories_properties_tags: string[];
+  category_properties: any;
+  ciqual_food_name_tags: string[];
+  compared_to_category: string;
+  conservation_conditions: string;
+  customer_service: string;
+  expiration_date: string;
+  link: string;
+  main_countries_tags: any[];
+  minerals_prev_tags: any[];
+  minerals_tags: any[];
+  owner_fields: any;
+  nova_groups_markers: any;
+  nucleotides_tags: any[];
+  origin: string;
+  purchase_places: string;
+  purchase_places_tags: string[];
+  stores: string;
+  stores_tags: string[];
+  traces_from_ingredients: string;
+  traces_from_user: string;
+  created_t: number;
+  creator: string;
+  editors_tags: string[];
+  informers_tags: string[];
+  interface_version_created: string;
+  interface_version_modified: string;
+  languages: any;
+  languages_codes: any;
+  languages_hierarchy: string[];
+  languages_tags: string[];
+  last_edit_dates_tags: string[];
+  last_editor: string;
+  last_modified_by: string;
+  last_modified_t: number;
+  owner: string;
+  owners_tags: string;
+  photographers_tags: string[];
+  rev: number;
+  sources: any[];
+  sources_fields: any;
+  teams: string;
+  teams_tags: string[];
+  update_key: string;
+  knowledge_panels: any;
+  attribute_groups: any[];
+  pattern?: any;
 }
 
 export interface OpenFoodFactsImages {
@@ -291,11 +384,15 @@ export interface OpenFoodFactsImage {
 }
 
 export interface OpenFoodFactsIngredient {
+  id: string;
+  ingredients: any;
+  percent: number;
+  percent_estimate: number;
+  percent_max: number;
+  percent_min: number;
   text: string;
   vegan: string;
-  rank: number;
   vegetarian: string;
-  id: string;
 }
 
 export interface OpenFoodFactsNutrientLevels {

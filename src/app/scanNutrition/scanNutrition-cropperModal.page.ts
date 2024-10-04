@@ -6,7 +6,7 @@ import { ImageCropperComponent, ImageCroppedEvent, LoadedImage } from 'ngx-image
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
-  templateUrl: 'scanBack-cropperModal.page.html',
+  templateUrl: 'scanNutrition-cropperModal.page.html',
   standalone: true,
   imports: [
     IonicModule,
@@ -14,7 +14,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
     ImageCropperComponent
   ]
 })
-export class ScanBackCropperModalPage implements OnInit {
+export class ScanNutritionCropperModalPage implements OnInit {
   
   @Input() imageInput: string = '';
   croppedImage: SafeUrl  = '';
@@ -26,7 +26,7 @@ export class ScanBackCropperModalPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(`ScanBackCropperModalPage.constructor: croppedImage: ${this.croppedImage}`);
+    console.log(`ScanNutritionCropperModalPage.constructor: croppedImage: ${this.croppedImage}`);
   }
 
   cancel() {
@@ -38,7 +38,7 @@ export class ScanBackCropperModalPage implements OnInit {
   }
 
   imageCropped(event: ImageCroppedEvent) {
-    console.log(`ScanBackCropperModalPage.imageCropped: crop event: ${JSON.stringify(event)}`);
+    console.log(`ScanNutritionCropperModalPage.imageCropped: crop event: ${JSON.stringify(event)}`);
     this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl || '');
     this.croppedImageBase64 = event.base64 || '';
   }
