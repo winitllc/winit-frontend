@@ -79,10 +79,10 @@ export class ProductService {
     }
   }
 
-  public async searchProductByCategory(category: string, nextPage?: string): Promise<any> {
+  public async searchProductAPI(category: string, labels: string[], nextPage?: string): Promise<any> {
     const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.searchByTag}`;
-    console.log(`ProductService.searchProductByCategory: searching by category: ${category}`);
-    console.log(`ProductService.searchProductByCategory: url: ${getProductByBarcodeURL}`);
+    console.log(`ProductService.searchProductAPI: searching by category: ${category}`);
+    console.log(`ProductService.searchProductAPI: url: ${getProductByBarcodeURL}`);
     try {
       // const apiKey: string = this.authState.getSpoonacularAPIKey();
       const requestOptions: any = {
@@ -93,21 +93,22 @@ export class ProductService {
         },
         params: {
           countries_tags_en: 'united-states',
-          categories_tags: category
+          categories_tags: category,
+          labels_tags: labels
         }
       };
       requestOptions.params.page = nextPage || undefined;
-      console.log(`ProductService.searchProductByCategory: request options: ${JSON.stringify(requestOptions)}`);
+      console.log(`ProductService.searchProductAPI: request options: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
-      console.log(`ProductService.searchProductByCategory: result from OpenFoodFacts: ${JSON.stringify(result)}`);
-      console.log(`ProductService.searchProductByCategory: result fields from OpenFoodFacts: ${Object.keys(result.data)}`);
-      console.log(`ProductService.searchProductByCategory: page field from OpenFoodFacts: ${result.data.page}`);
-      console.log(`ProductService.searchProductByCategory: result page_size from OpenFoodFacts: ${result.data.page_size}`);
-      console.log(`ProductService.searchProductByCategory: result page_count from OpenFoodFacts: ${result.data.page_count}`);
-      console.log(`ProductService.searchProductByCategory: result count from OpenFoodFacts: ${result.data.count}`);
-      console.log(`ProductService.searchProductByCategory: skip field from OpenFoodFacts: ${result.data.skip}`);
-      console.log(`ProductService.searchProductByCategory: first product fields: ${Object.keys(result.data?.products[0])}`);
-      console.log(`ProductService.searchProductByCategory: names of products: ${result.data?.products.map((product: OpenFoodFactsProduct)=>{return product.product_name || '';})}`);
+      console.log(`ProductService.searchProductAPI: result from OpenFoodFacts: ${JSON.stringify(result)}`);
+      console.log(`ProductService.searchProductAPI: result fields from OpenFoodFacts: ${Object.keys(result.data)}`);
+      console.log(`ProductService.searchProductAPI: page field from OpenFoodFacts: ${result.data.page}`);
+      console.log(`ProductService.searchProductAPI: result page_size from OpenFoodFacts: ${result.data.page_size}`);
+      console.log(`ProductService.searchProductAPI: result page_count from OpenFoodFacts: ${result.data.page_count}`);
+      console.log(`ProductService.searchProductAPI: result count from OpenFoodFacts: ${result.data.count}`);
+      console.log(`ProductService.searchProductAPI: skip field from OpenFoodFacts: ${result.data.skip}`);
+      console.log(`ProductService.searchProductAPI: first product fields: ${Object.keys(result.data?.products[0])}`);
+      console.log(`ProductService.searchProductAPI: names of products: ${result.data?.products.map((product: OpenFoodFactsProduct)=>{return product.product_name || '';})}`);
       const products: OpenFoodFactsProduct[] = result.data?.products;
 
       const product_name_en_list: string[] = [];
@@ -122,11 +123,11 @@ export class ProductService {
         categories_tags_list.push(product.categories_tags);
         categories_list.push(product.categories);
       });
-      console.log(`ProductService.searchProductByCategory: product product_name_en_list: ${JSON.stringify(product_name_en_list)}`);
-      console.log(`ProductService.searchProductByCategory: product brands_list: ${JSON.stringify(brands_list)}`);
-      console.log(`ProductService.searchProductByCategory: labels_tags field from OpenFoodFacts: ${JSON.stringify(labels_tags_list)}`);
-      console.log(`ProductService.searchProductByCategory: categories_tags field from OpenFoodFacts: ${JSON.stringify(categories_tags_list)}`);
-      console.log(`ProductService.searchProductByCategory: categories field from OpenFoodFacts: ${JSON.stringify(categories_list)}`);
+      console.log(`ProductService.searchProductAPI: product product_name_en_list: ${JSON.stringify(product_name_en_list)}`);
+      console.log(`ProductService.searchProductAPI: product brands_list: ${JSON.stringify(brands_list)}`);
+      console.log(`ProductService.searchProductAPI: labels_tags field from OpenFoodFacts: ${JSON.stringify(labels_tags_list)}`);
+      console.log(`ProductService.searchProductAPI: categories_tags field from OpenFoodFacts: ${JSON.stringify(categories_tags_list)}`);
+      console.log(`ProductService.searchProductAPI: categories field from OpenFoodFacts: ${JSON.stringify(categories_list)}`);
       return {
         products,
         page: result.data.page,
@@ -139,8 +140,8 @@ export class ProductService {
         categories: categories_list
       };
     } catch (error) {
-      console.error(`ProductService.searchProductByCategory: Error getting by category ${category}`);
-      console.error(`ProductService.searchProductByCategory: Error: ${JSON.stringify(error)}`);
+      console.error(`ProductService.searchProductAPI: Error getting by category ${category}`);
+      console.error(`ProductService.searchProductAPI: Error: ${JSON.stringify(error)}`);
       return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     }
   }

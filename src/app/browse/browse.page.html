@@ -10,8 +10,12 @@
   <div class="home-area">
     <ion-grid>
       <ion-row>
-        <ion-col></ion-col>
-        <ion-col size="8">
+        <ion-col class="centered-content">
+          <ion-button fill="clear" (click)="filterProductModal()">
+            <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
           <h2 class="ion-text-center"><img class="header-icon" src="assets/icon/favicon.png"> Explore Products</h2>
         </ion-col>
         <ion-col class="centered-content">

@@ -61,7 +61,7 @@
         <ion-col>
           <h4>Labels</h4>
           <p>
-            <span *ngFor="let labelKeyword of (product && product.labels_tags || []) | getKeywordValues"><span class="categoryLink" [ngClass]="labelKeyword" (click)="searchLabel(labelKeyword)">{{labelKeyword}}</span>, </span>
+            <span *ngFor="let labelKeyword of (product && product.labels_tags || []) | getKeywordValues"><span class="categoryLink" [ngClass]="labelKeyword" (click)="selectLabel(labelKeyword)">{{labelKeyword}}</span>, </span>
           </p>
           <br>
         </ion-col>

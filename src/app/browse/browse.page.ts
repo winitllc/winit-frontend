@@ -7,6 +7,7 @@ import { AuthService } from '../util/auth.service';
 import { ProfileService } from '../profile/profile.service';
 import { OpenFoodFactsProduct, ProductService } from '../product/product.service';
 import { SearchProductModalComponent } from './search-productModal.page';
+import { FilterProductModalComponent } from './filter-productModal.page';
 
 @Component({
   selector: 'app-browse',
@@ -18,6 +19,7 @@ export class BrowsePage implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   public categories: any[] = AppConfig.categories.mainCategories;
   public searchBox: string = '';
+  public labelFilters: string[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -41,7 +43,7 @@ export class BrowsePage implements OnInit {
     console.log(`BrowsePage.browseProducts: category to search: ${category}`);
     try {
       await this.presentLoading(`searching for ${category}`, 10000);
-      const productSearchResults: any = await this.productService.searchProductByCategory(category);
+      const productSearchResults: any = await this.productService.searchProductAPI(category, this.labelFilters);
       console.log(`BrowsePage.browseProducts: results from the category search: ${JSON.stringify(productSearchResults)}`);
       await this.dismissLoading();
       this.pushToResultsPage(productSearchResults);
@@ -72,13 +74,35 @@ export class BrowsePage implements OnInit {
     }
   }
 
+  async filterProductModal() {
+
+    const modal: HTMLIonModalElement = await this.modalCtrl.create({
+      component: FilterProductModalComponent,
+      showBackdrop: false
+    });
+    console.log(`BrowsePage.filterProductModal: modal set up`);
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log(`BrowsePage.filterProductModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`BrowsePage.filterProductModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    if (role == 'cancel' || role != 'confirm') {
+      return;
+    }
+    if (data) {
+      console.log(`BrowsePage.filterProductModal: labels to filter: ${JSON.stringify(data)}`);
+      this.labelFilters = data;
+    }
+  }
+
   private pushToResultsPage(productSearchResults: any): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
       console.log(`BrowsePage.pushToResultsPage: pushing the product results to results page: ${JSON.stringify(productSearchResults)}`);
       const navExtras: NavigationExtras = {
         state: {
-          productSearchResults
+          productSearchResults,
+          labelFilters: this.labelFilters
         }
       };
       console.log(`BrowsePage.pushToResultsPage: nav extras for results page: ${JSON.stringify(navExtras)}`);

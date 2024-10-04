@@ -26,6 +26,7 @@ export class ResultsPage implements OnInit {
   private page: number = 0;
   private resultsCount: number = 0;
   @ViewChild(IonContent) content: IonContent | undefined;
+  labelFilters: string[] = [];
 
   constructor(
     private actionSheetController: ActionSheetController,
@@ -64,6 +65,7 @@ export class ResultsPage implements OnInit {
         const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));
         console.log(`ResultsPage.ionViewWillEnter: routerState: ${JSON.stringify(routerState)}`);
         const productSearchResults = routerState['productSearchResults'];
+        this.labelFilters = routerState['labelFilters'] || [];
         console.log(`ResultsPage.ionViewWillEnter: productSearchResults from navParams: ${JSON.stringify(productSearchResults)}`);
         let code_list: string[] = [];
         let id_list: string[] = [];
@@ -130,7 +132,7 @@ export class ResultsPage implements OnInit {
 
   private async requestNextPage(): Promise<void> {
     try {
-      const newProductResults: any = await this.productService.searchProductByCategory(this.category, String(this.page + 1));
+      const newProductResults: any = await this.productService.searchProductAPI(this.category, this.labelFilters, String(this.page + 1));
       console.log(`ResultsPage.requestNextPage: results from the category search: ${JSON.stringify(newProductResults)}`);
       for(let product of newProductResults.products) {
         this.products.push(product);

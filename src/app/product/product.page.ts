@@ -35,6 +35,7 @@ export class ProductPage implements OnInit {
 
   private profile: any;
   public warnings: string[] = [];
+  labelFilters: string[] = [];
 
   public insufficientData: boolean = true;
   public dangerWarning: boolean = false;
@@ -175,7 +176,7 @@ export class ProductPage implements OnInit {
     console.log(`ProductPage.searchKeyword: category to search: ${category}`);
     try {
       await this.presentLoading(`searching for ${category}`, 10000);
-      const productSearchResults: any = await this.productService.searchProductByCategory(category);
+      const productSearchResults: any = await this.productService.searchProductAPI(category, this.labelFilters);
       console.log(`ProductPage.searchKeyword: results from the category search: ${JSON.stringify(productSearchResults)}`);
       await this.dismissLoading();
       this.pushToResultsPage(productSearchResults);
@@ -185,16 +186,16 @@ export class ProductPage implements OnInit {
     }
   }
 
-  async searchLabel(label: string) {
-    console.log(`ProductPage.searchLabel: label to search: ${label}`);
+  async selectLabel(label: string) {
+    console.log(`ProductPage.selectLabel: category to search: ${label}`);
     try {
-      // await this.presentLoading(`searching for ${label}`, 10000);
-      // const productSearchResults: any = await this.productService.searchProductByLabel(label);
-      // console.log(`ProductPage.searchLabel: results from the label search: ${JSON.stringify(productSearchResults)}`);
+      // await this.presentLoading(`selected ${label}`, 10000);
+      // const productSearchResults: any = await this.productService.searchProductAPI(label, []);
+      // console.log(`ProductPage.selectLabel: results from the label search: ${JSON.stringify(productSearchResults)}`);
       // await this.dismissLoading();
       // this.pushToResultsPage(productSearchResults);
     } catch (error) {
-      console.error(`ProductPage.searchLabel Error: ${JSON.stringify(error)}`);
+      console.error(`ProductPage.selectLabel Error: ${JSON.stringify(error)}`);
       throw error;
     }
   }

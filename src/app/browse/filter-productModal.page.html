@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Filter Product</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="secondary" (click)="cancel()">Cancel <ion-icon name="close"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-input label="Product Filter:" labelPlacement="stacked" (keyup)="filterList()" [(ngModel)]="searchInput"></ion-input>
+    </ion-row>
+    <ion-row>
+      <ion-button expand="block" (click)="confirmLabels()">Confirm Labels</ion-button>
+    </ion-row>
+    <ion-row>
+      <ion-chip *ngFor="let label of labelFilters">
+        <ion-label>{{label}}</ion-label>
+        <ion-icon name="close" (click)="removeLabel(label)"></ion-icon>
+      </ion-chip>
+    </ion-row>
+    <ion-row *ngFor="let label of currentLabelList | slice:0:100">
+      <ion-card (click)="selectLabel(label)">
+        <ion-card-title>{{label}}</ion-card-title>
+      </ion-card>
+    </ion-row>
+  </ion-grid>
+</ion-content>
