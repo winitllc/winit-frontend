@@ -67,9 +67,8 @@ export class BrowsePage implements OnInit {
       return;
     }
     if (data) {
-      const safeData: string = String(data).toLocaleLowerCase().replace(/[^a-z ]/g, '').replace(/[ ]/g, '-');
-      console.log(`BrowsePage.searchProductModal: search item: ${JSON.stringify(safeData)}`);
-      this.browseProducts(safeData);
+      console.log(`BrowsePage.searchProductModal: search item: ${JSON.stringify(data)}`);
+      this.browseProducts(data);
     }
   }
 

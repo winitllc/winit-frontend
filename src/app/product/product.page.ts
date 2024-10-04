@@ -185,6 +185,20 @@ export class ProductPage implements OnInit {
     }
   }
 
+  async searchLabel(label: string) {
+    console.log(`ProductPage.searchLabel: label to search: ${label}`);
+    try {
+      // await this.presentLoading(`searching for ${label}`, 10000);
+      // const productSearchResults: any = await this.productService.searchProductByLabel(label);
+      // console.log(`ProductPage.searchLabel: results from the label search: ${JSON.stringify(productSearchResults)}`);
+      // await this.dismissLoading();
+      // this.pushToResultsPage(productSearchResults);
+    } catch (error) {
+      console.error(`ProductPage.searchLabel Error: ${JSON.stringify(error)}`);
+      throw error;
+    }
+  }
+
   private async presentLoading(loadingMessage: string, duration?: number) {
     this.dismissLoading();
     const loadingOpts: LoadingOptions = {
