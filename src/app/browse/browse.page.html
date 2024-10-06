@@ -12,7 +12,8 @@
       <ion-row>
         <ion-col class="centered-content">
           <ion-button fill="clear" (click)="filterProductModal()">
-            <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+            <ion-icon name="filter-outline"></ion-icon>
+            <ion-badge *ngIf="labelFilters.length > 0" slot="end">{{labelFilters.length}}</ion-badge>
           </ion-button>
         </ion-col>
         <ion-col size="6">
@@ -29,19 +30,21 @@
       <ion-row>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('cheese')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/cheeses.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('chicken')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/chicken.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
@@ -49,19 +52,21 @@
       <ion-row>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('pizza')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/pizza.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('pasta')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/pasta.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
@@ -69,19 +74,21 @@
       <ion-row>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('breakfast_cereals')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/cereal.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('bread')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/bread.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
@@ -89,26 +96,28 @@
       <ion-row>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('yogurt')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/yogurt.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
         <ion-col>
           <ion-button fill="clear" (click)="browseProducts('plant_based_foods')">
-            <ion-card>
+            <ion-card class="ion-activatable ripple-parent">
               <ion-card-content>
                 <img src="assets/browse/plant.png"/>
               </ion-card-content>
+              <ion-ripple-effect></ion-ripple-effect>
             </ion-card>
           </ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
     <a class="home-link" href="https://winitclinic.com/products/">
-      <ion-card>
+      <ion-card class="ion-activatable ripple-parent">
         <ion-card-header>
           <ion-card-subtitle>Search a Curated List of Health Tests</ion-card-subtitle>
           <ion-card-title>Our Health Tests</ion-card-title>
@@ -116,10 +125,11 @@
         <ion-card-content>
            Comprehensive tests to help you identify biomarkers
         </ion-card-content>
+        <ion-ripple-effect></ion-ripple-effect>
       </ion-card>
     </a>
     <a class="home-link" href="https://winitclinic.com/patients/">
-      <ion-card>
+      <ion-card class="ion-activatable ripple-parent">
         <ion-card-header>
           <ion-card-subtitle>Search for a Specialty</ion-card-subtitle>
           <ion-card-title>Patient Portal</ion-card-title>
@@ -127,10 +137,11 @@
         <ion-card-content>
           Prevent, alleviate, or heal disease–naturally
         </ion-card-content>
+        <ion-ripple-effect></ion-ripple-effect>
       </ion-card>
     </a>
     <a class="home-link" href="https://winitclinic.com/health-pros/">
-      <ion-card>
+      <ion-card class="ion-activatable ripple-parent">
         <ion-card-header>
           <ion-card-subtitle>Search for a Health Professional</ion-card-subtitle>
           <ion-card-title>Health Professionals</ion-card-title>
@@ -138,6 +149,7 @@
         <ion-card-content>
           Book a consultation with a health professional today!
         </ion-card-content>
+        <ion-ripple-effect></ion-ripple-effect>
       </ion-card>
     </a>
   </div>
