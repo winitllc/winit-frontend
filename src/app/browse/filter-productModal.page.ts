@@ -64,13 +64,7 @@ export class FilterProductModalComponent implements OnInit, AfterViewInit, OnDes
   selectLabel(label: string) {
     console.log(`FilterProductModalComponent.selectLabel: add label to list: ${label}`);
     try {
-      const labelFilters = this.labelFilters;
-      labelFilters.push(label);
-      const dedupedLabels = labelFilters.reduce((currentList: string, newVal: string) => {
-        return currentList.indexOf(newVal) < 0 ? `${currentList}${newVal},` : currentList;
-      }, "").split(',');
-      dedupedLabels.pop();
-      this.labelFilters = dedupedLabels;
+      this.safelyAddLabel(label);
       console.log(`FilterProductModalComponent.selectLabel: new label Filters: ${JSON.stringify(this.labelFilters)}`);
       this.currentLabelList = this.currentLabelList.filter((labelToCheck: string) => {
         return !(label == labelToCheck);
@@ -96,6 +90,16 @@ export class FilterProductModalComponent implements OnInit, AfterViewInit, OnDes
 
   confirmLabels() {
     return this.modalCtrl.dismiss(this.labelFilters, 'confirm');
+  }
+
+  private safelyAddLabel(label: string) {
+    const labelFilters = this.labelFilters;
+    labelFilters.push(label);
+    const dedupedLabels = labelFilters.reduce((currentList: string, newVal: string) => {
+      return currentList.indexOf(newVal) < 0 ? `${currentList}${newVal},` : currentList;
+    }, "").split(',');
+    dedupedLabels.pop();
+    this.labelFilters = dedupedLabels;
   }
 
   private async resetInput(): Promise<void> {

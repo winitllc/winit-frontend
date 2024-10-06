@@ -42,11 +42,13 @@ export class BrowsePage implements OnInit {
   async browseProducts(category: string) {
     console.log(`BrowsePage.browseProducts: category to search: ${category}`);
     try {
-      await this.presentLoading(`searching for ${category}`, 10000);
+      const withLabelsMessage: string = this.labelFilters.length > 0 ? ` with labels: ${this.labelFilters.join(', ')}` : '';
+      const loadingMessage: string = `searching for ${category}${withLabelsMessage}`;
+      await this.presentLoading(loadingMessage, 10000);
       const productSearchResults: any = await this.productService.searchProductAPI(category, this.labelFilters);
       console.log(`BrowsePage.browseProducts: results from the category search: ${JSON.stringify(productSearchResults)}`);
       await this.dismissLoading();
-      this.pushToResultsPage(productSearchResults);
+      this.pushToResultsPage(productSearchResults, category);
     } catch (error) {
       console.error(`BrowsePage.browseProducts Error: ${JSON.stringify(error)}`);
       throw error;
@@ -95,13 +97,14 @@ export class BrowsePage implements OnInit {
     }
   }
 
-  private pushToResultsPage(productSearchResults: any): void {
+  private pushToResultsPage(productSearchResults: any, category: string): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
       console.log(`BrowsePage.pushToResultsPage: pushing the product results to results page: ${JSON.stringify(productSearchResults)}`);
       const navExtras: NavigationExtras = {
         state: {
           productSearchResults,
+          category: category,
           labelFilters: this.labelFilters
         }
       };

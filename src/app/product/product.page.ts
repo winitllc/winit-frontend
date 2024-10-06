@@ -36,6 +36,7 @@ export class ProductPage implements OnInit {
   private profile: any;
   public warnings: string[] = [];
   labelFilters: string[] = [];
+  category: string = '';
 
   public insufficientData: boolean = true;
   public dangerWarning: boolean = false;
@@ -82,6 +83,10 @@ export class ProductPage implements OnInit {
         this.confirmProductMode = confirmProductMode;
         const product = routerState['product'];
         console.log(`ProductPage.ionViewWillEnter: product from navParams: ${JSON.stringify(product)}`);
+        this.labelFilters = routerState['labelFilters'];
+        console.log(`ProductPage.ionViewWillEnter: labelFilters from navParams: ${JSON.stringify(this.labelFilters)}`);
+        this.category = routerState['category'];
+        console.log(`ProductPage.ionViewWillEnter: category from navParams: ${JSON.stringify(this.category)}`);
         this.productType = product.type;
         this.noProduct = false;
         if (product && product.hasOwnProperty('message') && product.message === AppConfig.controlMessages.noProduct) {
@@ -172,16 +177,16 @@ export class ProductPage implements OnInit {
     }, false);
   }
 
-  async searchKeyword(category: string) {
-    console.log(`ProductPage.searchKeyword: category to search: ${category}`);
+  async selectCategory(category: string) {
+    console.log(`ProductPage.selectCategory: category to search: ${category}`);
     try {
       await this.presentLoading(`searching for ${category}`, 10000);
       const productSearchResults: any = await this.productService.searchProductAPI(category, this.labelFilters);
-      console.log(`ProductPage.searchKeyword: results from the category search: ${JSON.stringify(productSearchResults)}`);
+      console.log(`ProductPage.selectCategory: results from the category search: ${JSON.stringify(productSearchResults)}`);
       await this.dismissLoading();
-      this.pushToResultsPage(productSearchResults);
+      this.pushToResultsPage(productSearchResults, category);
     } catch (error) {
-      console.error(`ProductPage.searchKeyword Error: ${JSON.stringify(error)}`);
+      console.error(`ProductPage.selectCategory Error: ${JSON.stringify(error)}`);
       throw error;
     }
   }
@@ -189,15 +194,32 @@ export class ProductPage implements OnInit {
   async selectLabel(label: string) {
     console.log(`ProductPage.selectLabel: category to search: ${label}`);
     try {
-      // await this.presentLoading(`selected ${label}`, 10000);
-      // const productSearchResults: any = await this.productService.searchProductAPI(label, []);
-      // console.log(`ProductPage.selectLabel: results from the label search: ${JSON.stringify(productSearchResults)}`);
-      // await this.dismissLoading();
-      // this.pushToResultsPage(productSearchResults);
+      this.safelyAddLabel(label);
+      const withLabelsMessage: string = this.labelFilters.length > 0 ? ` with labels: ${this.labelFilters.join(', ')}` : '';
+      const loadingMessage: string = `searching for ${this.category}${withLabelsMessage}`;
+      await this.presentLoading(loadingMessage, 10000);
+      const productSearchResults: any = await this.productService.searchProductAPI(this.category, this.labelFilters);
+      console.log(`BrowsePage.browseProducts: results from the category search: ${JSON.stringify(productSearchResults)}`);
+      await this.dismissLoading();
+      this.pushToResultsPage(productSearchResults);
     } catch (error) {
       console.error(`ProductPage.selectLabel Error: ${JSON.stringify(error)}`);
       throw error;
     }
+  }
+
+  public goBack() {
+    this.navCtrl.back();
+  }
+
+  private safelyAddLabel(label: string) {
+    const labelFilters = this.labelFilters;
+    labelFilters.push(label);
+    const dedupedLabels = labelFilters.reduce((currentList: string, newVal: string) => {
+      return currentList.indexOf(newVal) < 0 ? `${currentList}${newVal},` : currentList;
+    }, "").split(',');
+    dedupedLabels.pop();
+    this.labelFilters = dedupedLabels;
   }
 
   private async presentLoading(loadingMessage: string, duration?: number) {
@@ -218,13 +240,15 @@ export class ProductPage implements OnInit {
     await this.loading?.dismiss();
   }
 
-  private pushToResultsPage(productSearchResults: any): void {
+  private pushToResultsPage(productSearchResults: any, category?: string): void {
     try {
       // this.profileService.addToProfilePoints(AppConfig.pointAwards.scan);
       console.log(`ProductPage.pushToResultsPage: pushing the product results to results page: ${JSON.stringify(productSearchResults)}`);
       const navExtras: NavigationExtras = {
         state: {
-          productSearchResults
+          productSearchResults,
+          category: category ? category : this.category,
+          labelFilters: this.labelFilters
         }
       };
       console.log(`ProductPage.pushToResultsPage: nav extras for results page: ${JSON.stringify(navExtras)}`);

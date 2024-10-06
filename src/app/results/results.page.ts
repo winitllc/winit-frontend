@@ -65,8 +65,11 @@ export class ResultsPage implements OnInit {
         const routerState = JSON.parse(JSON.stringify(currNavigation.extras.state));
         console.log(`ResultsPage.ionViewWillEnter: routerState: ${JSON.stringify(routerState)}`);
         const productSearchResults = routerState['productSearchResults'];
-        this.labelFilters = routerState['labelFilters'] || [];
         console.log(`ResultsPage.ionViewWillEnter: productSearchResults from navParams: ${JSON.stringify(productSearchResults)}`);
+        this.labelFilters = routerState['labelFilters'] || [];
+        console.log(`ResultsPage.ionViewWillEnter: labelFilters from navParams: ${JSON.stringify(this.labelFilters)}`);
+        this.category = routerState['category'] || '';
+        console.log(`ResultsPage.ionViewWillEnter: category from navParams: ${JSON.stringify(this.category)}`);
         let code_list: string[] = [];
         let id_list: string[] = [];
         if (productSearchResults.products) {
@@ -100,7 +103,9 @@ export class ResultsPage implements OnInit {
       if (product) {
         const navExtras: NavigationExtras = {
           state: {
-            product
+            product,
+            category: this.category,
+            labelFilters: this.labelFilters
           }
         };
         console.log(`ResultsPage.selectProduct: nav extras for results page: ${JSON.stringify(navExtras)}`);
@@ -128,6 +133,10 @@ export class ResultsPage implements OnInit {
     } catch (error) {
       console.error(`ResultsPage.scrollEvent: error requesting next page: ${JSON.stringify(error)}`);
     }
+  }
+
+  public goBack() {
+    this.navCtrl.back();
   }
 
   private async requestNextPage(): Promise<void> {
