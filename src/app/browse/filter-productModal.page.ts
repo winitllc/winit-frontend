@@ -20,7 +20,7 @@ export class FilterProductModalComponent implements OnInit, AfterViewInit, OnDes
   public searchInput: string = '';
   public currentLabelList: string[];
   @Input() labelFilters: string[] = [];
-  initialLabelFilters: string[];
+  initialLabelFilters: string[] = [];
 
   constructor(
     private modalCtrl: ModalController

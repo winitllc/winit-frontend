@@ -7,6 +7,7 @@ import { model } from 'wuzinit-common';
 import { ProfileState } from '../profile/profile.state';
 import { OpenFoodFactsProduct, ProductService } from './product.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CacheService } from '../util/cache.service';
 
 @Component({
   selector: 'app-product',
@@ -55,7 +56,8 @@ export class ProductPage implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private productService: ProductService,
-    private profileState: ProfileState
+    private profileState: ProfileState,
+    private cacheService: CacheService
   ) { }
 
   async ngOnInit() {
@@ -194,7 +196,8 @@ export class ProductPage implements OnInit {
   async selectLabel(label: string) {
     console.log(`ProductPage.selectLabel: category to search: ${label}`);
     try {
-      this.safelyAddLabel(label);
+      const labelFilters = this.safelyAddLabel(label);
+      await this.cacheService.putItem('labelFilters', labelFilters);
       const withLabelsMessage: string = this.labelFilters.length > 0 ? ` with labels: ${this.labelFilters.join(', ')}` : '';
       const loadingMessage: string = `searching for ${this.category}${withLabelsMessage}`;
       await this.presentLoading(loadingMessage, 10000);
@@ -212,11 +215,13 @@ export class ProductPage implements OnInit {
     this.navCtrl.back();
   }
 
-  private safelyAddLabel(label: string) {
+  private safelyAddLabel(label: string): string[] {
     const labelFilters = this.labelFilters;
     labelFilters.push(label);
-    this.labelFilters = [...new Set(labelFilters)];
+    const safeLabelFilters = [...new Set(labelFilters)];
+    this.labelFilters = safeLabelFilters;
     console.log(`ProductPage.safelyAddLabel: new label filters after dedupe: ${this.labelFilters}`);
+    return safeLabelFilters;
   }
 
   private async presentLoading(loadingMessage: string, duration?: number) {

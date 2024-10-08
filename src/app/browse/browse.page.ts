@@ -40,6 +40,17 @@ export class BrowsePage implements OnInit {
       throw error;
     }
   }
+
+  async ionViewWillEnter(): Promise<void> {
+    try {
+      const labelFilters = (await this.cacheService.getItem('labelFilters')) as string[];
+      this.labelFilters = labelFilters;
+      console.log(`BrowsePage.ionViewWillEnter: labelFilters ${JSON.stringify(labelFilters)}`);
+    } catch (error) {
+      console.error(`BrowsePage.ionViewWillEnter Error: ${JSON.stringify(error)}`);
+      throw error;
+    }
+  }
   
   async browseProducts(category: string) {
     console.log(`BrowsePage.browseProducts: category to search: ${category}`);
@@ -82,7 +93,10 @@ export class BrowsePage implements OnInit {
 
     const modal: HTMLIonModalElement = await this.modalCtrl.create({
       component: FilterProductModalComponent,
-      showBackdrop: false
+      showBackdrop: false,
+      componentProps: {
+        labelFilters: this.labelFilters
+      }
     });
     console.log(`BrowsePage.filterProductModal: modal set up`);
     modal.present();
@@ -96,6 +110,7 @@ export class BrowsePage implements OnInit {
     if (data) {
       console.log(`BrowsePage.filterProductModal: labels to filter: ${JSON.stringify(data)}`);
       this.labelFilters = data;
+      await this.cacheService.putItem('labelFilters', data);
     }
   }
 
