@@ -8,6 +8,7 @@ import { ProfileService } from '../profile/profile.service';
 import { OpenFoodFactsProduct, ProductService } from '../product/product.service';
 import { SearchProductModalComponent } from './search-productModal.page';
 import { FilterProductModalComponent } from './filter-productModal.page';
+import { CacheService } from '../util/cache.service';
 
 @Component({
   selector: 'app-browse',
@@ -25,7 +26,8 @@ export class BrowsePage implements OnInit {
     public navCtrl: NavController,
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
-    private productService: ProductService
+    private productService: ProductService,
+    private cacheService: CacheService
   ) {
     // this.resetSearchbox();
   }

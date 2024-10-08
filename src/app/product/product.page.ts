@@ -215,11 +215,8 @@ export class ProductPage implements OnInit {
   private safelyAddLabel(label: string) {
     const labelFilters = this.labelFilters;
     labelFilters.push(label);
-    const dedupedLabels = labelFilters.reduce((currentList: string, newVal: string) => {
-      return currentList.indexOf(newVal) < 0 ? `${currentList}${newVal},` : currentList;
-    }, "").split(',');
-    dedupedLabels.pop();
-    this.labelFilters = dedupedLabels;
+    this.labelFilters = [...new Set(labelFilters)];
+    console.log(`ProductPage.safelyAddLabel: new label filters after dedupe: ${this.labelFilters}`);
   }
 
   private async presentLoading(loadingMessage: string, duration?: number) {
