@@ -66,10 +66,10 @@ export class ProductPage implements OnInit {
 
   async ionViewWillEnter(): Promise<void> {
     try {
-      console.log(`ScanPage.ionViewWillEnter - beginning of ionViewWillEnter`);
+      console.log(`ProductPage.ionViewWillEnter - beginning of ionViewWillEnter`);
       this.profile = this.profileState.getHealthProfile();
-      console.log(`ScanPage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
-      this.warnings = this.profile.medical.allergies.map((allergy: any) => {return allergy.name as string;});
+      console.log(`ProductPage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
+      this.warnings = this.profile.medical?.allergies?.map((allergy: any) => {return allergy.name as string;}) || [];
       this.noProduct = true;
       console.log(`ProductPage.ionViewWillEnter: beginning of ionViewWillEnter`);
       let currNavigation = this.router.getCurrentNavigation();
@@ -182,7 +182,9 @@ export class ProductPage implements OnInit {
   async selectCategory(category: string) {
     console.log(`ProductPage.selectCategory: category to search: ${category}`);
     try {
-      await this.presentLoading(`searching for ${category}`, 10000);
+      const withLabelsMessage: string = this.labelFilters.length > 0 ? ` with labels: ${this.labelFilters.join(', ')}` : '';
+      const loadingMessage: string = `searching for ${category}${withLabelsMessage}`;
+      await this.presentLoading(loadingMessage, 10000);
       const productSearchResults: any = await this.productService.searchProductAPI(category, this.labelFilters);
       console.log(`ProductPage.selectCategory: results from the category search: ${JSON.stringify(productSearchResults)}`);
       await this.dismissLoading();

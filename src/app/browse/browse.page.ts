@@ -43,7 +43,7 @@ export class BrowsePage implements OnInit {
 
   async ionViewWillEnter(): Promise<void> {
     try {
-      const labelFilters = (await this.cacheService.getItem('labelFilters')) as string[];
+      const labelFilters = ((await this.cacheService.getItem('labelFilters')) || []) as string[];
       this.labelFilters = labelFilters;
       console.log(`BrowsePage.ionViewWillEnter: labelFilters ${JSON.stringify(labelFilters)}`);
     } catch (error) {

@@ -101,33 +101,41 @@ export class ProfilePage {
   }
 
   async confirmLogout(): Promise<void> {
-    let alert = await this.alertCtrl.create({
-      header: 'Logout',
-      message: 'Do you want to logout?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
-        {
-          text: 'Confirm',
-          handler: () => {
-            this.logout();
+    try {
+      let alert = await this.alertCtrl.create({
+        header: 'Logout',
+        message: 'Do you want to logout?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
           },
-        },
-      ],
-    });
-    await alert.present();
+          {
+            text: 'Confirm',
+            handler: () => {
+              this.logout();
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } catch (error) {
+      console.error(`ProfilePage.confirmLogout: [ERROR] ${JSON.stringify(error)}`);
+    }
   }
 
   // PRIVATE FUNCTIONS
 
   private logout(): void {
     this.auth.logout().then(async () => {
-      console.log(`ProfilePage.logout: auth logout complete; returning home`);
-      this.storage.remove('accessToken');
-      await this.returnHome();
-      await this.auth.setup();
+      try {
+        console.log(`ProfilePage.logout: auth logout complete; returning home`);
+        this.storage.remove('accessToken');
+        await this.returnHome();
+        await this.auth.setup();
+      } catch (error) {
+        console.error(`ProfilePage.logout: [ERROR] ${JSON.stringify(error)}`);
+      }
     });
   }
 

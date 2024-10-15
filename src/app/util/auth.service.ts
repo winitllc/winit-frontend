@@ -73,9 +73,6 @@ export class AuthService {
 
   public async setup(): Promise<void> {
     try {
-      // await this.setupOAuth();
-      // await this.setupIAM();
-      await this.setupSpoonacular();
       await this.profileService.fetchProfileData();
     } catch (error) {
       console.error(
@@ -143,127 +140,41 @@ export class AuthService {
     return throwError('Something bad happened; please try again later.');
   }
 
-  private async setupSpoonacular(): Promise<void> {
-    try {
-      const goodSpoonacularKey = await this.goodSpoonacularAPIKey();
-      if (!goodSpoonacularKey) {
-        console.log('AuthService.setup: [INFO] fetching api key');
-        const newSpoonacularAPIKey: string =
-          await this.fetchSpoonacularAPIKey();
-        console.log(
-          `AuthService.setup: [DEBUG] recieved new spoonacular api key: ${newSpoonacularAPIKey}`
-        );
-        this.authState.setSpoonacularAPIKey(newSpoonacularAPIKey);
-        this.cache.putItem('spoonacularAPIKey', newSpoonacularAPIKey);
-      }
-    } catch (error) {
-      console.error(
-        `AuthService.setupSpoonacular: [ERROR] error setting up Spoonacular: ${JSON.stringify(
-          error
-        )}`
-      );
-      throw error;
-    }
-  }
-
-  private async goodOAuthTokens(): Promise<boolean> {
-    try {
-      const storedOAuthTokens: model.CognitoTokens = await this.cache.getItem(
-        'oauthTokens'
-      );
-      console.log(
-        `AuthService.goodOAuthTokens: [DEBUG] storedOAuthTokens: ${JSON.stringify(
-          storedOAuthTokens
-        )}`
-      );
-      if (storedOAuthTokens && storedOAuthTokens.access_token) {
-        if (
-          AuthService.tokensExpired(storedOAuthTokens) &&
-          storedOAuthTokens.refresh_token
-        ) {
-          // refresh
-          return false;
-        } else if (AuthService.tokensExpired(storedOAuthTokens)) {
-          // re-login
-          return false;
-        } else {
-          // logged in
-          return true;
-        }
-      } else {
-        // not logged in
-        return false;
-      }
-    } catch (error) {
-      console.error(
-        `AuthService.goodOAuthTokens: [ERROR] something went wrong: ${JSON.stringify(
-          error
-        )}`
-      );
-      return false;
-    }
-  }
-
-  private async goodSpoonacularAPIKey(): Promise<boolean> {
-    try {
-      const authStateAPIKey: string = this.authState.getSpoonacularAPIKey();
-      if (authStateAPIKey && authStateAPIKey.length > 0) {
-        return true;
-      }
-      const storedSpoonacularAPIKey: string = await this.cache.getItem(
-        'spoonacularAPIKey'
-      );
-      console.log(
-        `AuthService.goodSpoonacularAPIKey: [DEBUG] storedSpoonacularAPIKey: ${JSON.stringify(
-          storedSpoonacularAPIKey
-        )}`
-      );
-      if (storedSpoonacularAPIKey) {
-        return true;
-      } else {
-        // no api key
-        return false;
-      }
-      return true;
-    } catch (error) {
-      console.error(
-        `AuthService.goodSpoonacularAPIKey: [ERROR] error checking IAM credentials: ${JSON.stringify(
-          error
-        )}`
-      );
-      return false;
-    }
-  }
-
-  private async fetchSpoonacularAPIKey(): Promise<string> {
-    try {
-      const fetchSpoonacularAPIKeyURL = `${EnvironmentConfig.api.utilService.baseUrl}${EnvironmentConfig.api.utilService.spoonacularAPIKey}`;
-      console.log(
-        `Auth.fetchSpoonacularAPIKey: fetching chomp API Key: ${fetchSpoonacularAPIKeyURL}`
-      );
-      const requestOptions = {
-        url: fetchSpoonacularAPIKeyURL,
-        headers: this.authState.getAuthHeaders(),
-      };
-      const spoonacularAPIKeyResults: HttpResponse = await CapacitorHttp.get(
-        requestOptions
-      );
-      if (spoonacularAPIKeyResults.hasOwnProperty('data')) {
-        return spoonacularAPIKeyResults.data as string;
-      } else {
-        throw new Error(
-          `Error fetching Spoonacular API Key, response: ${JSON.stringify(
-            spoonacularAPIKeyResults
-          )}`
-        );
-      }
-    } catch (error) {
-      console.error(
-        `Auth.fetchSpoonacularAPIKey: error fetching chomp API Key: ${JSON.stringify(
-          error
-        )}`
-      );
-      return '';
-    }
-  }
+  // private async goodOAuthTokens(): Promise<boolean> {
+  //   try {
+  //     const storedOAuthTokens: model.CognitoTokens = await this.cache.getItem(
+  //       'oauthTokens'
+  //     );
+  //     console.log(
+  //       `AuthService.goodOAuthTokens: [DEBUG] storedOAuthTokens: ${JSON.stringify(
+  //         storedOAuthTokens
+  //       )}`
+  //     );
+  //     if (storedOAuthTokens && storedOAuthTokens.access_token) {
+  //       if (
+  //         AuthService.tokensExpired(storedOAuthTokens) &&
+  //         storedOAuthTokens.refresh_token
+  //       ) {
+  //         // refresh
+  //         return false;
+  //       } else if (AuthService.tokensExpired(storedOAuthTokens)) {
+  //         // re-login
+  //         return false;
+  //       } else {
+  //         // logged in
+  //         return true;
+  //       }
+  //     } else {
+  //       // not logged in
+  //       return false;
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       `AuthService.goodOAuthTokens: [ERROR] something went wrong: ${JSON.stringify(
+  //         error
+  //       )}`
+  //     );
+  //     return false;
+  //   }
+  // }
 }
