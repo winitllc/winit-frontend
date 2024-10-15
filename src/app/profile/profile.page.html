@@ -7,6 +7,18 @@
 <ion-content [fullscreen]="true">
   <h2 class="ion-text-center"><img class="header-icon" src="assets/icon/favicon.png"> Profile</h2>
   <ion-list>
+    <a class="home-link" href="https://winitclinic.com/my-account/my-health-profile/8/health/">
+      <ion-card class="ion-activatable ripple-parent">
+        <ion-card-header>
+          <ion-card-subtitle>Update Profile on winitclinic.com</ion-card-subtitle>
+          <ion-card-title>Update Profile</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Select the "Health" tab under "My health profile"
+        </ion-card-content>
+        <ion-ripple-effect></ion-ripple-effect>
+      </ion-card>
+    </a>
     <ion-list-header class="list-header">
       <ion-label>{{profileData.profile.firstName}} {{profileData.profile.lastName}}</ion-label>
     </ion-list-header>

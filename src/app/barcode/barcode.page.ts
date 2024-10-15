@@ -75,38 +75,42 @@ export class BarcodePage implements OnInit {
   }
 
   async scan() {
-    console.log(`BarcodePage.scan: scan called`);
-    const lensFacing = LensFacing.Back;
-    const modal: HTMLIonModalElement = await this.modalCtrl.create({
-      component: BarcodeScanningModalComponent,
-      cssClass: 'barcode-scanning-modal',
-      showBackdrop: false,
-      componentProps: {
-        formats: [],
-        lensFacing: lensFacing,
-      }
-    });
-    console.log(`BarcodePage.scan: modal set up`);
-    modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-    console.log(`BarcodePage.scan: data from modal: ${JSON.stringify(data)}`);
-    console.log(`BarcodePage.scan: role from modal: ${JSON.stringify(role)}`);
-    const barcode: Barcode = data as Barcode;
-    this.barcode = barcode;
-    console.log(`BarcodePage.scan: the barcode: ${JSON.stringify(this.barcode)}`);
-    const productFromOpenFoodFacts: OpenFoodFactsProduct = await this.productService.getProductByBarcode(barcode.displayValue);
-    console.log(`BarcodePage.scan: productFromOpenFoodFacts: ${JSON.stringify(productFromOpenFoodFacts)}`);
-    console.log(`BarcodePage.scan: has code?: ${JSON.stringify(productFromOpenFoodFacts.hasOwnProperty('code'))}`);
-    if (productFromOpenFoodFacts.hasOwnProperty('code')) {
-      console.log(`BarcodePage.scan: pushing OFF product to page`);
-      this.pushToProductPage(productFromOpenFoodFacts);
-    } else {
-      console.log(`BarcodePage.scan: pushing 'no product' to page`);
-      this.pushToProductPage({
-        message: AppConfig.controlMessages.noProduct,
-        barcode: barcode.displayValue
+    try {
+      console.log(`BarcodePage.scan: scan called`);
+      const lensFacing = LensFacing.Back;
+      const modal: HTMLIonModalElement = await this.modalCtrl.create({
+        component: BarcodeScanningModalComponent,
+        cssClass: 'barcode-scanning-modal',
+        showBackdrop: false,
+        componentProps: {
+          formats: [],
+          lensFacing: lensFacing,
+        }
       });
+      console.log(`BarcodePage.scan: modal set up`);
+      modal.present();
+  
+      const { data, role } = await modal.onWillDismiss();
+      console.log(`BarcodePage.scan: data from modal: ${JSON.stringify(data)}`);
+      console.log(`BarcodePage.scan: role from modal: ${JSON.stringify(role)}`);
+      const barcode: Barcode = data as Barcode;
+      this.barcode = barcode;
+      console.log(`BarcodePage.scan: the barcode: ${JSON.stringify(this.barcode)}`);
+      const productFromOpenFoodFacts: OpenFoodFactsProduct = await this.productService.getProductByBarcode(barcode.displayValue);
+      console.log(`BarcodePage.scan: productFromOpenFoodFacts: ${JSON.stringify(productFromOpenFoodFacts)}`);
+      console.log(`BarcodePage.scan: has code?: ${JSON.stringify(productFromOpenFoodFacts?.hasOwnProperty('code'))}`);
+      if (productFromOpenFoodFacts && productFromOpenFoodFacts.hasOwnProperty('code')) {
+        console.log(`BarcodePage.scan: pushing OFF product to page`);
+        this.pushToProductPage(productFromOpenFoodFacts);
+      } else {
+        console.log(`BarcodePage.scan: pushing 'no product' to page`);
+        this.pushToProductPage({
+          message: AppConfig.controlMessages.noProduct,
+          barcode: barcode.displayValue
+        });
+      }
+    } catch (error) {
+      console.error(`BarcodePage.scan: [ERROR] ${JSON.stringify(error)}`);
     }
   }
 
