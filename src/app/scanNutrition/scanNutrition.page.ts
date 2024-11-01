@@ -141,6 +141,7 @@ export class ScanNutritionPage implements OnInit {
         nameS3ImageKey: this.nameS3ImageKey,
         frontS3ImageKey: this.frontS3ImageKey,
         frontImage: this.frontImage,
+        nutritionImage: this.imageSrc,
         nutritionS3ImageKey: this.nutritionS3ImageKey,
         nutritionDataText: this.nutritionDataText
       }

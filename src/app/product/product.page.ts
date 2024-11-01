@@ -1,6 +1,6 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { NavController, ActionSheetController, Platform, LoadingController, LoadingOptions } from '@ionic/angular';
+import { NavController, ActionSheetController, Platform, LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
 import { Share } from '@capacitor/share';
 import { AppConfig } from '../app.config';
 import { model } from 'wuzinit-common';
@@ -8,6 +8,8 @@ import { ProfileState } from '../profile/profile.state';
 import { OpenFoodFactsProduct, ProductService } from './product.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CacheService } from '../util/cache.service';
+import ImageService from '../util/image.service';
+import { ScanFrontCropperModalPage } from '../scanFront/scanFront-cropperModal.page';
 
 @Component({
   selector: 'app-product',
@@ -51,11 +53,13 @@ export class ProductPage implements OnInit {
     private loadingController: LoadingController,
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
+    private modalCtrl: ModalController,
     private platform: Platform,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private router: Router,
     private productService: ProductService,
+    private imageService: ImageService,
     private profileState: ProfileState,
     private cacheService: CacheService
   ) { }
@@ -97,7 +101,8 @@ export class ProductPage implements OnInit {
           this.noProductBarcode = product.barcode;
         } else if (product && product.hasOwnProperty('code')) {
           console.log(`ProductPage.ionViewWillEnter: using OpenFoodFacts product from navParams`);
-          console.log(`ProductPage.ionViewWillEnter: front images: ${JSON.stringify(product.selected_images.front)}`);
+          console.log(`ProductPage.ionViewWillEnter: front images: ${JSON.stringify(product.selected_images?.front)}`);
+          console.log(`ProductPage.ionViewWillEnter: front images: ${JSON.stringify(product.image_front_url)}`);
           this.product = JSON.parse(JSON.stringify(product));
           await this.setAlerts();
         } else if (this.product && this.product.hasOwnProperty('id')) {
@@ -123,6 +128,42 @@ export class ProductPage implements OnInit {
       }
     };
     this.navCtrl.navigateForward('tabs/product/scanName', navExtras);
+  }
+
+  public async updateFrontImage() {
+    const imageData = await this.imageService.captureImageDataURL();
+    this.presentLoading('Loading Image Cropper');
+    const croppedImageData = await this.openCropperModal(imageData);
+    await this.productService.addImage(this.product?.code || '', 'front_en', croppedImageData);
+    if (this.product) {
+      this.product.image_front_url = croppedImageData;
+    }
+  }
+
+  public async updateNutritionImage() {
+    const imageData = await this.imageService.captureImageDataURL();
+    this.presentLoading('Loading Image Cropper');
+    const croppedImageData = await this.openCropperModal(imageData);
+    await this.productService.addImage(this.product?.code || '', 'nutrition_en', croppedImageData);
+    if (this.product) {
+      this.product.image_nutrition_url = croppedImageData;
+    }
+  }
+
+  async openCropperModal(imageData: string): Promise<string> {
+    const modal: HTMLIonModalElement = await this.modalCtrl.create({
+      component: ScanFrontCropperModalPage,
+      componentProps: {
+        imageInput: imageData
+      }
+    });
+    await this.dismissLoading();
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log(`ProductPage.openCropperModal: modal dismissed, data: ${JSON.stringify(data)}`);
+    console.log(`ProductPage.openCropperModal: modal dismissed, role: ${JSON.stringify(role)}`);
+    return data as string;
   }
 
   // private reset(): void {

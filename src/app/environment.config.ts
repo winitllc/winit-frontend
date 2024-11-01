@@ -12,13 +12,19 @@ const Dev = {
       getByCode: 'getByCode'
     },
     openFoodFactsProducts: {
-      baseUrl: 'https://us.openfoodfacts.org',
+      baseUrl: 'https://world.openfoodfacts.org',
+      // baseUrl: 'https://us.openfoodfacts.org',
       testUrl: 'https://world.openfoodfacts.net',
       addProductUpdate: '/cgi/product_jqm2.pl',
+      addProductImage: '/cgi/product_image_upload.pl',
       getByCode: '/api/v2/product/',
       searchByTag: '/api/v2/search',
       // searchByTag: '/cgi/search.pl',
-      headerUserAgent: 'What\'s In It/1.0 - (info@winitclinic.com)'
+      headerUserAgent: 'What\'s In It/1.0 - (info@winitclinic.com)',
+      offUsername: 'rglenn28',
+      offPassword: 'UNclever1'
+      // offUsername: 'rglenn-winit',
+      // offPassword: 'WINIT@2024'
     },
     spoonacularProducts: {
       baseUrl: 'https://api.spoonacular.com/',

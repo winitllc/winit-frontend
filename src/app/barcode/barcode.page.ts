@@ -99,7 +99,9 @@ export class BarcodePage implements OnInit {
       const productFromOpenFoodFacts: OpenFoodFactsProduct = await this.productService.getProductByBarcode(barcode.displayValue);
       console.log(`BarcodePage.scan: productFromOpenFoodFacts: ${JSON.stringify(productFromOpenFoodFacts)}`);
       console.log(`BarcodePage.scan: has code?: ${JSON.stringify(productFromOpenFoodFacts?.hasOwnProperty('code'))}`);
-      if (productFromOpenFoodFacts && productFromOpenFoodFacts.hasOwnProperty('code')) {
+      console.log(`BarcodePage.scan: productFromOpenFoodFacts.product_name_en: ${JSON.stringify(productFromOpenFoodFacts.product_name_en)}`);
+      console.log(`BarcodePage.scan: productFromOpenFoodFacts.product_name: ${JSON.stringify(productFromOpenFoodFacts.product_name)}`);
+      if (productFromOpenFoodFacts && productFromOpenFoodFacts.hasOwnProperty('code') && (productFromOpenFoodFacts.hasOwnProperty('product_name_en') || productFromOpenFoodFacts.hasOwnProperty('product_name'))) {
         console.log(`BarcodePage.scan: pushing OFF product to page`);
         this.pushToProductPage(productFromOpenFoodFacts);
       } else {

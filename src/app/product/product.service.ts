@@ -18,22 +18,27 @@ export class ProductService {
 
   // }
 
-  public async addNewProductUpdate(product: OpenFoodFactsProductUpdate): Promise<OpenFoodFactsProductUpdate> {
+  public async addNewProductUpdate(product: OpenFoodFactsProductUpdate): Promise<any> {
     const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
     // const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
+    console.log(`ProductService.addNewProductUpdate: adding new product with barcode: ${JSON.stringify(product.code)}`);
     console.log(`ProductService.addNewProductUpdate: adding new product: ${JSON.stringify(product)}`);
     console.log(`ProductService.addNewProductUpdate: url: ${postProductUpdate}`);
     try {
       const requestOptions: HttpOptions = {
         url: postProductUpdate,
         headers: {
-          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        params: {
+        data: {
+          lc: 'en',
+          cc: 'us',
+          user_id: EnvironmentConfig.api.openFoodFactsProducts.offUsername,
+          password: EnvironmentConfig.api.openFoodFactsProducts.offPassword,
           code: product.code,
           product_name_en: product.product_name_en,
-          ingredients_text: product.ingredients_text,
-          nutrition_data: product.nutrition_data,
+          ingredients_text_en: product.ingredients_text,
           image_url: product.image_url,
           image_ingredients_url: product.image_ingredients_url,
           image_front_url: product.image_front_url,
@@ -41,30 +46,90 @@ export class ProductService {
           brands: product.brands
         }
       };
+      console.log(`ProductService.addNewProductUpdate: sending request to OFF: ${JSON.stringify(requestOptions)}`);
       const result: HttpResponse = await CapacitorHttp.post(requestOptions);
       console.log(`ProductService.addNewProductUpdate: result from open food facts: ${JSON.stringify(result)}`);
-      console.log(`ProductService.addNewProductUpdate: product object: ${JSON.stringify(product)}`);
-      return product;
+      return result;
     } catch (error) {
-      console.error(`ProductService.addNewProductUpdate: Error getting by id ${JSON.stringify(product)}`);
+      console.error(`ProductService.addNewProductUpdate: Error writing product with ${JSON.stringify(product.code)}`);
+      console.error(`ProductService.addNewProductUpdate: Error writing product ${JSON.stringify(product)}`);
       console.error(`ProductService.addNewProductUpdate: Error: ${JSON.stringify(error)}`);
       return JSON.parse(JSON.stringify(AppConfig.emptyWuzinitProduct));
     }
   }
 
+  public async addImage(code: string, imagefield: string, image: string) {
+    const postAddImageURL: string = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductImage}`;
+    try {
+      console.log(`ProductService.addImage: updating the image with code: ${JSON.stringify(code)}`);
+      const requestOptions: HttpOptions = {
+        url: postAddImageURL,
+        headers: {
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: {
+          lc: 'en',
+          cc: 'us',
+          user_id: EnvironmentConfig.api.openFoodFactsProducts.offUsername,
+          password: EnvironmentConfig.api.openFoodFactsProducts.offPassword,
+          code,
+          imagefield
+        }
+      };
+      console.info(`imageByteCharacters first part: ${image.split(',')[0]}`);
+      const imageByteCharacters = atob(image.split(',')[1]);
+      console.info(`imageByteCharacters length: ${imageByteCharacters.length}`);
+      const imageByteNumbers = new Array(imageByteCharacters.length);
+      for (let i = 0; i < imageByteCharacters.length; i++) {
+        imageByteNumbers[i] = imageByteCharacters.charCodeAt(i);
+      }
+      const imageByteArray = new Uint8Array(imageByteNumbers);
+      console.info(`imageByteArray length: ${imageByteArray.length}`);
+      const imageBlob = new Blob([imageByteArray], {
+        type: `image/jpeg`,
+      });
+      console.info(`imageBlob size: ${JSON.stringify(imageBlob.size)}`);
+      console.info(`imageBlob: ${JSON.stringify(imageBlob)}`);
+      if (imagefield == 'front_en') {
+        console.info(`image field is front_en: ${JSON.stringify(imagefield)}`);
+        requestOptions.data.imgupload_front_en = imageBlob;
+        console.info(`request options has imgupload_front_en field: ${JSON.stringify(requestOptions.data.imgupload_front_en.size)}`);
+      } else if (imagefield == 'ingredients_en') {
+        console.info(`image field is ingredients_en: ${JSON.stringify(imagefield)}`);
+        requestOptions.data.imgupload_ingredients_en = imageBlob;
+        console.info(`request options has imgupload_ingredients_en field: ${JSON.stringify(requestOptions.data.imgupload_ingredients_en.size)}`);
+      } else if (imagefield == 'nutrition_en') {
+        console.info(`image field is nutrition_en: ${JSON.stringify(imagefield)}`);
+        requestOptions.data.imgupload_nutrition_en = imageBlob;
+        console.info(`request options has imgupload_nutrition_en field: ${JSON.stringify(requestOptions.data.imgupload_nutrition_en.size)}`);
+      } else {
+        console.info(`[WARNING] image field is not known, defaulting: ${JSON.stringify(imagefield)}`);
+        requestOptions.data.imgupload_front_en = imageBlob;
+        console.info(`request options has imgupload_front_en field: ${JSON.stringify(requestOptions.data.imgupload_front_en.size)}`);
+      }
+      console.info(`ProductService.addNewProductUpdate: sending request to OFF: ${JSON.stringify(requestOptions)}`);
+      const response = await CapacitorHttp.post(requestOptions);
+      console.info(`ProductService.addNewProductUpdate: received response from OFF: ${JSON.stringify(response)}`);
+    } catch (error) {
+      console.error(`ProductService.addImage: [ERROR] addImage error: ${JSON.stringify(error)}`);
+    }
+  }
+
   public async getProductByBarcode(barcode: string): Promise<OpenFoodFactsProduct> {
-    const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.getByCode}${barcode}.json`;
+    const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.getByCode}${barcode}.json`;
+    // const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.getByCode}${barcode}.json`;
     console.log(`ProductService.getProductByBarcode: requesting product by barcode: ${barcode}`);
     console.log(`ProductService.getProductByBarcode: url: ${getProductByBarcodeURL}`);
     try {
-      // const apiKey: string = this.authState.getSpoonacularAPIKey();
       const requestOptions = {
         url: getProductByBarcodeURL,
         headers: {
           'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent
         },
         params: {
-          // apiKey
+          lc: 'en',
+          cc: 'us'
         }
       }
       const result: HttpResponse = await CapacitorHttp.get(requestOptions);
@@ -92,6 +157,8 @@ export class ProductService {
           'Access-Control-Allow-Origin': '*'
         },
         params: {
+          lc: 'en',
+          cc: 'us',
           countries_tags_en: 'united-states',
           categories_tags: category,
           labels_tags: labels

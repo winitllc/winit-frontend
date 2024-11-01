@@ -29,6 +29,7 @@ export class ScanIngredientsPage implements OnInit {
   nutritionS3ImageKey: string = '';
   nutritionDataText: string = '';
   frontImage: string = '';
+  nutritionImage: string = '';
   backS3ImageKey: string = '';
   ingredientsS3ImageKey: string = '';
 
@@ -62,6 +63,7 @@ export class ScanIngredientsPage implements OnInit {
       this.nutritionS3ImageKey = routerState['nutritionS3ImageKey'];
       this.nutritionDataText = routerState['nutritionDataText'];
       this.frontImage = routerState['frontImage'];
+      this.nutritionImage = routerState['nutritionImage'];
       this.backS3ImageKey = routerState['backS3ImageKey'];
       console.log(`ScanIngredientsPage.ngOnInit: barcode ${this.barcode}`);
       console.log(`ScanIngredientsPage.ngOnInit: nameText ${this.nameText}`);
@@ -116,8 +118,17 @@ export class ScanIngredientsPage implements OnInit {
     };
     this.presentLoading('Sending new product to product update service for review.');
     await this.productService.addNewProductUpdate(productUpdate);
+    this.presentLoading('Product sent; now to update with images.');
+    await this.productService.addImage(productUpdate.code, 'front_en', this.frontImage);
+    this.presentLoading('Front image sent.');
+    await this.productService.addImage(productUpdate.code, 'ingredients_en', this.imageSrc);
+    this.presentLoading('Ingredients image sent.');
+    await this.productService.addImage(productUpdate.code, 'nutrition_en', this.nutritionImage);
+    this.presentLoading('Nutrition image sent.');
     this.dismissLoading();
     productUpdate.image_front_url = this.frontImage;
+    productUpdate.image_ingredients_url = this.imageSrc;
+    productUpdate.image_nutrition_url = this.nutritionImage;
     console.log(`ScanIngredientsPage.continue: product to push to product page: ${JSON.stringify(productUpdate)}`);
     const navExtras: NavigationExtras = {
       state: {
