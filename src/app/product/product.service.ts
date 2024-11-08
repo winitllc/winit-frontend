@@ -39,10 +39,10 @@ export class ProductService {
           code: product.code,
           product_name_en: product.product_name_en,
           ingredients_text_en: product.ingredients_text,
-          image_url: product.image_url,
-          image_ingredients_url: product.image_ingredients_url,
-          image_front_url: product.image_front_url,
-          image_nutrition_url: product.image_nutrition_url,
+          // image_url: product.image_url,
+          // image_ingredients_url: product.image_ingredients_url,
+          // image_front_url: product.image_front_url,
+          // image_nutrition_url: product.image_nutrition_url,
           brands: product.brands
         }
       };
@@ -62,29 +62,29 @@ export class ProductService {
     const postAddImageURL: string = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductImage}`;
     try {
       console.log(`ProductService.addImage: updating the image with code: ${JSON.stringify(code)}`);
-      const requestOptions: HttpOptions = {
-        url: postAddImageURL,
-        headers: {
-          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: {
-          lc: 'en',
-          cc: 'us',
-          user_id: EnvironmentConfig.api.openFoodFactsProducts.offUsername,
-          password: EnvironmentConfig.api.openFoodFactsProducts.offPassword,
-          code,
-          imagefield
-        }
-      };
+      const formData = new FormData();
+      formData.append('lc', 'en');
+      formData.append('cc', 'us');
+      formData.append('user_id', EnvironmentConfig.api.openFoodFactsProducts.offUsername);
+      formData.append('password', EnvironmentConfig.api.openFoodFactsProducts.offPassword);
+      formData.append('code', code);
+      formData.append('imagefield', imagefield);
+      // const data: any = {
+      //   lc: 'en',
+      //   cc: 'us',
+      //   user_id: EnvironmentConfig.api.openFoodFactsProducts.offUsername,
+      //   password: EnvironmentConfig.api.openFoodFactsProducts.offPassword,
+      //   code,
+      //   imagefield
+      // };
       console.info(`imageByteCharacters first part: ${image.split(',')[0]}`);
       const imageByteCharacters = atob(image.split(',')[1]);
       console.info(`imageByteCharacters length: ${imageByteCharacters.length}`);
-      const imageByteNumbers = new Array(imageByteCharacters.length);
+
+      const imageByteArray = new Uint8Array(imageByteCharacters.length);
       for (let i = 0; i < imageByteCharacters.length; i++) {
-        imageByteNumbers[i] = imageByteCharacters.charCodeAt(i);
+        imageByteArray[i] = imageByteCharacters.charCodeAt(i);
       }
-      const imageByteArray = new Uint8Array(imageByteNumbers);
       console.info(`imageByteArray length: ${imageByteArray.length}`);
       const imageBlob = new Blob([imageByteArray], {
         type: `image/jpeg`,
@@ -93,21 +93,42 @@ export class ProductService {
       console.info(`imageBlob: ${JSON.stringify(imageBlob)}`);
       if (imagefield == 'front_en') {
         console.info(`image field is front_en: ${JSON.stringify(imagefield)}`);
-        requestOptions.data.imgupload_front_en = imageBlob;
-        console.info(`request options has imgupload_front_en field: ${JSON.stringify(requestOptions.data.imgupload_front_en.size)}`);
+        // data.front_en = imageBlob;
+        // console.info(`formData has imgupload_front_en field: ${JSON.stringify(data.front_en.size)}`);
+        formData.append('imgupload_front_en', imageBlob, 'front_en.jpg');
+        console.info(`formData has imgupload_front_en field: ${JSON.stringify(formData.get('imgupload_front_en'))}`);
       } else if (imagefield == 'ingredients_en') {
         console.info(`image field is ingredients_en: ${JSON.stringify(imagefield)}`);
-        requestOptions.data.imgupload_ingredients_en = imageBlob;
-        console.info(`request options has imgupload_ingredients_en field: ${JSON.stringify(requestOptions.data.imgupload_ingredients_en.size)}`);
+        // data.ingredients_en = imageBlob;
+        // console.info(`formData has ingredients_en field: ${JSON.stringify(data.ingredients_en.size)}`);
+        formData.append('ingredients_en', imageBlob, 'ingredients_en.jpg');
+        console.info(`formData has ingredients_en field: ${JSON.stringify(formData.get('ingredients_en'))}`);
       } else if (imagefield == 'nutrition_en') {
         console.info(`image field is nutrition_en: ${JSON.stringify(imagefield)}`);
-        requestOptions.data.imgupload_nutrition_en = imageBlob;
-        console.info(`request options has imgupload_nutrition_en field: ${JSON.stringify(requestOptions.data.imgupload_nutrition_en.size)}`);
+        // data.nutrition_en = imageBlob;
+        // console.info(`formData has nutrition_en field: ${JSON.stringify(data.nutrition_en.size)}`);
+        formData.append('nutrition_en', imageBlob, 'nutrition_en.jpg');
+        console.info(`formData has nutrition_en field: ${JSON.stringify(formData.get('nutrition_en'))}`);
       } else {
         console.info(`[WARNING] image field is not known, defaulting: ${JSON.stringify(imagefield)}`);
-        requestOptions.data.imgupload_front_en = imageBlob;
-        console.info(`request options has imgupload_front_en field: ${JSON.stringify(requestOptions.data.imgupload_front_en.size)}`);
+        // data.front_en = imageBlob;
+        // console.info(`formData has imgupload_front_en field: ${JSON.stringify(data.front_en.size)}`);
+        formData.append('imgupload_front_en', imageBlob, 'front_en.jpg');
+        console.info(`formData has imgupload_front_en field: ${JSON.stringify(formData.get('imgupload_front_en'))}`);
       }
+      // console.info(`data: ${JSON.stringify(data)}`);
+      console.info(`formData: ${JSON.stringify(formData)}`);
+      const requestOptions: HttpOptions = {
+        url: postAddImageURL,
+        headers: {
+          'User-Agent': EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent,
+          'Content-Type': 'multipart/form-data'
+          // 'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        // data
+        data: formData,
+        dataType: 'formData'
+      };
       console.info(`ProductService.addNewProductUpdate: sending request to OFF: ${JSON.stringify(requestOptions)}`);
       const response = await CapacitorHttp.post(requestOptions);
       console.info(`ProductService.addNewProductUpdate: received response from OFF: ${JSON.stringify(response)}`);
