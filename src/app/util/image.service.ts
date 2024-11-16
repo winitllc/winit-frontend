@@ -102,6 +102,41 @@ export default class ImageService {
     }
   }
 
+  async callUploadToOpenFoodFacts(code: string, imagefield: string, image: string): Promise<string> {
+    console.log(`ImageService.callUploadToOpenFoodFacts: image to upload ${image}`);
+    console.log(`ImageService.uploadImageToS3: imagefield: ${imagefield}`);
+    const callUploadToOpenFoodFactsURL = EnvironmentConfig.api.imageService.baseUrl + EnvironmentConfig.api.imageService.uploadToOFF;
+    const requestOptions: HttpOptions = {
+      url: callUploadToOpenFoodFactsURL,
+      headers: {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json'
+      },
+      data: {
+        code,
+        imagefield,
+        image,
+        userAgent: EnvironmentConfig.api.openFoodFactsProducts.headerUserAgent
+      }
+    };
+    console.log(`ImageService.callUploadToOpenFoodFacts: uploadBody prepared: ${JSON.stringify(requestOptions)}`);
+    try {
+      const uploadToOFFResponse: any = await CapacitorHttp.post(requestOptions);
+      console.log(`ImageService.callUploadToOpenFoodFacts: response  ${JSON.stringify(uploadToOFFResponse)}`);
+      console.log(`ImageService.callUploadToOpenFoodFacts: code: ${code}`);
+      if (uploadToOFFResponse.status == 200) {
+        return code;
+      } else {
+        throw new Error(`ImageService.callUploadToOpenFoodFacts - call to backend: ${JSON.stringify(uploadToOFFResponse)}`);
+      }
+    } catch (error) {
+      console.error(`ImageService.callUploadToOpenFoodFacts: error ${error}`);
+      throw error;
+    }
+  }
+
   async captureImagePhoto(): Promise<Photo> {
     console.log(`AddProductModalPage.captureImagePhoto: capture image selected`);
     try {

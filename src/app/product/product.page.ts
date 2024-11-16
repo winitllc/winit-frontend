@@ -134,7 +134,7 @@ export class ProductPage implements OnInit {
     const imageData = await this.imageService.captureImageDataURL();
     this.presentLoading('Loading Image Cropper');
     const croppedImageData = await this.openCropperModal(imageData);
-    await this.productService.addImage(this.product?.code || '', 'front_en', croppedImageData);
+    await this.imageService.callUploadToOpenFoodFacts(this.product?.code || '', 'front_en', croppedImageData);
     if (this.product) {
       this.product.image_front_url = croppedImageData;
     }
@@ -144,7 +144,7 @@ export class ProductPage implements OnInit {
     const imageData = await this.imageService.captureImageDataURL();
     this.presentLoading('Loading Image Cropper');
     const croppedImageData = await this.openCropperModal(imageData);
-    await this.productService.addImage(this.product?.code || '', 'nutrition_en', croppedImageData);
+    await this.imageService.callUploadToOpenFoodFacts(this.product?.code || '', 'nutrition_en', croppedImageData);
     if (this.product) {
       this.product.image_nutrition_url = croppedImageData;
     }
