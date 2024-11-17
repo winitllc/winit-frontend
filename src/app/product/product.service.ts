@@ -39,10 +39,6 @@ export class ProductService {
           code: product.code,
           product_name_en: product.product_name_en,
           ingredients_text_en: product.ingredients_text,
-          // image_url: product.image_url,
-          // image_ingredients_url: product.image_ingredients_url,
-          // image_front_url: product.image_front_url,
-          // image_nutrition_url: product.image_nutrition_url,
           brands: product.brands
         }
       };

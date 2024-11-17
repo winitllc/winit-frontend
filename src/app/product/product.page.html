@@ -27,7 +27,7 @@
         <ion-col class="ion-text-center ion-justify-content-center">
           <div>
             <img *ngIf="(product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0) || product?.image_front_url" src="{{ product?.selected_images?.front?.display.en || product?.image_front_url }}">
-            <img (click)="updateFrontImage()" *ngIf="!((product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0) || product?.image_front_url)" src="assets/imgs/noProduct.png">
+            <img (click)="updateFrontImage()" *ngIf="!((product && product.selected_images && product.selected_images.front && product.selected_images.front.display && product.selected_images.front.display.en && product.selected_images.front.display.en.length > 0) || product?.image_front_url)" src="assets/imgs/addProductFrontImage.png">
           </div>
         </ion-col>
       </ion-row>
@@ -43,7 +43,7 @@
           <h2>Nutrition</h2>
           <div>
             <img *ngIf="(product && product.selected_images && product.selected_images.nutrition && product.selected_images.nutrition.display && product.selected_images.nutrition.display.en && product.selected_images.nutrition.display.en.length > 0) || product?.image_nutrition_url" src="{{ product?.selected_images?.nutrition?.display?.en || product?.image_nutrition_url }}">
-            <img (click)="updateNutritionImage()" *ngIf="!((product && product.selected_images && product.selected_images.nutrition && product.selected_images.nutrition.display && product.selected_images.nutrition.display.en && product.selected_images.nutrition.display.en.length > 0) || product?.image_nutrition_url)" src="assets/imgs/noProduct.png">
+            <img (click)="updateNutritionImage()" *ngIf="!((product && product.selected_images && product.selected_images.nutrition && product.selected_images.nutrition.display && product.selected_images.nutrition.display.en && product.selected_images.nutrition.display.en.length > 0) || product?.image_nutrition_url)" src="assets/imgs/addNutritionImage.png">
           </div>
         </ion-col>
       </ion-row>
