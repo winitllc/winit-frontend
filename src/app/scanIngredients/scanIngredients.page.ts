@@ -119,11 +119,11 @@ export class ScanIngredientsPage implements OnInit {
     this.presentLoading('Sending new product to product update service for review.');
     await this.productService.addNewProductUpdate(productUpdate);
     this.presentLoading('Product sent; now to update with images.');
-    await this.productService.addImage(productUpdate.code, 'front_en', this.frontImage);
+    await this.imageService.callUploadToOpenFoodFacts(productUpdate.code, 'front_en', this.frontImage);
     this.presentLoading('Front image sent.');
-    await this.productService.addImage(productUpdate.code, 'ingredients_en', this.imageSrc);
+    await this.imageService.callUploadToOpenFoodFacts(productUpdate.code, 'ingredients_en', this.imageSrc);
     this.presentLoading('Ingredients image sent.');
-    await this.productService.addImage(productUpdate.code, 'nutrition_en', this.nutritionImage);
+    await this.imageService.callUploadToOpenFoodFacts(productUpdate.code, 'nutrition_en', this.nutritionImage);
     this.presentLoading('Nutrition image sent.');
     this.dismissLoading();
     productUpdate.image_front_url = this.frontImage;
