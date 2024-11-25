@@ -1,3 +1,15 @@
 span.categoryLink {
   color: var(--ion-color-primary);
 }
+
+div.productBadge {
+  img {
+    height: 1.8em;
+  }
+  .approved {
+    background-color: var(--ion-color-approved);
+  }
+  .declined {
+    background-color: var(--ion-color-danger);
+  }
+}

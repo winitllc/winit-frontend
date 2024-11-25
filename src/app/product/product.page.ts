@@ -73,8 +73,7 @@ export class ProductPage implements OnInit {
       console.log(`ProductPage.ionViewWillEnter - beginning of ionViewWillEnter`);
       this.profile = this.profileState.getHealthProfile();
       console.log(`ProductPage.ionViewWillEnter: profile from state: ${JSON.stringify(this.profile)}`);
-      this.warnings = this.profile.medical?.allergies?.map((allergy: any) => {return allergy.name as string;}) || [];
-      this.noProduct = true;
+      this.reset();
       console.log(`ProductPage.ionViewWillEnter: beginning of ionViewWillEnter`);
       let currNavigation = this.router.getCurrentNavigation();
       if (!currNavigation) {
@@ -104,9 +103,11 @@ export class ProductPage implements OnInit {
           console.log(`ProductPage.ionViewWillEnter: front images: ${JSON.stringify(product.selected_images?.front)}`);
           console.log(`ProductPage.ionViewWillEnter: front images: ${JSON.stringify(product.image_front_url)}`);
           this.product = JSON.parse(JSON.stringify(product));
+          this.insufficientData = false;
           await this.setAlerts();
         } else if (this.product && this.product.hasOwnProperty('id')) {
           console.log(`ProductPage.ionViewWillEnter: using local product`);
+          this.insufficientData = false;
           await this.setAlerts();
           return;
         } else {
@@ -166,23 +167,12 @@ export class ProductPage implements OnInit {
     return data as string;
   }
 
-  // private reset(): void {
-  //   this.allergensText = [];
-  //   this.allergenPoisonWarning = false;
-  //   this.allergenDangerWarning = false;
-  //   this.tracesText = [];
-  //   this.tracesPoisonWarning = false;
-  //   this.tracesDangerWarning = false;
-  //   this.ingredientsText = [];
-  //   this.ingredientsPoisonWarning = false;
-  //   this.ingredientsDangerWarning = false;
-  //   this.productKeywords = [];
-  //   this.updateProduct(AppConfig.emptyWuzinitProduct);
-  //   this.iPhone = false;
-  //   this.insufficientData = true;
-  //   this.dangerWarning = false;
-  //   this.poisonWarning = false;
-  // }
+  private reset(): void {
+    this.warnings = this.profile.medical?.allergies?.map((allergy: any) => {return allergy.name as string;}) || [];
+    this.noProduct = true;
+    this.dangerWarning = false;
+    this.insufficientData = true;
+  }
 
   private async setAlerts(): Promise<void> {
     console.log(`ProductPage.setAlerts: setting the alerts for dangerous and poisonous ingredients`);
@@ -203,7 +193,12 @@ export class ProductPage implements OnInit {
         console.log(`ProductPage.addAlertHighlights: phrase to check: ${phrase}`);
         return phrase.split(' ').map((word) => {
           console.log(`ProductPage.addAlertHighlights: word to check: ${word}`);
-          return this.matchWarnings(word) ? `<span style="background-color: var(--ion-color-primary); color: var(--ion-color-primary-contrast); border-radius: 0.2em;">${word}</span>` : word;
+          if (this.matchWarnings(word)) {
+            this.dangerWarning = true;
+            return `<span style="background-color: var(--ion-color-danger); color: var(--ion-color-danger-contrast); border-radius: 0.2em;">${word}</span>`;
+          } else {
+            return word;
+          }
         }).join(' ');
       }).join(', ');
     }).join('. ');

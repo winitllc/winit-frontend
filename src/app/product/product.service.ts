@@ -19,8 +19,7 @@ export class ProductService {
   // }
 
   public async addNewProductUpdate(product: OpenFoodFactsProductUpdate): Promise<any> {
-    const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
-    // const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
+    const postProductUpdate = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.addProductUpdate}`;
     console.log(`ProductService.addNewProductUpdate: adding new product with barcode: ${JSON.stringify(product.code)}`);
     console.log(`ProductService.addNewProductUpdate: adding new product: ${JSON.stringify(product)}`);
     console.log(`ProductService.addNewProductUpdate: url: ${postProductUpdate}`);
@@ -55,8 +54,7 @@ export class ProductService {
   }
 
   public async getProductByBarcode(barcode: string): Promise<OpenFoodFactsProduct> {
-    const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.testUrl}${EnvironmentConfig.api.openFoodFactsProducts.getByCode}${barcode}.json`;
-    // const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.getByCode}${barcode}.json`;
+    const getProductByBarcodeURL = `${EnvironmentConfig.api.openFoodFactsProducts.baseUrl}${EnvironmentConfig.api.openFoodFactsProducts.getByCode}${barcode}.json`;
     console.log(`ProductService.getProductByBarcode: requesting product by barcode: ${barcode}`);
     console.log(`ProductService.getProductByBarcode: url: ${getProductByBarcodeURL}`);
     try {

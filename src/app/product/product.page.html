@@ -23,6 +23,14 @@
           <h2 class="ion-text-center">{{product?.product_name}}</h2>
         </ion-col>
       </ion-row>
+      <ion-row *ngIf="!insufficientData">
+        <ion-col>
+          <div class="productBadge">
+            <ion-badge class="approved" *ngIf="!dangerWarning"><img src="assets/imgs/approved.png"></ion-badge>
+            <ion-badge class="declined" *ngIf="dangerWarning"><img src="assets/imgs/declined.png"></ion-badge>
+          </div>
+        </ion-col>
+      </ion-row>
       <ion-row>
         <ion-col class="ion-text-center ion-justify-content-center">
           <div>
