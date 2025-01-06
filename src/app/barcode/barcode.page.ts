@@ -46,6 +46,10 @@ export class BarcodePage implements OnInit {
       const permissionsResult = await BarcodeScanner.checkPermissions();
       this.isPermissionGranted = permissionsResult.camera === 'granted';
       console.log(`BarcodePage.ngOnInit: permissions checked: ${permissionsResult.camera}`);
+      if (!this.isPermissionGranted) {
+        const { camera } = await BarcodeScanner.requestPermissions();
+        console.log(`BarcodePage.ngOnInit: requested permissions: ${camera}`);
+      }
       BarcodeScanner.removeAllListeners().then(() => {
         console.log(`BarcodePage.ngOnInit: permissions checked`);
         BarcodeScanner.addListener(
