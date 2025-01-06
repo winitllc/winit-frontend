@@ -5,7 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  templateUrl: 'offPolicyModal.page.html',
+  templateUrl: 'offReUsePolicyModalComponent.page.html',
   standalone: true,
   imports: [
     IonicModule,
@@ -13,9 +13,9 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   selector: 'offPolicy',
-  styleUrls: ['offPolicyModal.page.scss']
+  styleUrls: ['offReUsePolicyModalComponent.page.scss']
 })
-export class OFFPolicyModalComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OFFReUsePolicyModalComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private modalCtrl: ModalController
@@ -23,15 +23,15 @@ export class OFFPolicyModalComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit() {
-    console.log(`OFFPolicyModalComponent.constructor: ngOnInit`);
+    console.log(`OFFReUsePolicyModalComponent.constructor: ngOnInit`);
   }
 
   public ngAfterViewInit(): void {
-    console.log(`OFFPolicyModalComponent.ngAfterViewIn after view init`);
+    console.log(`OFFReUsePolicyModalComponent.ngAfterViewIn after view init`);
   }
 
   public ngOnDestroy(): void {
-    console.log(`OFFPolicyModalComponent.ngOnDestroy: destroying view`);
+    console.log(`OFFReUsePolicyModalComponent.ngOnDestroy: destroying view`);
   }
 
   cancel() {
