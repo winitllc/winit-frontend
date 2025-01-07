@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../util/auth.service';
 import { Storage } from '@ionic/storage-angular';
 import { ModalController } from '@ionic/angular';
+import { App } from '@capacitor/app';
 import { OFFUserPolicyModalComponent } from '../policies/offUserPolicyModalComponent.page';
 import { OFFReUsePolicyModalComponent } from '../policies/offReUsePolicyModalComponent.page';
 
@@ -45,8 +46,9 @@ export class TabsPage {
         console.log(`TabsPage.checkOFFUserPolicy: modal dismissed, role: ${JSON.stringify(role)}`);
         if (role == 'accept') {
           console.log(`TabsPage.checkOFFUserPolicy: policy accepted: ${JSON.stringify(role)}`);
-          // await this.storage.set('OpenFoodFactsUserPolicy', true);
+          await this.storage.set('OpenFoodFactsUserPolicy', true);
         } else {
+          console.log(`TabsPage.checkOFFUserPolicy: OFF user policy declined; exiting app`);
           this.checkOFFUserPolicy();
         }
       }
@@ -70,8 +72,9 @@ export class TabsPage {
         console.log(`TabsPage.checkOFFReUsePolicy: modal dismissed, role: ${JSON.stringify(role)}`);
         if (role == 'accept') {
           console.log(`TabsPage.checkOFFReUsePolicy: policy accepted: ${JSON.stringify(role)}`);
-          // await this.storage.set('OpenFoodFactsReUsePolicy', true);
+          await this.storage.set('OpenFoodFactsReUsePolicy', true);
         } else {
+          console.log(`TabsPage.checkOFFReUsePolicy: OFF re-use policy declined; exiting app`);
           this.checkOFFReUsePolicy();
         }
       }
