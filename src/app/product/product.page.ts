@@ -1,15 +1,15 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { NavController, ActionSheetController, Platform, LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
-import { Share } from '@capacitor/share';
+import { Router, NavigationExtras } from '@angular/router';
+import { NavController, LoadingController, LoadingOptions, ModalController } from '@ionic/angular';
 import { AppConfig } from '../app.config';
-import { model } from 'wuzinit-common';
+import { Storage } from '@ionic/storage-angular';
 import { ProfileState } from '../profile/profile.state';
 import { OpenFoodFactsProduct, ProductService } from './product.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CacheService } from '../util/cache.service';
 import ImageService from '../util/image.service';
 import { ScanFrontCropperModalPage } from '../scanFront/scanFront-cropperModal.page';
+import { OFFContributorPolicyModalComponent } from '../policies/offContributorPolicyModalComponent.page';
 
 @Component({
   selector: 'app-product',
@@ -49,13 +49,10 @@ export class ProductPage implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
 
   constructor(
-    private actionSheetController: ActionSheetController,
-    private loadingController: LoadingController,
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
-    private platform: Platform,
-    private route: ActivatedRoute,
+    private storage: Storage,
     private sanitizer: DomSanitizer,
     private router: Router,
     private productService: ProductService,
@@ -122,32 +119,50 @@ export class ProductPage implements OnInit {
     }
   }
 
-  public addNewProductInfo() {
-    const navExtras: NavigationExtras = {
-      state: {
-        noProductBarcode: this.noProductBarcode
+  public async addNewProductInfo() {
+    try {
+      if (await this.checkOFFContributorPolicy()) {
+        const navExtras: NavigationExtras = {
+          state: {
+            noProductBarcode: this.noProductBarcode
+          }
+        };
+        this.navCtrl.navigateForward('tabs/product/scanName', navExtras);
       }
-    };
-    this.navCtrl.navigateForward('tabs/product/scanName', navExtras);
+    } catch (error) {
+      console.error(`ProductPage.addNewProductInfo Error: ${JSON.stringify(error)}`);
+    }
   }
 
   public async updateFrontImage() {
-    const imageData = await this.imageService.captureImageDataURL();
-    this.presentLoading('Loading Image Cropper');
-    const croppedImageData = await this.openCropperModal(imageData);
-    await this.imageService.callUploadToOpenFoodFacts(this.product?.code || '', 'front_en', croppedImageData);
-    if (this.product) {
-      this.product.image_front_url = croppedImageData;
+    try {
+      if (await this.checkOFFContributorPolicy()) {
+        const imageData = await this.imageService.captureImageDataURL();
+        this.presentLoading('Loading Image Cropper');
+        const croppedImageData = await this.openCropperModal(imageData);
+        await this.imageService.callUploadToOpenFoodFacts(this.product?.code || '', 'front_en', croppedImageData);
+        if (this.product) {
+          this.product.image_front_url = croppedImageData;
+        }
+      }
+    } catch (error) {
+      console.error(`ProductPage.updateFrontImage: [ERROR] ${JSON.stringify(error)}`);
     }
   }
 
   public async updateNutritionImage() {
-    const imageData = await this.imageService.captureImageDataURL();
-    this.presentLoading('Loading Image Cropper');
-    const croppedImageData = await this.openCropperModal(imageData);
-    await this.imageService.callUploadToOpenFoodFacts(this.product?.code || '', 'nutrition_en', croppedImageData);
-    if (this.product) {
-      this.product.image_nutrition_url = croppedImageData;
+    try {
+      if (await this.checkOFFContributorPolicy()) {
+        const imageData = await this.imageService.captureImageDataURL();
+        this.presentLoading('Loading Image Cropper');
+        const croppedImageData = await this.openCropperModal(imageData);
+        await this.imageService.callUploadToOpenFoodFacts(this.product?.code || '', 'nutrition_en', croppedImageData);
+        if (this.product) {
+          this.product.image_nutrition_url = croppedImageData;
+        }
+      }
+    } catch (error) {
+      console.error(`ProductPage.updateNutritionImage: [ERROR] ${JSON.stringify(error)}`);
     }
   }
 
@@ -165,6 +180,35 @@ export class ProductPage implements OnInit {
     console.log(`ProductPage.openCropperModal: modal dismissed, data: ${JSON.stringify(data)}`);
     console.log(`ProductPage.openCropperModal: modal dismissed, role: ${JSON.stringify(role)}`);
     return data as string;
+  }
+
+  async checkOFFContributorPolicy(): Promise<boolean> {
+    try {
+      const openFoodFactsContributorPolicy = await this.storage.get('OpenFoodFactsContributorPolicy');
+      if (!openFoodFactsContributorPolicy) {
+        const modal: HTMLIonModalElement = await this.modalCtrl.create({
+          component: OFFContributorPolicyModalComponent,
+          showBackdrop: false
+        });
+        console.log(`TabsPage.checkOFFContributorPolicy: modal set up`);
+        modal.present();
+        const { data, role } = await modal.onWillDismiss();
+        console.log(`TabsPage.checkOFFContributorPolicy: modal dismissed, data: ${JSON.stringify(data)}`);
+        console.log(`TabsPage.checkOFFContributorPolicy: modal dismissed, role: ${JSON.stringify(role)}`);
+        if (role == 'accept') {
+          console.log(`TabsPage.checkOFFContributorPolicy: policy accepted: ${JSON.stringify(role)}`);
+          await this.storage.set('OpenFoodFactsContributorPolicy', true);
+          return true;
+        } else {
+          console.log(`TabsPage.checkOFFContributorPolicy: OFF re-use policy declined; exiting app`);
+          return false;
+        }
+      }
+      return true;
+    } catch (error) {
+      console.error(`TabsPage.checkOFFContributorPolicy [ERROR]: error ${JSON.stringify(error)}`);
+      return false;
+    }
   }
 
   private reset(): void {

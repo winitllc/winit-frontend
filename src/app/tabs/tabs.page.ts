@@ -31,7 +31,7 @@ export class TabsPage {
     }
   }
 
-  async checkOFFUserPolicy() {
+  async checkOFFUserPolicy(): Promise<boolean> {
     try {
       const openFoodFactsUserPolicy = await this.storage.get('OpenFoodFactsUserPolicy');
       if (!openFoodFactsUserPolicy) {
@@ -47,17 +47,21 @@ export class TabsPage {
         if (role == 'accept') {
           console.log(`TabsPage.checkOFFUserPolicy: policy accepted: ${JSON.stringify(role)}`);
           await this.storage.set('OpenFoodFactsUserPolicy', true);
+          return true;
         } else {
           console.log(`TabsPage.checkOFFUserPolicy: OFF user policy declined; exiting app`);
           this.checkOFFUserPolicy();
+          return false;
         }
       }
+      return true;
     } catch (error) {
       console.error(`TabsPage.checkOFFUserPolicy [ERROR]: error ${JSON.stringify(error)}`);
+      return false;
     }
   }
 
-  async checkOFFReUsePolicy() {
+  async checkOFFReUsePolicy(): Promise<boolean> {
     try {
       const openFoodFactsReUsePolicy = await this.storage.get('OpenFoodFactsReUsePolicy');
       if (!openFoodFactsReUsePolicy) {
@@ -73,13 +77,17 @@ export class TabsPage {
         if (role == 'accept') {
           console.log(`TabsPage.checkOFFReUsePolicy: policy accepted: ${JSON.stringify(role)}`);
           await this.storage.set('OpenFoodFactsReUsePolicy', true);
+          return true;
         } else {
           console.log(`TabsPage.checkOFFReUsePolicy: OFF re-use policy declined; exiting app`);
           this.checkOFFReUsePolicy();
+          return false;
         }
       }
+      return true;
     } catch (error) {
       console.error(`TabsPage.checkOFFReUsePolicy [ERROR]: error ${JSON.stringify(error)}`);
+      return false;
     }
   }
 
