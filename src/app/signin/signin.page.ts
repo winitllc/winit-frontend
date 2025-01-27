@@ -94,11 +94,6 @@ export class SigninPage implements OnInit {
     this.navCtrl.navigateForward('signup-patient');
   }
 
-  registerActionHealthPro() {
-    console.log('this is register action');
-    this.navCtrl.navigateForward('signup');
-  }
-
   onForgotPassword() {
     console.log('this is forgot password button');
   }
