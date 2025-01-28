@@ -124,6 +124,34 @@ export class ProfilePage {
     }
   }
 
+  async confirmDeleteProfile(): Promise<void> {
+    try {
+      let alert = await this.alertCtrl.create({
+        header: 'Delete Account Profile',
+        message: 'Are you sure you want to delete your account profile? This operation is permanent and cannot be undone.',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+          },
+          {
+            text: 'Confirm',
+            handler: async () => {
+              console.log('ProfilePage.confirmDeleteProfile: alert handler initiated');
+              await this.service.deleteProfileData();
+              console.log('ProfilePage.confirmDeleteProfile: delete profile async completed');
+              this.logout();
+              console.log('ProfilePage.confirmDeleteProfile: alert handler completed');
+            },
+          },
+        ],
+      });
+      await alert.present();
+    } catch (error) {
+      console.error(`ProfilePage.confirmDeleteProfile: [ERROR] ${JSON.stringify(error)}`);
+    }
+  }
+
   // PRIVATE FUNCTIONS
 
   private logout(): void {

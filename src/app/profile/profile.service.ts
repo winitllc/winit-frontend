@@ -7,7 +7,7 @@ import { CacheService } from '../util/cache.service';
 import { AuthState } from '../util/auth.state';
 import { AuthService } from '../util/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, retry } from 'rxjs';
+import { firstValueFrom, Observable, retry } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -24,11 +24,11 @@ export class ProfileService {
     this.getUserProfileData().subscribe(
       async (data: any) => {
         // Handle the response data
-        console.log('ProfilePage.fetchProfileData: data fetched from api/accounts/me');
-        console.log(`ProfilePage.fetchProfileData: ${JSON.stringify(data)}`);
+        console.log('ProfileService.fetchProfileData: data fetched from api/accounts/me');
+        console.log(`ProfileService.fetchProfileData: ${JSON.stringify(data)}`);
         const profileData = data['data'];
-        console.log(`ProfilePage.fetchProfileData: profile data: ${JSON.stringify(profileData)}`);
-        console.log(`ProfilePage.fetchProfileData: profile name: ${profileData.profile.showName}`);
+        console.log(`ProfileService.fetchProfileData: profile data: ${JSON.stringify(profileData)}`);
+        console.log(`ProfileService.fetchProfileData: profile name: ${profileData.profile.showName}`);
         // console.log(profileData['healthProfiles'][0]['id'] != undefined);
         this.state.setProfile(profileData);
         if (profileData['healthProfiles'] != undefined) {
@@ -37,14 +37,14 @@ export class ProfileService {
           }
         }
         const profileID = profileData['id'];
-        console.log(`ProfilePage.fetchProfileData: profile ID to fetch: ${profileID}`);
+        console.log(`ProfileService.fetchProfileData: profile ID to fetch: ${profileID}`);
         const profilePoints: model.WuzinitPoints = await this.getProfilePoints(`${profileID}`);
-        console.log(`ProfilePage.fetchProfileData: profile points: ${JSON.stringify(profilePoints)}`);
+        console.log(`ProfileService.fetchProfileData: profile points: ${JSON.stringify(profilePoints)}`);
         this.state.setProfilePoints(profilePoints);
       },
       (error) => {
         // Handle errors
-        console.error(`ProfilePage.fetchProfileData: [ERROR] ${JSON.stringify(error)}`);
+        console.error(`ProfileService.fetchProfileData: [ERROR] ${JSON.stringify(error)}`);
       }
     );
   }
@@ -55,17 +55,28 @@ export class ProfileService {
       .subscribe(
         (data: any) => {
           // Handle the response data
-          console.log('ProfilePage.getHealthProfileData: data fetched from health profile api');
-          console.log(`ProfilePage.getHealthProfileData: ${JSON.stringify(data)}`);
+          console.log('ProfileService.getHealthProfileData: data fetched from health profile api');
+          console.log(`ProfileService.getHealthProfileData: ${JSON.stringify(data)}`);
           const healthProfileData = data['data'];
           this.state.setHealthProfile(data['data']);
-          console.log(`ProfilePage.getHealthProfileData: health profile data ${JSON.stringify(healthProfileData)}`);
+          console.log(`ProfileService.getHealthProfileData: health profile data ${JSON.stringify(healthProfileData)}`);
         },
         (error) => {
           // Handle errors
-          console.error(`ProfilePage.getHealthProfileData: [ERROR] ${JSON.stringify(error)}`);
+          console.error(`ProfileService.getHealthProfileData: [ERROR] ${JSON.stringify(error)}`);
         }
       );
+  }
+
+  async deleteProfileData(): Promise<void> {
+    try {
+      console.log('ProfileService.deleteProfileData: deleteProfileData initiated');
+      const returnValue = await this.deleteProfile();
+      console.log(`ProfileService.deleteProfileData: profile deleted; return value: ${JSON.stringify(returnValue)}`);
+      console.log('ProfileService.deleteProfileData: deleteProfileData complete');
+    } catch (error) {
+      console.error(`ProfileService.deleteProfileData: [ERROR] ${JSON.stringify(error)}`);
+    }
   }
 
   getUserProfileData(): Observable<any[]> {
@@ -98,91 +109,23 @@ export class ProfileService {
       .pipe(retry(2));
   }
 
-  // public async setProfile(profile: view.Profile): Promise<void> {
-  //   this.state.setProfile(profile);
-  //   console.log(`ProfileService.setProfile: [DEBUG] profile to cache: ${JSON.stringify(profile)}`);
-  //   await this.cache.putProfile(profile);
-  //   const dangerousIngredients: string[] = this.gatherDangerousIngredients(profile);
-  //   this.state.setDangerousIngredients(dangerousIngredients);
-  //   const poisonousIngredients: string[] = this.gatherPoisonousIngredients(profile);
-  //   this.state.setPoisonousIngredients(poisonousIngredients);
-  //   console.log(`ProfileService.setProfile: [DEBUG] dangerous ingredients to cache: ${JSON.stringify(dangerousIngredients)}`);
-  // }
-
-  // public async getProfile(email?: string): Promise<view.Profile> {
-  //   try {
-  //     let profile: view.Profile;
-  //     if (email) {
-  //       profile = await this.getProfileByEmail(email);
-  //       console.log(`ProfileService.getProfile: [DEBUG] newly fetched profile: ${JSON.stringify(profile)}`);
-  //       if (!profile || !profile.id) {
-  //         return null;
-  //       }
-  //     } else {
-  //       profile = this.state.getProfile();
-  //       console.log(`ProfileService.getProfile: [DEBUG] checking the profile stored in memory: ${JSON.stringify(profile)}`);
-  //       if (!profile || !profile.id || profile.id === '-1') {
-  //         profile = await this.cache.getProfile();
-  //         console.log(`ProfileService.getProfile: [DEBUG] checking the cached profile: ${JSON.stringify(profile)}`);
-  //       }
-  //       if (!profile || !profile.id) {
-  //         return null;
-  //       }
-  //     }
-  //     await this.setProfile(profile);
-  //     return profile;
-  //   } catch (error) {
-  //     email ? console.error(`ProfileService.getProfile: [ERROR] Error getting profile by email ${email}: ${JSON.stringify(error)}`) :
-  //       console.error(`ProfileService.getProfile: [ERROR] Error getting profile: ${JSON.stringify(error)}`);
-  //   }
-  // }
-
-  // public async refreshProfile(email: string): Promise<void> {
-  //   try {
-  //     let profile: view.Profile;
-  //     profile = await this.getProfileByEmail(email);
-  //     console.log(`ProfileService.getProfile: [DEBUG] newly fetched profile: ${JSON.stringify(profile)}`);
-  //     if (profile && profile.id) {
-  //       await this.setProfile(profile);
-  //     }
-  //     return;
-  //   } catch (error) {
-  //     email ? console.error(`ProfileService.getProfile: [ERROR] Error getting profile by email ${email}: ${JSON.stringify(error)}`) :
-  //       console.error(`ProfileService.getProfile: [ERROR] Error getting profile: ${JSON.stringify(error)}`);
-  //   }
-  // }
-
-  // // public async createProfile(newProfile: view.Profile): Promise<view.Profile> {
-  // //   const createProfileURL: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.postCreateProfile;
-  // //   try {
-  // //     const profileResponse: any = await this.http.post(createProfileURL, newProfile, {
-  // //       'Content-Type': 'application/json'
-  // //      });
-  // //     console.log(`ProfileService.createProfile: [DEBUG] response from backend: ${JSON.stringify(profileResponse)}`);
-  // //     if (profileResponse.hasOwnProperty('data') && profileResponse.data.hasOwnProperty('data') && profileResponse.data.data.hasOwnProperty('id')) {
-  // //       await this.setProfile(profileResponse.data.data as view.Profile);
-  // //       return profileResponse.data.data as view.Profile;
-  // //     } else {
-  // //       return null;
-  // //     }
-  // //   } catch (error) {
-  // //     console.error(`ProfileService.createProfile: [ERROR] Error saving new profile: ${JSON.stringify(newProfile)}`);
-  // //     console.error(`ProfileService.createProfile: [ERROR] Error: ${JSON.stringify(error)}`);
-  // //   }
-  // // }
-
-  // public async updateProfile(newProfile: any): Promise<void> {
-  //   const updateProfileURL: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.postUpdateProfile;
-  //   try {
-  //     const response = await this.http.post(updateProfileURL, newProfile, {
-  //         'Content-Type': 'application/json'
-  //        });
-  //     console.log(`ProfileService.updateProfile: [DEBUG] response from backend: ${JSON.stringify(response)}`);
-  //   } catch (error) {
-  //     console.error(`ProfileService.updateProfile: [ERROR] Error saving new profile: ${JSON.stringify(newProfile)}`);
-  //     console.error(`ProfileService.updateProfile: [ERROR] Error: ${JSON.stringify(error)}`);
-  //   }
-  // }
+  async deleteProfile(): Promise<any> {
+    const deleteProfileURL = `https://winitclinic.com/api/v1/accounts/delete`;
+    console.log(`ProductService.getProductByBarcode: url: ${deleteProfileURL}`);
+    try {
+      const requestOptions = {
+        url: deleteProfileURL,
+        headers: {
+          Authorization: 'Bearer ' + AuthService.AccessToken
+        }
+      }
+      console.log(`ProfileService.deleteProfile: [DEBUG] access token: ${JSON.stringify(requestOptions)}`);
+      const result: HttpResponse = await CapacitorHttp.delete(requestOptions);
+      console.log(`ProductService.deleteProfile: result from WINIT: ${JSON.stringify(result)}`);
+    } catch (error) {
+      console.error(`ProductService.getProductByBarcode: Error: ${JSON.stringify(error)}`);
+    }
+  }
 
   public async getProfilePoints(profileId: string): Promise<model.WuzinitPoints> {
     const getProfilePoints: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.getProfilePoints;
@@ -250,21 +193,6 @@ export class ProfileService {
       console.error(`ProfileService.addToProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
     }
   }
-
-  // public async subtractFromProfilePoints(pointsToSubtract: number): Promise<model.WuzinitPoints> {
-  //   const profilePoints: model.WuzinitPoints = this.state.getProfilePoints();
-  //   try {
-  //     profilePoints.pointsBalance = profilePoints.pointsBalance - Math.max(0, pointsToSubtract);
-  //     profilePoints.pointsAllTime = profilePoints.pointsAllTime - Math.max(0, pointsToSubtract);
-  //     console.log(`ProfileService.subtractFromProfilePoints: [DEBUG] New Profile Points: ${JSON.stringify(profilePoints)}`);
-  //     await this.saveProfilePoints(profilePoints);
-  //     this.state.setProfilePoints(profilePoints);
-  //     return profilePoints;
-  //   } catch (error) {
-  //     console.error(`ProfileService.subtractFromProfilePoints: [ERROR] Error adding ${pointsToSubtract} to profile points: ${JSON.stringify(profilePoints)}`);
-  //     console.error(`ProfileService.subtractFromProfilePoints: [ERROR] Error: ${JSON.stringify(error)}`);
-  //   }
-  // }
 
   public async saveProfilePoints(profilePoints: model.WuzinitPoints): Promise<void> {
     const updateProfileURL: string = EnvironmentConfig.api.profile.baseUrl + EnvironmentConfig.api.profile.updateProfilePoints;

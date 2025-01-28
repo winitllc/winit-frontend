@@ -168,17 +168,17 @@
         </li>
       </ul>
     </ion-item>
-    <a class="home-link" href="https://winitclinic.com/my-account/settings/">
-      <ion-card class="ion-activatable ripple-parent">
+    <!-- <a class="home-link" href="https://winitclinic.com/my-account/settings/"> -->
+      <ion-card class="ion-activatable ripple-parent" (click)="confirmDeleteProfile()">
         <ion-card-header>
           <ion-card-subtitle>Delete Account on winitclinic.com</ion-card-subtitle>
           <ion-card-title>Delete Account</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          Scroll down to "Delete Profile" and follow the prompts.
+          Delete What's In It Account profile. This operation is permanent and cannot be undone.
         </ion-card-content>
         <ion-ripple-effect></ion-ripple-effect>
       </ion-card>
-    </a>
+    <!-- </a> -->
   </ion-list>
 </ion-content>
